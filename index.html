@@ -79,59 +79,81 @@
             .display-4 {
                 font-size: 1.5rem;
             }
+            .table-responsive {
+                font-size: 12px;
+            }
+            .table th {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .table td {
+                font-size: 12px;
+                padding: 6px;
+            }
+            .total-card {
+                margin-bottom: 10px;
+            }
+            .total-card .card-body {
+                padding: 10px;
+            }
+            .total-card .card-title {
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+            .total-card .display-4 {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container mt-4">
-        <h1 class="text-center">钓鱼收入统计系统</h1>
+        <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
         
         <!-- 提示信息 -->
         <div class="alert alert-info">
-            <strong>使用提示：</strong>
+            <strong data-i18n="usageTips">使用提示：</strong>
             <ul class="mb-0">
-                <li>添加记录后，数据会自动保存到浏览器中</li>
-                <li>点击"保存到文件"按钮可将数据备份到本地文件</li>
-                <li>点击"从文件加载"按钮可恢复之前备份的数据</li>
-                <li>定期备份数据，以防浏览器数据丢失</li>
+                <li data-i18n="tip1">添加记录后，数据会自动保存到浏览器中</li>
+                <li data-i18n="tip2">点击"保存到文件"按钮可将数据备份到本地文件</li>
+                <li data-i18n="tip3">点击"从文件加载"按钮可恢复之前备份的数据</li>
+                <li data-i18n="tip4">定期备份数据，以防浏览器数据丢失</li>
             </ul>
         </div>
 
         <!-- 总量信息 -->
         <div class="card">
-            <div class="card-header">
-                总量信息
-            </div>
+            <div class="card-header" data-i18n="totalInfo">总量信息</div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light">
+                        <div class="card bg-light total-card">
                             <div class="card-body text-center">
-                                <h5 class="card-title">钻石</h5>
+                                <h5 class="card-title" data-i18n="diamond">钻石</h5>
                                 <p class="card-text display-4" id="total-diamond">0</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light">
+                        <div class="card bg-light total-card">
                             <div class="card-body text-center">
-                                <h5 class="card-title">突破券</h5>
+                                <h5 class="card-title" data-i18n="breakthrough">突破券</h5>
                                 <p class="card-text display-4" id="total-breakthrough">0</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light">
+                        <div class="card bg-light total-card">
                             <div class="card-body text-center">
-                                <h5 class="card-title">原石</h5>
+                                <h5 class="card-title" data-i18n="rawstone">原石</h5>
                                 <p class="card-text display-4" id="total-rawstone">0</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light">
+                        <div class="card bg-light total-card">
                             <div class="card-body text-center">
-                                <h5 class="card-title">白金</h5>
+                                <h5 class="card-title" data-i18n="platinum">白金</h5>
                                 <p class="card-text display-4" id="total-platinum">0</p>
                             </div>
                         </div>
@@ -142,56 +164,52 @@
 
         <!-- 添加记录表单 -->
         <div class="card">
-            <div class="card-header">
-                添加记录
-            </div>
+            <div class="card-header" data-i18n="addRecord">添加记录</div>
             <div class="card-body">
                 <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
                     <div class="d-flex align-items-center gap-1">
-                        <label for="date" class="form-label mb-0">日期</label>
+                        <label for="date" class="form-label mb-0" data-i18n="date">日期</label>
                         <input type="date" class="form-control" id="date">
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="type" class="form-label mb-0">类型</label>
+                        <label for="type" class="form-label mb-0" data-i18n="type">类型</label>
                         <select class="form-control" id="type">
-                            <option value="收入">收入</option>
-                            <option value="支出">支出</option>
+                            <option value="收入" data-i18n="income">收入</option>
+                            <option value="支出" data-i18n="expense">支出</option>
                         </select>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="diamond" class="form-label mb-0">钻石</label>
+                        <label for="diamond" class="form-label mb-0" data-i18n="diamond">钻石</label>
                         <input type="number" class="form-control" id="diamond" min="0" style="width: 70px;">
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="breakthrough" class="form-label mb-0">突破券</label>
+                        <label for="breakthrough" class="form-label mb-0" data-i18n="breakthrough">突破券</label>
                         <input type="number" class="form-control" id="breakthrough" min="0" style="width: 70px;">
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="rawstone" class="form-label mb-0">原石</label>
+                        <label for="rawstone" class="form-label mb-0" data-i18n="rawstone">原石</label>
                         <input type="number" class="form-control" id="rawstone" min="0" style="width: 70px;">
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="platinum" class="form-label mb-0">白金</label>
+                        <label for="platinum" class="form-label mb-0" data-i18n="platinum">白金</label>
                         <input type="number" class="form-control" id="platinum" min="0" style="width: 70px;">
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <label for="remark" class="form-label mb-0">备注</label>
+                        <label for="remark" class="form-label mb-0" data-i18n="remark">备注</label>
                         <input type="text" class="form-control" id="remark" style="width: 120px;">
                     </div>
-                    <button type="submit" class="btn btn-primary">添加记录</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="addRecordBtn">添加记录</button>
                 </form>
             </div>
         </div>
 
         <!-- 文件操作按钮 -->
         <div class="card">
-            <div class="card-header">
-                数据管理
-            </div>
+            <div class="card-header" data-i18n="dataManagement">数据管理</div>
             <div class="card-body">
                 <div class="d-flex gap-2">
-                    <button id="save-to-file" class="btn btn-success">保存到文件</button>
-                    <button id="load-from-file" class="btn btn-info">从文件加载</button>
+                    <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
+                    <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
                     <input type="file" id="file-input" style="display: none;" accept=".txt">
                 </div>
             </div>
@@ -199,22 +217,20 @@
 
         <!-- 记录列表 -->
         <div class="card">
-            <div class="card-header">
-                记录明细
-            </div>
+            <div class="card-header" data-i18n="recordDetails">记录明细</div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>日期</th>
-                                <th>类型</th>
-                                <th>钻石</th>
-                                <th>突破券</th>
-                                <th>原石</th>
-                                <th>白金</th>
-                                <th>备注</th>
-                                <th>操作</th>
+                                <th data-i18n="date">日期</th>
+                                <th data-i18n="type">类型</th>
+                                <th data-i18n="diamond">钻石</th>
+                                <th data-i18n="breakthrough">突破券</th>
+                                <th data-i18n="rawstone">原石</th>
+                                <th data-i18n="platinum">白金</th>
+                                <th data-i18n="remark">备注</th>
+                                <th data-i18n="action">操作</th>
                             </tr>
                         </thead>
                         <tbody id="records-table">
@@ -227,6 +243,88 @@
     </div>
 
     <script>
+        // 多语言支持
+        const translations = {
+            zh: {
+                appTitle: '钓鱼收入统计系统',
+                usageTips: '使用提示：',
+                tip1: '添加记录后，数据会自动保存到浏览器中',
+                tip2: '点击"保存到文件"按钮可将数据备份到本地文件',
+                tip3: '点击"从文件加载"按钮可恢复之前备份的数据',
+                tip4: '定期备份数据，以防浏览器数据丢失',
+                totalInfo: '总量信息',
+                addRecord: '添加记录',
+                dataManagement: '数据管理',
+                recordDetails: '记录明细',
+                date: '日期',
+                type: '类型',
+                diamond: '钻石',
+                breakthrough: '突破券',
+                rawstone: '原石',
+                platinum: '白金',
+                remark: '备注',
+                action: '操作',
+                income: '收入',
+                expense: '支出',
+                addRecordBtn: '添加记录',
+                saveToFile: '保存到文件',
+                loadFromFile: '从文件加载',
+                delete: '删除',
+                recordAdded: '记录添加成功！',
+                dataSaved: '数据已保存到 fishing_income.txt 文件',
+                dataLoaded: '数据已从文件加载',
+                fileFormatError: '文件格式错误，无法加载数据'
+            },
+            vi: {
+                appTitle: 'Hệ thống thống kê thu nhập câu cá',
+                usageTips: 'Lưu ý sử dụng：',
+                tip1: 'Sau khi thêm ghi chú, dữ liệu sẽ tự động được lưu vào trình duyệt',
+                tip2: 'Nhấn nút "Lưu vào tệp" để sao lưu dữ liệu vào tệp cục bộ',
+                tip3: 'Nhấn nút "Tải từ tệp" để khôi phục dữ liệu đã sao lưu trước đó',
+                tip4: 'Sao lưu dữ liệu định kỳ để tránh mất dữ liệu trình duyệt',
+                totalInfo: 'Thông tin tổng số',
+                addRecord: 'Thêm ghi chú',
+                dataManagement: 'Quản lý dữ liệu',
+                recordDetails: 'Chi tiết ghi chú',
+                date: 'Ngày',
+                type: 'Loại',
+                diamond: 'Kim cương',
+                breakthrough: 'Voucher突破',
+                rawstone: 'Nguyên đá',
+                platinum: 'Bạch kim',
+                remark: 'Ghi chú',
+                action: 'Hành động',
+                income: 'Thu nhập',
+                expense: 'Chi tiêu',
+                addRecordBtn: 'Thêm ghi chú',
+                saveToFile: 'Lưu vào tệp',
+                loadFromFile: 'Tải từ tệp',
+                delete: 'Xóa',
+                recordAdded: 'Ghi chú đã được thêm thành công！',
+                dataSaved: 'Dữ liệu đã được lưu vào tệp fishing_income.txt',
+                dataLoaded: 'Dữ liệu đã được tải từ tệp',
+                fileFormatError: 'Định dạng tệp không đúng, không thể tải dữ liệu'
+            }
+        };
+
+        // 检测语言
+        function detectLanguage() {
+            const userLang = navigator.language || navigator.userLanguage;
+            const langCode = userLang.split('-')[0];
+            return translations[langCode] ? langCode : 'zh';
+        }
+
+        // 应用语言
+        function applyLanguage(lang) {
+            const translation = translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translation[key]) {
+                    element.textContent = translation[key];
+                }
+            });
+        }
+
         // 初始化日期为今天
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
@@ -235,6 +333,7 @@
         const fileName = 'fishing_income.txt';
         let db = null;
         let useLocalStorage = false;
+        let currentLang = detectLanguage();
 
         // 检查浏览器是否支持IndexedDB
         function checkIndexedDBSupport() {
@@ -397,7 +496,7 @@
             };
 
             records.forEach(record => {
-                const multiplier = record.type === '收入' ? 1 : -1;
+                const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
                 total.diamond += record.diamond * multiplier;
                 total.breakthrough += record.breakthrough * multiplier;
                 total.rawstone += record.rawstone * multiplier;
@@ -427,11 +526,14 @@
                     <td>${record.platinum}</td>
                     <td>${record.remark}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${index})">删除</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${index})" data-i18n="delete">删除</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
+            
+            // 应用语言到新添加的元素
+            applyLanguage(currentLang);
         }
 
         // 删除记录
@@ -464,7 +566,7 @@
             document.getElementById('platinum').value = '0';
             document.getElementById('remark').value = '';
 
-            alert('记录添加成功！');
+            alert(translations[currentLang].recordAdded || '记录添加成功！');
         });
 
         // 保存到文件
@@ -482,7 +584,7 @@
         // 手动保存到文件
         document.getElementById('save-to-file').addEventListener('click', function() {
             saveToFile();
-            alert('数据已保存到 ' + fileName + ' 文件');
+            alert(translations[currentLang].dataSaved || '数据已保存到 fishing_income.txt 文件');
         });
 
         // 从文件加载
@@ -500,9 +602,9 @@
                         const content = e.target.result;
                         const loadedRecords = JSON.parse(content);
                         saveRecords(loadedRecords);
-                        alert('数据已从文件加载');
+                        alert(translations[currentLang].dataLoaded || '数据已从文件加载');
                     } catch (error) {
-                        alert('文件格式错误，无法加载数据');
+                        alert(translations[currentLang].fileFormatError || '文件格式错误，无法加载数据');
                     }
                 };
                 reader.readAsText(file);
@@ -512,6 +614,9 @@
         // 页面加载完成后初始化
         window.onload = async function() {
             try {
+                // 应用语言
+                applyLanguage(currentLang);
+                
                 await initDB();
                 const loadedRecords = await loadRecords();
                 records = loadedRecords;
