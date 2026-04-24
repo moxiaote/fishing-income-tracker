@@ -9,60 +9,98 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
+            font-size: 14px;
         }
         .container {
             max-width: 1200px;
         }
         .card {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .card-body {
+            font-size: 14px;
+        }
+        h1 {
+            font-size: 24px;
             margin-bottom: 20px;
         }
-        .form-group {
-            margin-bottom: 10px;
+        .form-control {
+            font-size: 14px;
+            height: 36px;
         }
-        .login-container {
-            max-width: 400px;
-            margin: 50px auto;
+        .btn {
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+        .alert {
+            font-size: 13px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .table {
+            font-size: 13px;
+        }
+        .table th {
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .table td {
+            font-size: 13px;
+        }
+        .display-4 {
+            font-size: 2rem;
+            font-weight: 500;
+        }
+        .text-center {
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .card-header {
+                font-size: 14px;
+            }
+            .form-control {
+                font-size: 13px;
+            }
+            .btn {
+                font-size: 13px;
+            }
+            .display-4 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 登录/注册界面 -->
-    <div id="login-section" class="login-container">
-        <div class="card">
-            <div class="card-header text-center">
-                <h3>钓鱼收入统计系统</h3>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <label for="username" class="form-label">用户名</label>
-                    <input type="text" class="form-control" id="username" placeholder="请输入用户名">
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">密码</label>
-                    <input type="password" class="form-control" id="password" placeholder="请输入密码">
-                </div>
-                <div class="d-flex justify-content-between">
-                    <button id="login-btn" class="btn btn-primary">登录</button>
-                    <button id="register-btn" class="btn btn-success">注册</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 主应用界面 -->
-    <div id="app-section" class="container mt-4" style="display: none;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>钓鱼收入统计系统</h1>
-            <div>
-                <span id="current-user" class="mr-3"></span>
-                <button id="logout-btn" class="btn btn-outline-danger">退出</button>
-            </div>
+    <div class="container mt-4">
+        <h1 class="text-center">钓鱼收入统计系统</h1>
+        
+        <!-- 提示信息 -->
+        <div class="alert alert-info">
+            <strong>使用提示：</strong>
+            <ul class="mb-0">
+                <li>添加记录后，数据会自动保存到浏览器中</li>
+                <li>点击"保存到文件"按钮可将数据备份到本地文件</li>
+                <li>点击"从文件加载"按钮可恢复之前备份的数据</li>
+                <li>定期备份数据，以防浏览器数据丢失</li>
+            </ul>
         </div>
 
         <!-- 总量信息 -->
         <div class="card">
             <div class="card-header">
-                <h3>总量信息</h3>
+                总量信息
             </div>
             <div class="card-body">
                 <div class="row">
@@ -105,40 +143,40 @@
         <!-- 添加记录表单 -->
         <div class="card">
             <div class="card-header">
-                <h3>添加记录</h3>
+                添加记录
             </div>
             <div class="card-body">
-                <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-3">
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="date">日期</label>
+                <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="date" class="form-label mb-0">日期</label>
                         <input type="date" class="form-control" id="date">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="type">类型</label>
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="type" class="form-label mb-0">类型</label>
                         <select class="form-control" id="type">
                             <option value="收入">收入</option>
                             <option value="支出">支出</option>
                         </select>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="diamond">钻石</label>
-                        <input type="number" class="form-control" id="diamond" min="0" style="width: 80px;">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="diamond" class="form-label mb-0">钻石</label>
+                        <input type="number" class="form-control" id="diamond" min="0" style="width: 70px;">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="breakthrough">突破券</label>
-                        <input type="number" class="form-control" id="breakthrough" min="0" style="width: 80px;">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="breakthrough" class="form-label mb-0">突破券</label>
+                        <input type="number" class="form-control" id="breakthrough" min="0" style="width: 70px;">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="rawstone">原石</label>
-                        <input type="number" class="form-control" id="rawstone" min="0" style="width: 80px;">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="rawstone" class="form-label mb-0">原石</label>
+                        <input type="number" class="form-control" id="rawstone" min="0" style="width: 70px;">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="platinum">白金</label>
-                        <input type="number" class="form-control" id="platinum" min="0" style="width: 80px;">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="platinum" class="form-label mb-0">白金</label>
+                        <input type="number" class="form-control" id="platinum" min="0" style="width: 70px;">
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <label for="remark">备注</label>
-                        <input type="text" class="form-control" id="remark" style="width: 150px;">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="remark" class="form-label mb-0">备注</label>
+                        <input type="text" class="form-control" id="remark" style="width: 120px;">
                     </div>
                     <button type="submit" class="btn btn-primary">添加记录</button>
                 </form>
@@ -148,10 +186,10 @@
         <!-- 文件操作按钮 -->
         <div class="card">
             <div class="card-header">
-                <h3>数据管理</h3>
+                数据管理
             </div>
             <div class="card-body">
-                <div class="d-flex gap-3">
+                <div class="d-flex gap-2">
                     <button id="save-to-file" class="btn btn-success">保存到文件</button>
                     <button id="load-from-file" class="btn btn-info">从文件加载</button>
                     <input type="file" id="file-input" style="display: none;" accept=".txt">
@@ -162,7 +200,7 @@
         <!-- 记录列表 -->
         <div class="card">
             <div class="card-header">
-                <h3>记录明细</h3>
+                记录明细
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -193,7 +231,6 @@
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
         // 全局变量
-        let currentUser = null;
         let records = [];
         const fileName = 'fishing_income.txt';
         let db = null;
@@ -206,15 +243,9 @@
                 request.onupgradeneeded = function(event) {
                     const db = event.target.result;
                     
-                    // 创建用户存储
-                    if (!db.objectStoreNames.contains('users')) {
-                        const userStore = db.createObjectStore('users', { keyPath: 'username' });
-                    }
-                    
                     // 创建记录存储
                     if (!db.objectStoreNames.contains('records')) {
-                        const recordStore = db.createObjectStore('records', { autoIncrement: true });
-                        recordStore.createIndex('username', 'username', { unique: false });
+                        db.createObjectStore('records', { autoIncrement: true });
                     }
                 };
 
@@ -230,72 +261,62 @@
             });
         }
 
-        // 加载用户数据
-        function loadUserData(username) {
-            return new Promise((resolve, reject) => {
-                if (!db) {
-                    resolve({ records: [] });
-                    return;
-                }
-
-                const transaction = db.transaction(['users'], 'readonly');
-                const store = transaction.objectStore('users');
-                const request = store.get(username);
-
-                request.onsuccess = function(event) {
-                    const userData = event.target.result;
-                    if (userData) {
-                        resolve(userData);
-                    } else {
-                        resolve({ username: username, password: null, records: [] });
-                    }
-                };
-
-                request.onerror = function(event) {
-                    console.error('加载用户数据失败:', event.target.error);
-                    resolve({ records: [] });
-                };
-            });
-        }
-
-        // 保存用户数据
-        function saveUserData(username, data) {
-            return new Promise((resolve, reject) => {
-                if (!db) {
-                    resolve(false);
-                    return;
-                }
-
-                const transaction = db.transaction(['users'], 'readwrite');
-                const store = transaction.objectStore('users');
-                const request = store.put(data);
-
-                request.onsuccess = function() {
-                    resolve(true);
-                };
-
-                request.onerror = function(event) {
-                    console.error('保存用户数据失败:', event.target.error);
-                    resolve(false);
-                };
-            });
-        }
-
         // 加载记录
         function loadRecords() {
-            return records;
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    resolve([]);
+                    return;
+                }
+
+                const transaction = db.transaction(['records'], 'readonly');
+                const store = transaction.objectStore('records');
+                const request = store.getAll();
+
+                request.onsuccess = function(event) {
+                    const loadedRecords = event.target.result;
+                    records = loadedRecords;
+                    resolve(loadedRecords);
+                };
+
+                request.onerror = function(event) {
+                    console.error('加载记录失败:', event.target.error);
+                    resolve([]);
+                };
+            });
         }
 
         // 保存记录
-        async function saveRecords(newRecords) {
-            records = newRecords;
-            if (currentUser) {
-                const userData = await loadUserData(currentUser);
-                userData.records = newRecords;
-                await saveUserData(currentUser, userData);
-            }
-            displayRecords();
-            calculateTotal();
+        function saveRecords(newRecords) {
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    resolve(false);
+                    return;
+                }
+
+                const transaction = db.transaction(['records'], 'readwrite');
+                const store = transaction.objectStore('records');
+                
+                // 清空现有记录
+                store.clear();
+                
+                // 保存新记录
+                newRecords.forEach(record => {
+                    store.add(record);
+                });
+
+                transaction.oncomplete = function() {
+                    records = newRecords;
+                    displayRecords();
+                    calculateTotal();
+                    resolve(true);
+                };
+
+                transaction.onerror = function(event) {
+                    console.error('保存记录失败:', event.target.error);
+                    resolve(false);
+                };
+            });
         }
 
         // 计算总量
@@ -325,7 +346,6 @@
 
         // 显示记录
         function displayRecords() {
-            const records = loadRecords();
             const tableBody = document.getElementById('records-table');
             tableBody.innerHTML = '';
 
@@ -349,9 +369,8 @@
 
         // 删除记录
         function deleteRecord(index) {
-            const currentRecords = loadRecords();
-            currentRecords.splice(index, 1);
-            saveRecords(currentRecords);
+            records.splice(index, 1);
+            saveRecords(records);
         }
 
         // 添加记录
@@ -368,9 +387,8 @@
                 remark: document.getElementById('remark').value
             };
 
-            const currentRecords = loadRecords();
-            currentRecords.push(record);
-            saveRecords(currentRecords);
+            records.push(record);
+            saveRecords(records);
 
             // 重置表单
             document.getElementById('diamond').value = '0';
@@ -384,33 +402,29 @@
 
         // 保存到文件
         function saveToFile() {
-            const records = loadRecords();
             const content = JSON.stringify(records, null, 2);
             const blob = new Blob([content], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${currentUser}_${fileName}`;
+            a.download = fileName;
             a.click();
             URL.revokeObjectURL(url);
         }
 
         // 手动保存到文件
         document.getElementById('save-to-file').addEventListener('click', function() {
-            if (!currentUser) return;
             saveToFile();
-            alert('数据已保存到 ' + `${currentUser}_${fileName}` + ' 文件');
+            alert('数据已保存到 ' + fileName + ' 文件');
         });
 
         // 从文件加载
         document.getElementById('load-from-file').addEventListener('click', function() {
-            if (!currentUser) return;
             document.getElementById('file-input').click();
         });
 
         // 文件选择事件
         document.getElementById('file-input').addEventListener('change', function(e) {
-            if (!currentUser) return;
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -428,83 +442,18 @@
             }
         });
 
-        // 登录功能
-        document.getElementById('login-btn').addEventListener('click', async function() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-
-            if (!username || !password) {
-                alert('请输入用户名和密码');
-                return;
-            }
-
-            // 验证用户
-            const userData = await loadUserData(username);
-            if (!userData.password) {
-                alert('用户不存在，请先注册');
-                return;
-            }
-
-            if (userData.password !== password) {
-                alert('密码错误');
-                return;
-            }
-
-            // 登录成功
-            currentUser = username;
-            records = userData.records || [];
-            document.getElementById('current-user').textContent = `当前用户：${username}`;
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('app-section').style.display = 'block';
-            displayRecords();
-            calculateTotal();
-        });
-
-        // 注册功能
-        document.getElementById('register-btn').addEventListener('click', async function() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-
-            if (!username || !password) {
-                alert('请输入用户名和密码');
-                return;
-            }
-
-            // 检查用户是否已存在
-            const userData = await loadUserData(username);
-            if (userData.password) {
-                alert('用户已存在，请直接登录');
-                return;
-            }
-
-            // 注册成功
-            const newUserData = {
-                username: username,
-                password: password,
-                records: []
-            };
-            await saveUserData(username, newUserData);
-            alert('注册成功，请登录');
-        });
-
-        // 退出功能
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            currentUser = null;
-            records = [];
-            document.getElementById('login-section').style.display = 'block';
-            document.getElementById('app-section').style.display = 'none';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        });
-
         // 页面加载完成后初始化
         window.onload = async function() {
             try {
                 await initDB();
-                console.log('IndexedDB初始化成功');
+                const loadedRecords = await loadRecords();
+                records = loadedRecords;
+                displayRecords();
+                calculateTotal();
+                console.log('初始化成功');
             } catch (error) {
-                console.error('IndexedDB初始化失败:', error);
-                alert('数据库初始化失败，将使用本地存储作为后备方案');
+                console.error('初始化失败:', error);
+                alert('数据库初始化失败，将使用内存存储');
             }
         };
     </script>
