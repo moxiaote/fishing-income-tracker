@@ -234,94 +234,161 @@
         let records = [];
         const fileName = 'fishing_income.txt';
         let db = null;
+        let useLocalStorage = false;
+
+        // 检查浏览器是否支持IndexedDB
+        function checkIndexedDBSupport() {
+            return 'indexedDB' in window;
+        }
 
         // 初始化IndexedDB
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open('FishingIncomeDB', 1);
+                if (!checkIndexedDBSupport()) {
+                    console.log('浏览器不支持IndexedDB，将使用localStorage');
+                    useLocalStorage = true;
+                    resolve(null);
+                    return;
+                }
 
-                request.onupgradeneeded = function(event) {
-                    const db = event.target.result;
-                    
-                    // 创建记录存储
-                    if (!db.objectStoreNames.contains('records')) {
-                        db.createObjectStore('records', { autoIncrement: true });
-                    }
-                };
+                try {
+                    const request = indexedDB.open('FishingIncomeDB', 1);
 
-                request.onsuccess = function(event) {
-                    db = event.target.result;
-                    resolve(db);
-                };
+                    request.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        
+                        // 创建记录存储
+                        if (!db.objectStoreNames.contains('records')) {
+                            db.createObjectStore('records', { autoIncrement: true });
+                        }
+                    };
 
-                request.onerror = function(event) {
-                    console.error('IndexedDB初始化失败:', event.target.error);
-                    reject(event.target.error);
-                };
+                    request.onsuccess = function(event) {
+                        db = event.target.result;
+                        resolve(db);
+                    };
+
+                    request.onerror = function(event) {
+                        console.error('IndexedDB初始化失败:', event.target.error);
+                        useLocalStorage = true;
+                        resolve(null);
+                    };
+                } catch (error) {
+                    console.error('IndexedDB初始化异常:', error);
+                    useLocalStorage = true;
+                    resolve(null);
+                }
             });
+        }
+
+        // 从localStorage加载记录
+        function loadFromLocalStorage() {
+            try {
+                const storedRecords = localStorage.getItem('fishingRecords');
+                return storedRecords ? JSON.parse(storedRecords) : [];
+            } catch (error) {
+                console.error('从localStorage加载失败:', error);
+                return [];
+            }
+        }
+
+        // 保存到localStorage
+        function saveToLocalStorage(data) {
+            try {
+                localStorage.setItem('fishingRecords', JSON.stringify(data));
+                return true;
+            } catch (error) {
+                console.error('保存到localStorage失败:', error);
+                return false;
+            }
         }
 
         // 加载记录
         function loadRecords() {
             return new Promise((resolve, reject) => {
-                if (!db) {
-                    resolve([]);
+                if (useLocalStorage || !db) {
+                    const records = loadFromLocalStorage();
+                    resolve(records);
                     return;
                 }
 
-                const transaction = db.transaction(['records'], 'readonly');
-                const store = transaction.objectStore('records');
-                const request = store.getAll();
+                try {
+                    const transaction = db.transaction(['records'], 'readonly');
+                    const store = transaction.objectStore('records');
+                    const request = store.getAll();
 
-                request.onsuccess = function(event) {
-                    const loadedRecords = event.target.result;
-                    records = loadedRecords;
-                    resolve(loadedRecords);
-                };
+                    request.onsuccess = function(event) {
+                        const loadedRecords = event.target.result;
+                        resolve(loadedRecords);
+                    };
 
-                request.onerror = function(event) {
-                    console.error('加载记录失败:', event.target.error);
+                    request.onerror = function(event) {
+                        console.error('加载记录失败:', event.target.error);
+                        resolve([]);
+                    };
+                } catch (error) {
+                    console.error('加载记录异常:', error);
                     resolve([]);
-                };
+                }
             });
         }
 
         // 保存记录
         function saveRecords(newRecords) {
             return new Promise((resolve, reject) => {
-                if (!db) {
-                    resolve(false);
+                if (useLocalStorage || !db) {
+                    const success = saveToLocalStorage(newRecords);
+                    records = newRecords;
+                    displayRecords();
+                    calculateTotal();
+                    resolve(success);
                     return;
                 }
 
-                const transaction = db.transaction(['records'], 'readwrite');
-                const store = transaction.objectStore('records');
-                
-                // 清空现有记录
-                store.clear();
-                
-                // 保存新记录
-                newRecords.forEach(record => {
-                    store.add(record);
-                });
+                try {
+                    const transaction = db.transaction(['records'], 'readwrite');
+                    const store = transaction.objectStore('records');
+                    
+                    // 清空现有记录
+                    store.clear();
+                    
+                    // 保存新记录
+                    newRecords.forEach(record => {
+                        store.add(record);
+                    });
 
-                transaction.oncomplete = function() {
+                    transaction.oncomplete = function() {
+                        records = newRecords;
+                        displayRecords();
+                        calculateTotal();
+                        resolve(true);
+                    };
+
+                    transaction.onerror = function(event) {
+                        console.error('保存记录失败:', event.target.error);
+                        // 失败时回退到localStorage
+                        useLocalStorage = true;
+                        saveToLocalStorage(newRecords);
+                        records = newRecords;
+                        displayRecords();
+                        calculateTotal();
+                        resolve(true);
+                    };
+                } catch (error) {
+                    console.error('保存记录异常:', error);
+                    // 异常时回退到localStorage
+                    useLocalStorage = true;
+                    saveToLocalStorage(newRecords);
                     records = newRecords;
                     displayRecords();
                     calculateTotal();
                     resolve(true);
-                };
-
-                transaction.onerror = function(event) {
-                    console.error('保存记录失败:', event.target.error);
-                    resolve(false);
-                };
+                }
             });
         }
 
         // 计算总量
         function calculateTotal() {
-            const records = loadRecords();
             let total = {
                 diamond: 0,
                 breakthrough: 0,
@@ -450,10 +517,13 @@
                 records = loadedRecords;
                 displayRecords();
                 calculateTotal();
-                console.log('初始化成功');
+                console.log('初始化成功，使用' + (useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
             } catch (error) {
                 console.error('初始化失败:', error);
-                alert('数据库初始化失败，将使用内存存储');
+                // 静默处理错误，不显示提示
+                records = [];
+                displayRecords();
+                calculateTotal();
             }
         };
     </script>
