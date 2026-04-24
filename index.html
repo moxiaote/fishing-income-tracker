@@ -60,6 +60,14 @@
         .text-center {
             text-align: center;
         }
+        .pagination {
+            margin-top: 15px;
+            justify-content: center;
+        }
+        .pagination .page-item .page-link {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -102,6 +110,10 @@
             }
             .total-card .display-4 {
                 font-size: 1.2rem;
+            }
+            .pagination .page-item .page-link {
+                font-size: 12px;
+                padding: 4px 8px;
             }
         }
     </style>
@@ -238,6 +250,10 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- 分页控件 -->
+                <nav aria-label="Page navigation" id="pagination-container">
+                    <ul class="pagination" id="pagination"></ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -273,7 +289,14 @@
                 recordAdded: '记录添加成功！',
                 dataSaved: '数据已保存到 fishing_income.txt 文件',
                 dataLoaded: '数据已从文件加载',
-                fileFormatError: '文件格式错误，无法加载数据'
+                fileFormatError: '文件格式错误，无法加载数据',
+                page: '页',
+                of: '共',
+                totalRecords: '总记录数',
+                first: '首页',
+                previous: '上一页',
+                next: '下一页',
+                last: '末页'
             },
             vi: {
                 appTitle: 'Hệ thống thống kê thu nhập câu cá',
@@ -303,7 +326,14 @@
                 recordAdded: 'Ghi chú đã được thêm thành công！',
                 dataSaved: 'Dữ liệu đã được lưu vào tệp fishing_income.txt',
                 dataLoaded: 'Dữ liệu đã được tải từ tệp',
-                fileFormatError: 'Định dạng tệp không đúng, không thể tải dữ liệu'
+                fileFormatError: 'Định dạng tệp không đúng, không thể tải dữ liệu',
+                page: 'trang',
+                of: 'của',
+                totalRecords: 'Tổng số ghi chú',
+                first: 'Trang đầu',
+                previous: 'Trang trước',
+                next: 'Trang sau',
+                last: 'Trang cuối'
             }
         };
 
@@ -334,6 +364,11 @@
         let db = null;
         let useLocalStorage = false;
         let currentLang = detectLanguage();
+        
+        // 分页相关变量
+        const recordsPerPage = 100;
+        let currentPage = 1;
+        let totalPages = 1;
 
         // 检查浏览器是否支持IndexedDB
         function checkIndexedDBSupport() {
@@ -438,6 +473,7 @@
                 if (useLocalStorage || !db) {
                     const success = saveToLocalStorage(newRecords);
                     records = newRecords;
+                    updatePagination();
                     displayRecords();
                     calculateTotal();
                     resolve(success);
@@ -458,6 +494,7 @@
 
                     transaction.oncomplete = function() {
                         records = newRecords;
+                        updatePagination();
                         displayRecords();
                         calculateTotal();
                         resolve(true);
@@ -469,6 +506,7 @@
                         useLocalStorage = true;
                         saveToLocalStorage(newRecords);
                         records = newRecords;
+                        updatePagination();
                         displayRecords();
                         calculateTotal();
                         resolve(true);
@@ -479,6 +517,7 @@
                     useLocalStorage = true;
                     saveToLocalStorage(newRecords);
                     records = newRecords;
+                    updatePagination();
                     displayRecords();
                     calculateTotal();
                     resolve(true);
@@ -510,12 +549,79 @@
             document.getElementById('total-platinum').textContent = total.platinum;
         }
 
-        // 显示记录
+        // 更新分页控件
+        function updatePagination() {
+            totalPages = Math.ceil(records.length / recordsPerPage);
+            currentPage = Math.min(currentPage, totalPages);
+            renderPagination();
+        }
+
+        // 渲染分页控件
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) {
+                return;
+            }
+
+            // 首页按钮
+            const firstLi = document.createElement('li');
+            firstLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            firstLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(1)">${translations[currentLang].first || '首页'}</a>`;
+            pagination.appendChild(firstLi);
+
+            // 上一页按钮
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">&laquo; ${translations[currentLang].previous || '上一页'}</a>`;
+            pagination.appendChild(prevLi);
+
+            // 页码按钮
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${i})")">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // 下一页按钮
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage + 1})")">${translations[currentLang].next || '下一页'} &raquo;</a>`;
+            pagination.appendChild(nextLi);
+
+            // 末页按钮
+            const lastLi = document.createElement('li');
+            lastLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            lastLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${totalPages})")">${translations[currentLang].last || '末页'}</a>`;
+            pagination.appendChild(lastLi);
+        }
+
+        // 跳转到指定页码
+        function goToPage(page) {
+            if (page < 1 || page > totalPages) {
+                return;
+            }
+            currentPage = page;
+            displayRecords();
+            renderPagination();
+        }
+
+        // 显示当前页的记录
         function displayRecords() {
             const tableBody = document.getElementById('records-table');
             tableBody.innerHTML = '';
 
-            records.forEach((record, index) => {
+            // 计算当前页的记录范围
+            const startIndex = (currentPage - 1) * recordsPerPage;
+            const endIndex = Math.min(startIndex + recordsPerPage, records.length);
+            const currentRecords = records.slice(startIndex, endIndex);
+
+            currentRecords.forEach((record, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${record.date}</td>
@@ -526,7 +632,7 @@
                     <td>${record.platinum}</td>
                     <td>${record.remark}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${index})" data-i18n="delete">删除</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${startIndex + index})" data-i18n="delete">删除</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
@@ -620,6 +726,7 @@
                 await initDB();
                 const loadedRecords = await loadRecords();
                 records = loadedRecords;
+                updatePagination();
                 displayRecords();
                 calculateTotal();
                 console.log('初始化成功，使用' + (useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
@@ -627,6 +734,7 @@
                 console.error('初始化失败:', error);
                 // 静默处理错误，不显示提示
                 records = [];
+                updatePagination();
                 displayRecords();
                 calculateTotal();
             }
