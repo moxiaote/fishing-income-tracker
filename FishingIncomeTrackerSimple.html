@@ -19,11 +19,45 @@
         .form-group {
             margin-bottom: 10px;
         }
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+        }
     </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h1 class="text-center mb-4">钓鱼收入统计系统</h1>
+    <!-- 登录/注册界面 -->
+    <div id="login-section" class="login-container">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>钓鱼收入统计系统</h3>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="username" class="form-label">用户名</label>
+                    <input type="text" class="form-control" id="username" placeholder="请输入用户名">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control" id="password" placeholder="请输入密码">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button id="login-btn" class="btn btn-primary">登录</button>
+                    <button id="register-btn" class="btn btn-success">注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用界面 -->
+    <div id="app-section" class="container mt-4" style="display: none;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>钓鱼收入统计系统</h1>
+            <div>
+                <span id="current-user" class="mr-3"></span>
+                <button id="logout-btn" class="btn btn-outline-danger">退出</button>
+            </div>
+        </div>
 
         <!-- 总量信息 -->
         <div class="card">
@@ -158,21 +192,43 @@
         // 初始化日期为今天
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
-        // 数据存储
+        // 全局变量
+        let currentUser = null;
         let records = [];
         const fileName = 'fishing_income.txt';
 
-        // 加载数据
+        // 加载用户数据
+        function loadUserData(username) {
+            const userData = localStorage.getItem(`user_${username}`);
+            if (userData) {
+                try {
+                    return JSON.parse(userData);
+                } catch (error) {
+                    console.error('加载用户数据失败:', error);
+                    return { records: [] };
+                }
+            }
+            return { records: [] };
+        }
+
+        // 保存用户数据
+        function saveUserData(username, data) {
+            localStorage.setItem(`user_${username}`, JSON.stringify(data));
+        }
+
+        // 加载记录
         function loadRecords() {
             return records;
         }
 
-        // 保存数据到内存和localStorage
+        // 保存记录
         function saveRecords(newRecords) {
             records = newRecords;
-            // 保存到localStorage作为备份
-            localStorage.setItem('fishingRecords', JSON.stringify(records));
-            // 只更新显示和总量，不自动保存到文件
+            if (currentUser) {
+                const userData = loadUserData(currentUser);
+                userData.records = newRecords;
+                saveUserData(currentUser, userData);
+            }
             displayRecords();
             calculateTotal();
         }
@@ -269,24 +325,27 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = fileName;
+            a.download = `${currentUser}_${fileName}`;
             a.click();
             URL.revokeObjectURL(url);
         }
 
         // 手动保存到文件
         document.getElementById('save-to-file').addEventListener('click', function() {
+            if (!currentUser) return;
             saveToFile();
-            alert('数据已保存到 ' + fileName + ' 文件');
+            alert('数据已保存到 ' + `${currentUser}_${fileName}` + ' 文件');
         });
 
         // 从文件加载
         document.getElementById('load-from-file').addEventListener('click', function() {
+            if (!currentUser) return;
             document.getElementById('file-input').click();
         });
 
         // 文件选择事件
         document.getElementById('file-input').addEventListener('change', function(e) {
+            if (!currentUser) return;
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -304,40 +363,73 @@
             }
         });
 
-        // 尝试从localStorage加载数据
-        function loadFromLocalStorage() {
-            const storedRecords = localStorage.getItem('fishingRecords');
-            if (storedRecords) {
-                try {
-                    const loadedRecords = JSON.parse(storedRecords);
-                    saveRecords(loadedRecords);
-                    return true;
-                } catch (error) {
-                    console.error('从localStorage加载数据失败:', error);
-                    return false;
-                }
-            }
-            return false;
-        }
+        // 登录功能
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
 
-        // 初始化
-        function init() {
-            // 先尝试从localStorage加载
-            const loadedFromLocalStorage = loadFromLocalStorage();
-            
-            // 如果localStorage没有数据，提示用户加载文件
-            if (!loadedFromLocalStorage && loadRecords().length === 0) {
-                if (confirm('未找到数据，是否从文件加载？')) {
-                    document.getElementById('file-input').click();
-                }
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
             }
-            
+
+            // 验证用户
+            const userData = loadUserData(username);
+            if (!userData.password) {
+                alert('用户不存在，请先注册');
+                return;
+            }
+
+            if (userData.password !== password) {
+                alert('密码错误');
+                return;
+            }
+
+            // 登录成功
+            currentUser = username;
+            records = userData.records || [];
+            document.getElementById('current-user').textContent = `当前用户：${username}`;
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('app-section').style.display = 'block';
             displayRecords();
             calculateTotal();
-        }
+        });
 
-        // 页面加载完成后初始化
-        window.onload = init;
+        // 注册功能
+        document.getElementById('register-btn').addEventListener('click', function() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+
+            // 检查用户是否已存在
+            const userData = loadUserData(username);
+            if (userData.password) {
+                alert('用户已存在，请直接登录');
+                return;
+            }
+
+            // 注册成功
+            const newUserData = {
+                password: password,
+                records: []
+            };
+            saveUserData(username, newUserData);
+            alert('注册成功，请登录');
+        });
+
+        // 退出功能
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            currentUser = null;
+            records = [];
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('app-section').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        });
     </script>
 </body>
 </html>
