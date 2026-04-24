@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>钓鱼收入统计系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">钓鱼收入统计系统</h1>
+
+        <!-- 总量信息 -->
+        <div class="card">
+            <div class="card-header">
+                <h3>总量信息</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">钻石</h5>
+                                <p class="card-text display-4" id="total-diamond">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">突破券</h5>
+                                <p class="card-text display-4" id="total-breakthrough">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">原石</h5>
+                                <p class="card-text display-4" id="total-rawstone">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">白金</h5>
+                                <p class="card-text display-4" id="total-platinum">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 添加记录表单 -->
+        <div class="card">
+            <div class="card-header">
+                <h3>添加记录</h3>
+            </div>
+            <div class="card-body">
+                <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="date">日期</label>
+                        <input type="date" class="form-control" id="date">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="type">类型</label>
+                        <select class="form-control" id="type">
+                            <option value="收入">收入</option>
+                            <option value="支出">支出</option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="diamond">钻石</label>
+                        <input type="number" class="form-control" id="diamond" min="0" style="width: 80px;">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="breakthrough">突破券</label>
+                        <input type="number" class="form-control" id="breakthrough" min="0" style="width: 80px;">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="rawstone">原石</label>
+                        <input type="number" class="form-control" id="rawstone" min="0" style="width: 80px;">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="platinum">白金</label>
+                        <input type="number" class="form-control" id="platinum" min="0" style="width: 80px;">
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="remark">备注</label>
+                        <input type="text" class="form-control" id="remark" style="width: 150px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary">添加记录</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 文件操作按钮 -->
+        <div class="card">
+            <div class="card-header">
+                <h3>数据管理</h3>
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-3">
+                    <button id="save-to-file" class="btn btn-success">保存到文件</button>
+                    <button id="load-from-file" class="btn btn-info">从文件加载</button>
+                    <input type="file" id="file-input" style="display: none;" accept=".txt">
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录列表 -->
+        <div class="card">
+            <div class="card-header">
+                <h3>记录明细</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>类型</th>
+                                <th>钻石</th>
+                                <th>突破券</th>
+                                <th>原石</th>
+                                <th>白金</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table">
+                            <!-- 记录将通过JavaScript动态添加 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化日期为今天
+        document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        // 数据存储
+        let records = [];
+        const fileName = 'fishing_income.txt';
+
+        // 加载数据
+        function loadRecords() {
+            return records;
+        }
+
+        // 保存数据到内存和localStorage
+        function saveRecords(newRecords) {
+            records = newRecords;
+            // 保存到localStorage作为备份
+            localStorage.setItem('fishingRecords', JSON.stringify(records));
+            // 只更新显示和总量，不自动保存到文件
+            displayRecords();
+            calculateTotal();
+        }
+
+        // 计算总量
+        function calculateTotal() {
+            const records = loadRecords();
+            let total = {
+                diamond: 0,
+                breakthrough: 0,
+                rawstone: 0,
+                platinum: 0
+            };
+
+            records.forEach(record => {
+                const multiplier = record.type === '收入' ? 1 : -1;
+                total.diamond += record.diamond * multiplier;
+                total.breakthrough += record.breakthrough * multiplier;
+                total.rawstone += record.rawstone * multiplier;
+                total.platinum += record.platinum * multiplier;
+            });
+
+            // 更新总量显示
+            document.getElementById('total-diamond').textContent = total.diamond;
+            document.getElementById('total-breakthrough').textContent = total.breakthrough;
+            document.getElementById('total-rawstone').textContent = total.rawstone;
+            document.getElementById('total-platinum').textContent = total.platinum;
+        }
+
+        // 显示记录
+        function displayRecords() {
+            const records = loadRecords();
+            const tableBody = document.getElementById('records-table');
+            tableBody.innerHTML = '';
+
+            records.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.date}</td>
+                    <td>${record.type}</td>
+                    <td>${record.diamond}</td>
+                    <td>${record.breakthrough}</td>
+                    <td>${record.rawstone}</td>
+                    <td>${record.platinum}</td>
+                    <td>${record.remark}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${index})">删除</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 删除记录
+        function deleteRecord(index) {
+            const currentRecords = loadRecords();
+            currentRecords.splice(index, 1);
+            saveRecords(currentRecords);
+        }
+
+        // 添加记录
+        document.getElementById('add-record-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const record = {
+                date: document.getElementById('date').value,
+                type: document.getElementById('type').value,
+                diamond: parseInt(document.getElementById('diamond').value) || 0,
+                breakthrough: parseInt(document.getElementById('breakthrough').value) || 0,
+                rawstone: parseInt(document.getElementById('rawstone').value) || 0,
+                platinum: parseInt(document.getElementById('platinum').value) || 0,
+                remark: document.getElementById('remark').value
+            };
+
+            const currentRecords = loadRecords();
+            currentRecords.push(record);
+            saveRecords(currentRecords);
+
+            // 重置表单
+            document.getElementById('diamond').value = '0';
+            document.getElementById('breakthrough').value = '0';
+            document.getElementById('rawstone').value = '0';
+            document.getElementById('platinum').value = '0';
+            document.getElementById('remark').value = '';
+
+            alert('记录添加成功！');
+        });
+
+        // 保存到文件
+        function saveToFile() {
+            const records = loadRecords();
+            const content = JSON.stringify(records, null, 2);
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 手动保存到文件
+        document.getElementById('save-to-file').addEventListener('click', function() {
+            saveToFile();
+            alert('数据已保存到 ' + fileName + ' 文件');
+        });
+
+        // 从文件加载
+        document.getElementById('load-from-file').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        // 文件选择事件
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const content = e.target.result;
+                        const loadedRecords = JSON.parse(content);
+                        saveRecords(loadedRecords);
+                        alert('数据已从文件加载');
+                    } catch (error) {
+                        alert('文件格式错误，无法加载数据');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // 尝试从localStorage加载数据
+        function loadFromLocalStorage() {
+            const storedRecords = localStorage.getItem('fishingRecords');
+            if (storedRecords) {
+                try {
+                    const loadedRecords = JSON.parse(storedRecords);
+                    saveRecords(loadedRecords);
+                    return true;
+                } catch (error) {
+                    console.error('从localStorage加载数据失败:', error);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // 初始化
+        function init() {
+            // 先尝试从localStorage加载
+            const loadedFromLocalStorage = loadFromLocalStorage();
+            
+            // 如果localStorage没有数据，提示用户加载文件
+            if (!loadedFromLocalStorage && loadRecords().length === 0) {
+                if (confirm('未找到数据，是否从文件加载？')) {
+                    document.getElementById('file-input').click();
+                }
+            }
+            
+            displayRecords();
+            calculateTotal();
+        }
+
+        // 页面加载完成后初始化
+        window.onload = init;
+    </script>
+</body>
+</html>
