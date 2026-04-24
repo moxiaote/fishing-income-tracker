@@ -196,24 +196,89 @@
         let currentUser = null;
         let records = [];
         const fileName = 'fishing_income.txt';
+        let db = null;
+
+        // 初始化IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('FishingIncomeDB', 1);
+
+                request.onupgradeneeded = function(event) {
+                    const db = event.target.result;
+                    
+                    // 创建用户存储
+                    if (!db.objectStoreNames.contains('users')) {
+                        const userStore = db.createObjectStore('users', { keyPath: 'username' });
+                    }
+                    
+                    // 创建记录存储
+                    if (!db.objectStoreNames.contains('records')) {
+                        const recordStore = db.createObjectStore('records', { autoIncrement: true });
+                        recordStore.createIndex('username', 'username', { unique: false });
+                    }
+                };
+
+                request.onsuccess = function(event) {
+                    db = event.target.result;
+                    resolve(db);
+                };
+
+                request.onerror = function(event) {
+                    console.error('IndexedDB初始化失败:', event.target.error);
+                    reject(event.target.error);
+                };
+            });
+        }
 
         // 加载用户数据
         function loadUserData(username) {
-            const userData = localStorage.getItem(`user_${username}`);
-            if (userData) {
-                try {
-                    return JSON.parse(userData);
-                } catch (error) {
-                    console.error('加载用户数据失败:', error);
-                    return { records: [] };
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    resolve({ records: [] });
+                    return;
                 }
-            }
-            return { records: [] };
+
+                const transaction = db.transaction(['users'], 'readonly');
+                const store = transaction.objectStore('users');
+                const request = store.get(username);
+
+                request.onsuccess = function(event) {
+                    const userData = event.target.result;
+                    if (userData) {
+                        resolve(userData);
+                    } else {
+                        resolve({ username: username, password: null, records: [] });
+                    }
+                };
+
+                request.onerror = function(event) {
+                    console.error('加载用户数据失败:', event.target.error);
+                    resolve({ records: [] });
+                };
+            });
         }
 
         // 保存用户数据
         function saveUserData(username, data) {
-            localStorage.setItem(`user_${username}`, JSON.stringify(data));
+            return new Promise((resolve, reject) => {
+                if (!db) {
+                    resolve(false);
+                    return;
+                }
+
+                const transaction = db.transaction(['users'], 'readwrite');
+                const store = transaction.objectStore('users');
+                const request = store.put(data);
+
+                request.onsuccess = function() {
+                    resolve(true);
+                };
+
+                request.onerror = function(event) {
+                    console.error('保存用户数据失败:', event.target.error);
+                    resolve(false);
+                };
+            });
         }
 
         // 加载记录
@@ -222,12 +287,12 @@
         }
 
         // 保存记录
-        function saveRecords(newRecords) {
+        async function saveRecords(newRecords) {
             records = newRecords;
             if (currentUser) {
-                const userData = loadUserData(currentUser);
+                const userData = await loadUserData(currentUser);
                 userData.records = newRecords;
-                saveUserData(currentUser, userData);
+                await saveUserData(currentUser, userData);
             }
             displayRecords();
             calculateTotal();
@@ -364,7 +429,7 @@
         });
 
         // 登录功能
-        document.getElementById('login-btn').addEventListener('click', function() {
+        document.getElementById('login-btn').addEventListener('click', async function() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
@@ -374,7 +439,7 @@
             }
 
             // 验证用户
-            const userData = loadUserData(username);
+            const userData = await loadUserData(username);
             if (!userData.password) {
                 alert('用户不存在，请先注册');
                 return;
@@ -396,7 +461,7 @@
         });
 
         // 注册功能
-        document.getElementById('register-btn').addEventListener('click', function() {
+        document.getElementById('register-btn').addEventListener('click', async function() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
 
@@ -406,7 +471,7 @@
             }
 
             // 检查用户是否已存在
-            const userData = loadUserData(username);
+            const userData = await loadUserData(username);
             if (userData.password) {
                 alert('用户已存在，请直接登录');
                 return;
@@ -414,10 +479,11 @@
 
             // 注册成功
             const newUserData = {
+                username: username,
                 password: password,
                 records: []
             };
-            saveUserData(username, newUserData);
+            await saveUserData(username, newUserData);
             alert('注册成功，请登录');
         });
 
@@ -430,6 +496,17 @@
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         });
+
+        // 页面加载完成后初始化
+        window.onload = async function() {
+            try {
+                await initDB();
+                console.log('IndexedDB初始化成功');
+            } catch (error) {
+                console.error('IndexedDB初始化失败:', error);
+                alert('数据库初始化失败，将使用本地存储作为后备方案');
+            }
+        };
     </script>
 </body>
 </html>
