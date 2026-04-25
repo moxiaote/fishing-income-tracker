@@ -47,7 +47,25 @@
     </div>
 
     <div class="container mt-4">
-        <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
+        <div class="row">
+            <div class="col-md-10">
+                <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
+            </div>
+            <div class="col-md-2 text-right">
+                <div class="language-selector">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="currentLanguage">中文简体</span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">中文简体</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh-TW')">中文繁體</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('ko')">한국어</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('vi')">Việt Nam</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         
         <!-- 提示信息 -->
         <div class="alert alert-info">

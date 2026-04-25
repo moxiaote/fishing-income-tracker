@@ -32,6 +32,10 @@ class I18n {
             const enResponse = await fetch('locales/en.json');
             this.translations.en = await enResponse.json();
             
+            // 加载韩文翻译
+            const koResponse = await fetch('locales/ko.json');
+            this.translations.ko = await koResponse.json();
+            
             // 加载越南语翻译
             const viResponse = await fetch('locales/vi.json');
             this.translations.vi = await viResponse.json();
@@ -158,6 +162,44 @@ class I18n {
                     last: 'Last',
                     loadMore: 'Load More'
                 },
+                ko: {
+                    appTitle: '낚시 수입 추적 시스템',
+                    usageTips: '사용 팁:',
+                    tip1: '기록을 추가한 후 데이터가 브라우저에 자동으로 저장됩니다',
+                    tip2: '데이터를 로컬 파일에 백업하려면 "파일에 저장" 버튼을 클릭하세요',
+                    tip3: '이전에 백업한 데이터를 복원하려면 "파일에서 로드" 버튼을 클릭하세요',
+                    tip4: '브라우저 데이터 손실을 방지하기 위해 정기적으로 데이터를 백업하세요',
+                    totalInfo: '총 정보',
+                    addRecord: '기록 추가',
+                    dataManagement: '데이터 관리',
+                    recordDetails: '기록 세부 정보',
+                    date: '날짜',
+                    type: '유형',
+                    diamond: '다이아몬드',
+                    breakthrough: '브레이크스루 바우처',
+                    rawstone: '원석',
+                    platinum: '백금',
+                    remark: '비고',
+                    action: '작업',
+                    income: '수입',
+                    expense: '지출',
+                    addRecordBtn: '기록 추가',
+                    saveToFile: '파일에 저장',
+                    loadFromFile: '파일에서 로드',
+                    delete: '삭제',
+                    recordAdded: '기록이 성공적으로 추가되었습니다!',
+                    dataSaved: '데이터가 fishing_income.txt 파일에 저장되었습니다',
+                    dataLoaded: '데이터가 파일에서 로드되었습니다',
+                    fileFormatError: '파일 형식 오류, 데이터를 로드할 수 없습니다',
+                    page: '페이지',
+                    of: '의',
+                    totalRecords: '총 기록 수',
+                    first: '첫 페이지',
+                    previous: '이전 페이지',
+                    next: '다음 페이지',
+                    last: '마지막 페이지',
+                    loadMore: '더 로드'
+                },
                 vi: {
                     appTitle: 'Hệ thống thống kê thu nhập câu cá',
                     usageTips: 'Lưu ý sử dụng：',
@@ -209,6 +251,24 @@ class I18n {
                 element.textContent = translation[key];
             }
         });
+        
+        // 更新语言选择器显示
+        this.updateLanguageSelector();
+    }
+
+    // 更新语言选择器显示
+    updateLanguageSelector() {
+        const languageNames = {
+            'zh': '中文简体',
+            'zh-TW': '中文繁體',
+            'en': 'English',
+            'ko': '한국어',
+            'vi': 'Việt Nam'
+        };
+        const currentLanguageElement = document.getElementById('currentLanguage');
+        if (currentLanguageElement) {
+            currentLanguageElement.textContent = languageNames[this.currentLang] || this.currentLang;
+        }
     }
 
     // 获取翻译文本

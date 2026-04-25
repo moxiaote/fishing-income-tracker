@@ -407,3 +407,17 @@ function goToPage(page) {
         app.displayRecords();
     }
 }
+
+// 语言切换函数
+function changeLanguage(lang) {
+    i18n.changeLanguage(lang);
+    // 更新当前语言显示
+    const languageNames = {
+        'zh': '中文简体',
+        'zh-TW': '中文繁體',
+        'en': 'English',
+        'ko': '한국어',
+        'vi': 'Việt Nam'
+    };
+    document.getElementById('currentLanguage').textContent = languageNames[lang] || lang;
+}
