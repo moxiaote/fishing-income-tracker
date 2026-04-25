@@ -507,7 +507,9 @@ class App {
             // 尝试使用不同的CORS代理
             const corsProxies = [
                 'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url='
+                'https://api.allorigins.win/raw?url=',
+                'https://cors.bridged.cc/',
+                'https://proxy.cors.sh/'
             ];
             
             let response;
@@ -563,19 +565,33 @@ class App {
                 throw new Error('响应为空');
             }
             
-            // 检查响应是否以{或[开头，判断是否为JSON
-            const firstChar = responseText.trim().charAt(0);
-            if (firstChar !== '{' && firstChar !== '[') {
-                throw new Error('响应不是有效的JSON格式: ' + responseText.substring(0, 100) + '...');
-            }
-            
+            // 尝试解析响应
             let data;
             try {
+                // 尝试直接解析
                 data = JSON.parse(responseText);
                 console.log('解析后的响应数据:', data);
             } catch (parseError) {
-                console.error('解析响应失败:', parseError);
-                throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
+                console.error('直接解析响应失败:', parseError);
+                
+                // 尝试处理可能的CORS代理包装响应
+                try {
+                    // 检查是否是allorigins.win的包装格式
+                    if (responseText.includes('"contents":')) {
+                        const wrappedData = JSON.parse(responseText);
+                        if (wrappedData.contents) {
+                            data = JSON.parse(wrappedData.contents);
+                            console.log('解析包装响应成功:', data);
+                        } else {
+                            throw new Error('包装响应中没有contents字段');
+                        }
+                    } else {
+                        throw new Error('响应不是有效的JSON格式');
+                    }
+                } catch (wrapError) {
+                    console.error('解析包装响应失败:', wrapError);
+                    throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
+                }
             }
             
             if (data.access_token) {
@@ -588,6 +604,14 @@ class App {
                 if (githubLoginButton) {
                     githubLoginButton.textContent = '已登录';
                     githubLoginButton.disabled = true;
+                }
+                
+                // 自动同步到Gist
+                console.log('自动同步到Gist...');
+                const success = await storageManager.syncToGist();
+                if (success) {
+                    // 更新Gist ID显示
+                    this.displayGistId();
                 }
             } else {
                 console.error('登录失败:', data);

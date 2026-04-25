@@ -222,7 +222,9 @@ class StorageManager {
             // 尝试使用不同的CORS代理
             const corsProxies = [
                 'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url='
+                'https://api.allorigins.win/raw?url=',
+                'https://cors.bridged.cc/',
+                'https://proxy.cors.sh/'
             ];
             const githubApiBase = 'https://api.github.com';
 
@@ -250,6 +252,10 @@ class StorageManager {
                     try {
                         console.log('尝试使用代理:', proxy);
                         const apiUrl = proxy + githubApiBase + '/gists';
+                        // 添加超时处理
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                        
                         response = await fetch(apiUrl, {
                             ...requestOptions,
                             body: JSON.stringify({
@@ -260,8 +266,11 @@ class StorageManager {
                                         content: JSON.stringify(data, null, 2)
                                     }
                                 }
-                            })
+                            }),
+                            signal: controller.signal
                         });
+                        
+                        clearTimeout(timeoutId);
                         proxyUsed = proxy;
                         console.log('代理请求成功:', proxyUsed);
                         break;
@@ -286,10 +295,30 @@ class StorageManager {
 
                 let gistData;
                 try {
+                    // 尝试直接解析
                     gistData = JSON.parse(responseText);
                     console.log('Gist创建成功:', gistData);
                 } catch (parseError) {
-                    throw new Error('解析Gist响应失败: ' + parseError.message);
+                    console.error('直接解析响应失败:', parseError);
+                    
+                    // 尝试处理可能的CORS代理包装响应
+                    try {
+                        // 检查是否是allorigins.win的包装格式
+                        if (responseText.includes('"contents":')) {
+                            const wrappedData = JSON.parse(responseText);
+                            if (wrappedData.contents) {
+                                gistData = JSON.parse(wrappedData.contents);
+                                console.log('解析包装响应成功:', gistData);
+                            } else {
+                                throw new Error('包装响应中没有contents字段');
+                            }
+                        } else {
+                            throw new Error('响应不是有效的JSON格式');
+                        }
+                    } catch (wrapError) {
+                        console.error('解析包装响应失败:', wrapError);
+                        throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
+                    }
                 }
                 
                 this.gistId = gistData.id;
@@ -305,6 +334,10 @@ class StorageManager {
                     try {
                         console.log('尝试使用代理:', proxy);
                         const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
+                        // 添加超时处理
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                        
                         response = await fetch(apiUrl, {
                             ...requestOptions,
                             method: 'PATCH',
@@ -314,8 +347,11 @@ class StorageManager {
                                         content: JSON.stringify(data, null, 2)
                                     }
                                 }
-                            })
+                            }),
+                            signal: controller.signal
                         });
+                        
+                        clearTimeout(timeoutId);
                         proxyUsed = proxy;
                         console.log('代理请求成功:', proxyUsed);
                         break;
@@ -338,6 +374,34 @@ class StorageManager {
                     throw new Error(`更新Gist失败: ${response.status} - ${responseText}`);
                 }
 
+                let gistData;
+                try {
+                    // 尝试直接解析
+                    gistData = JSON.parse(responseText);
+                    console.log('Gist更新成功:', gistData);
+                } catch (parseError) {
+                    console.error('直接解析响应失败:', parseError);
+                    
+                    // 尝试处理可能的CORS代理包装响应
+                    try {
+                        // 检查是否是allorigins.win的包装格式
+                        if (responseText.includes('"contents":')) {
+                            const wrappedData = JSON.parse(responseText);
+                            if (wrappedData.contents) {
+                                gistData = JSON.parse(wrappedData.contents);
+                                console.log('解析包装响应成功:', gistData);
+                            } else {
+                                throw new Error('包装响应中没有contents字段');
+                            }
+                        } else {
+                            throw new Error('响应不是有效的JSON格式');
+                        }
+                    } catch (wrapError) {
+                        console.error('解析包装响应失败:', wrapError);
+                        throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
+                    }
+                }
+                
                 console.log('Gist更新成功:', this.gistId);
                 
                 // 显示成功提示
@@ -390,7 +454,9 @@ class StorageManager {
             // 尝试使用不同的CORS代理
             const corsProxies = [
                 'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url='
+                'https://api.allorigins.win/raw?url=',
+                'https://cors.bridged.cc/',
+                'https://proxy.cors.sh/'
             ];
             const githubApiBase = 'https://api.github.com';
 
@@ -415,7 +481,17 @@ class StorageManager {
                 try {
                     console.log('尝试使用代理:', proxy);
                     const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
-                    response = await fetch(apiUrl, requestOptions);
+                    
+                    // 添加超时处理
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                    
+                    response = await fetch(apiUrl, {
+                        ...requestOptions,
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
                     proxyUsed = proxy;
                     console.log('代理请求成功:', proxyUsed);
                     break;
@@ -440,10 +516,30 @@ class StorageManager {
 
             let gistData;
             try {
+                // 尝试直接解析
                 gistData = JSON.parse(responseText);
                 console.log('Gist数据获取成功:', gistData);
             } catch (parseError) {
-                throw new Error('解析Gist响应失败: ' + parseError.message);
+                console.error('直接解析响应失败:', parseError);
+                
+                // 尝试处理可能的CORS代理包装响应
+                try {
+                    // 检查是否是allorigins.win的包装格式
+                    if (responseText.includes('"contents":')) {
+                        const wrappedData = JSON.parse(responseText);
+                        if (wrappedData.contents) {
+                            gistData = JSON.parse(wrappedData.contents);
+                            console.log('解析包装响应成功:', gistData);
+                        } else {
+                            throw new Error('包装响应中没有contents字段');
+                        }
+                    } else {
+                        throw new Error('响应不是有效的JSON格式');
+                    }
+                } catch (wrapError) {
+                    console.error('解析包装响应失败:', wrapError);
+                    throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
+                }
             }
 
             if (!gistData.files || !gistData.files['data.json']) {
