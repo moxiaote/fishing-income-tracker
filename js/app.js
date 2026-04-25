@@ -518,6 +518,11 @@ class App {
                 try {
                     console.log('尝试使用代理:', proxy);
                     const apiUrl = proxy + 'https://github.com/login/oauth/access_token';
+                    
+                    // 添加超时处理
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                    
                     response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: {
@@ -529,8 +534,11 @@ class App {
                             client_secret: clientSecret,
                             code: code,
                             redirect_uri: redirectUri
-                        })
+                        }),
+                        signal: controller.signal
                     });
+                    
+                    clearTimeout(timeoutId);
                     proxyUsed = proxy;
                     console.log('代理请求成功:', proxyUsed);
                     break;
@@ -550,13 +558,24 @@ class App {
             const responseText = await response.text();
             console.log('响应文本:', responseText);
             
+            // 检查响应是否为JSON格式
+            if (!responseText.trim()) {
+                throw new Error('响应为空');
+            }
+            
+            // 检查响应是否以{或[开头，判断是否为JSON
+            const firstChar = responseText.trim().charAt(0);
+            if (firstChar !== '{' && firstChar !== '[') {
+                throw new Error('响应不是有效的JSON格式: ' + responseText.substring(0, 100) + '...');
+            }
+            
             let data;
             try {
                 data = JSON.parse(responseText);
                 console.log('解析后的响应数据:', data);
             } catch (parseError) {
                 console.error('解析响应失败:', parseError);
-                throw new Error('解析响应失败: ' + parseError.message);
+                throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
             }
             
             if (data.access_token) {
