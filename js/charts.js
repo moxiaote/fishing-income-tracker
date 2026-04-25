@@ -69,8 +69,7 @@ class ChartManager {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 2,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'top',
@@ -126,8 +125,7 @@ class ChartManager {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.5,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'top',
