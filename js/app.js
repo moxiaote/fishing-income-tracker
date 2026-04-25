@@ -145,9 +145,29 @@ class App {
         });
         
         // 初始检查
-        this.handleScroll();
-    }
+            this.handleScroll();
+            
+            // 添加卡片展开事件，重新调整图表尺寸
+            this.addCardExpandListeners();
+        }
 
+    // 添加卡片展开事件监听器
+    addCardExpandListeners() {
+        // 监听所有卡片的展开事件
+        const collapseElements = document.querySelectorAll('.collapse');
+        collapseElements.forEach(collapse => {
+            collapse.addEventListener('shown.bs.collapse', () => {
+                // 卡片展开后，重新调整图表尺寸
+                if (typeof chartManager !== 'undefined') {
+                    setTimeout(() => {
+                        if (chartManager.trendChart) chartManager.trendChart.resize();
+                        if (chartManager.incomeExpenseChart) chartManager.incomeExpenseChart.resize();
+                    }, 100);
+                }
+            });
+        });
+    }
+    
     // 处理滚动事件
     handleScroll() {
         if (!this.statsCard || !this.fixedTotal) return;
