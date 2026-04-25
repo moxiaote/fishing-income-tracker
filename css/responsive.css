@@ -1,0 +1,62 @@
+/* 响应式样式 */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 20px;
+    }
+    
+    .card-header {
+        font-size: 14px;
+    }
+    
+    .form-control {
+        font-size: 13px;
+    }
+    
+    .btn {
+        font-size: 13px;
+    }
+    
+    .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .table-responsive {
+        font-size: 12px;
+    }
+    
+    .table th {
+        font-size: 12px;
+        padding: 6px;
+    }
+    
+    .table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+    
+    .total-card {
+        margin-bottom: 10px;
+    }
+    
+    .total-card .card-body {
+        padding: 10px;
+    }
+    
+    .total-card .card-title {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+    
+    .total-card .display-4 {
+        font-size: 1.2rem;
+    }
+    
+    .pagination .page-item .page-link {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
