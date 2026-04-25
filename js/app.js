@@ -465,7 +465,7 @@ class App {
     // GitHub登录
     githubLogin() {
         // GitHub OAuth应用信息
-        const clientId = 'YOUR_GITHUB_CLIENT_ID';
+        const clientId = 'Ov23lifBgFyews6nSXI0';
         const redirectUri = encodeURIComponent('https://moxiaote.github.io/fishing-income-tracker/');
         const scope = 'gist';
         
@@ -496,8 +496,8 @@ class App {
 
     // 交换代码获取访问令牌
     async exchangeCodeForToken(code) {
-        const clientId = 'YOUR_GITHUB_CLIENT_ID';
-        const clientSecret = 'YOUR_GITHUB_CLIENT_SECRET';
+        const clientId = 'Ov23lifBgFyews6nSXI0';
+        const clientSecret = '1837ff34155e1755e7a24e9e3cb2bc0831580aeb';
         const redirectUri = 'https://moxiaote.github.io/fishing-income-tracker/';
         
         try {
