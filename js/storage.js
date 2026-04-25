@@ -289,6 +289,11 @@ class StorageManager {
                 const responseText = await response.text();
                 console.log('创建Gist响应文本:', responseText);
                 
+                // 检查是否是CORS代理的访问限制消息
+                if (responseText.includes('See /corsdemo for more info')) {
+                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
+                }
+                
                 if (!response.ok) {
                     throw new Error(`创建Gist失败: ${response.status} - ${responseText}`);
                 }
@@ -369,6 +374,11 @@ class StorageManager {
                 
                 const responseText = await response.text();
                 console.log('更新Gist响应文本:', responseText);
+                
+                // 检查是否是CORS代理的访问限制消息
+                if (responseText.includes('See /corsdemo for more info')) {
+                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
+                }
                 
                 if (!response.ok) {
                     throw new Error(`更新Gist失败: ${response.status} - ${responseText}`);
@@ -509,6 +519,11 @@ class StorageManager {
             
             const responseText = await response.text();
             console.log('获取Gist响应文本:', responseText);
+            
+            // 检查是否是CORS代理的访问限制消息
+            if (responseText.includes('See /corsdemo for more info')) {
+                throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
+            }
             
             if (!response.ok) {
                 throw new Error(`获取Gist失败: ${response.status} - ${responseText}`);

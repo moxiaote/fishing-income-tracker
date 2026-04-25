@@ -27,12 +27,12 @@ class App {
             // 加载记录
             this.records = await storageManager.loadRecords();
             
-            // 从Gist同步数据
-            const synced = await storageManager.syncFromGist();
-            if (synced) {
-                // 同步成功，重新加载记录
-                this.records = await storageManager.loadRecords();
-            }
+            // 关闭自动从Gist同步数据
+            // const synced = await storageManager.syncFromGist();
+            // if (synced) {
+            //     // 同步成功，重新加载记录
+            //     this.records = await storageManager.loadRecords();
+            // }
             
             // 初始排序
             sorting.sortRecords(this.records);
@@ -180,8 +180,8 @@ class App {
         // 保存记录
         await storageManager.saveRecords(this.records);
         
-        // 同步到Gist
-        await storageManager.syncToGist();
+        // 关闭自动同步到Gist
+        // await storageManager.syncToGist();
         
         // 重置加载记录数
         this.loadedRecords = 30;
@@ -211,8 +211,8 @@ class App {
         this.records.splice(index, 1);
         await storageManager.saveRecords(this.records);
         
-        // 同步到Gist
-        await storageManager.syncToGist();
+        // 关闭自动同步到Gist
+        // await storageManager.syncToGist();
         
         // 更新分页
         pagination.updatePagination(this.records.length);
@@ -248,8 +248,8 @@ class App {
                 // 保存记录
                 await storageManager.saveRecords(this.records);
                 
-                // 同步到Gist
-                await storageManager.syncToGist();
+                // 关闭自动同步到Gist
+                // await storageManager.syncToGist();
                 
                 // 重置加载记录数
                 this.loadedRecords = 30;
@@ -634,6 +634,11 @@ class App {
             // 尝试解析响应
             let data;
             try {
+                // 检查是否是CORS代理的访问限制消息
+                if (responseText.includes('See /corsdemo for more info')) {
+                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
+                }
+                
                 // 尝试直接解析
                 data = JSON.parse(responseText);
                 console.log('解析后的响应数据:', data);
@@ -669,13 +674,16 @@ class App {
                 // 更新UI
                 this.displayLoginStatus();
                 
-                // 自动同步到Gist
-                console.log('自动同步到Gist...');
-                const success = await storageManager.syncToGist();
-                if (success) {
-                    // 更新Gist ID显示
-                    this.displayGistId();
-                }
+                // 关闭自动同步到Gist
+                // console.log('自动同步到Gist...');
+                // const success = await storageManager.syncToGist();
+                // if (success) {
+                //     // 更新Gist ID显示
+                //     this.displayGistId();
+                // }
+                
+                // 更新Gist ID显示（不自动同步）
+                this.displayGistId();
             } else {
                 console.error('登录失败:', data);
                 alert('GitHub登录失败: ' + (data.error || '未知错误'));
