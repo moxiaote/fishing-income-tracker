@@ -210,6 +210,10 @@ class StorageManager {
                 timestamp: new Date().toISOString()
             };
 
+            // 使用CORS代理解决跨域问题
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            const githubApiBase = 'https://api.github.com';
+
             // 构建请求选项
             const requestOptions = {
                 method: 'POST',
@@ -224,7 +228,7 @@ class StorageManager {
             if (!this.gistId) {
                 console.log('创建新Gist...');
                 // 创建新Gist
-                const response = await fetch('https://api.github.com/gists', {
+                const response = await fetch(corsProxy + githubApiBase + '/gists', {
                     ...requestOptions,
                     body: JSON.stringify({
                         description: 'Fishing Income Data',
@@ -252,7 +256,7 @@ class StorageManager {
             } else {
                 console.log('更新现有Gist:', this.gistId);
                 // 更新现有Gist
-                const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                const response = await fetch(corsProxy + githubApiBase + `/gists/${this.gistId}`, {
                     ...requestOptions,
                     method: 'PATCH',
                     body: JSON.stringify({
@@ -303,6 +307,10 @@ class StorageManager {
                 return false;
             }
 
+            // 使用CORS代理解决跨域问题
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            const githubApiBase = 'https://api.github.com';
+
             // 构建请求选项
             const requestOptions = {
                 method: 'GET',
@@ -313,7 +321,7 @@ class StorageManager {
                 cache: 'no-cache'
             };
 
-            const response = await fetch(`https://api.github.com/gists/${this.gistId}`, requestOptions);
+            const response = await fetch(corsProxy + githubApiBase + `/gists/${this.gistId}`, requestOptions);
             if (!response.ok) {
                 throw new Error(`获取Gist失败: ${response.status}`);
             }
