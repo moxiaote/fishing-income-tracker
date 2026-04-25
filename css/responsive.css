@@ -59,4 +59,28 @@
         font-size: 12px;
         padding: 4px 8px;
     }
+    
+    /* 统计卡片响应式 */
+    .stat-card {
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .stat-icon {
+        font-size: 1.5rem;
+        margin-right: 10px;
+    }
+    
+    .stat-value {
+        font-size: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
+    }
+    
+    /* 图表响应式 */
+    .chart-container {
+        margin-bottom: 20px;
+    }
 }

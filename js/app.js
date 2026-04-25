@@ -45,6 +45,13 @@ class App {
             // 添加滚动监听
             this.addScrollListener();
             
+            // 初始化图表
+            chartManager.initCharts();
+            
+            // 更新图表数据
+            chartManager.updateCharts(this.records);
+            chartManager.updateStatCards(this.records);
+            
             console.log('初始化成功，使用' + (storageManager.useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
         } catch (error) {
             console.error('初始化失败:', error);
@@ -136,6 +143,10 @@ class App {
         
         // 计算总量
         this.calculateTotal();
+        
+        // 更新图表
+        chartManager.updateCharts(this.records);
+        chartManager.updateStatCards(this.records);
 
         // 重置表单
         document.getElementById('diamond').value = '0';
@@ -160,6 +171,10 @@ class App {
         
         // 计算总量
         this.calculateTotal();
+        
+        // 更新图表
+        chartManager.updateCharts(this.records);
+        chartManager.updateStatCards(this.records);
     }
 
     // 保存到文件
@@ -190,6 +205,10 @@ class App {
                 
                 // 计算总量
                 this.calculateTotal();
+                
+                // 更新图表
+                chartManager.updateCharts(this.records);
+                chartManager.updateStatCards(this.records);
                 
                 alert(i18n.getText('dataLoaded') || '数据已从文件加载');
             } catch (error) {

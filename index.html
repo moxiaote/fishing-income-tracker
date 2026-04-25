@@ -11,6 +11,9 @@
     <!-- 自定义CSS -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/responsive.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- 固定总量信息 -->
@@ -47,6 +50,84 @@
                 <li data-i18n="tip3">点击"从文件加载"按钮可恢复之前备份的数据</li>
                 <li data-i18n="tip4">定期备份数据，以防浏览器数据丢失</li>
             </ul>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="card">
+            <div class="card-header" data-i18n="statsOverview">统计概览</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card bg-primary">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-label" data-i18n="diamond">钻石</div>
+                                <div class="stat-value" id="stat-diamond">0</div>
+                                <div class="stat-change positive" id="stat-diamond-change">+0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card bg-success">
+                            <div class="stat-icon">🎫</div>
+                            <div class="stat-info">
+                                <div class="stat-label" data-i18n="breakthrough">突破券</div>
+                                <div class="stat-value" id="stat-breakthrough">0</div>
+                                <div class="stat-change positive" id="stat-breakthrough-change">+0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card bg-warning">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-label" data-i18n="rawstone">原石</div>
+                                <div class="stat-value" id="stat-rawstone">0</div>
+                                <div class="stat-change positive" id="stat-rawstone-change">+0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="stat-card bg-info">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-label" data-i18n="platinum">白金</div>
+                                <div class="stat-value" id="stat-platinum">0</div>
+                                <div class="stat-change positive" id="stat-platinum-change">+0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="card">
+            <div class="card-header" data-i18n="trendChart">趋势图表</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 收支对比图 -->
+        <div class="card">
+            <div class="card-header" data-i18n="incomeExpenseCompare">收支对比</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="incomeExpenseChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-container">
+                            <canvas id="resourcePieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- 总量信息 -->
@@ -182,6 +263,7 @@
     <script src="js/i18n.js"></script>
     <script src="js/pagination.js"></script>
     <script src="js/sorting.js"></script>
+    <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
