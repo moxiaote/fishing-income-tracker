@@ -210,14 +210,22 @@ class StorageManager {
                 timestamp: new Date().toISOString()
             };
 
+            // 构建请求选项
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                mode: 'cors',
+                cache: 'no-cache'
+            };
+
             if (!this.gistId) {
                 console.log('创建新Gist...');
                 // 创建新Gist
                 const response = await fetch('https://api.github.com/gists', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    ...requestOptions,
                     body: JSON.stringify({
                         description: 'Fishing Income Data',
                         public: false,
@@ -245,10 +253,8 @@ class StorageManager {
                 console.log('更新现有Gist:', this.gistId);
                 // 更新现有Gist
                 const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                    ...requestOptions,
                     method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         files: {
                             'data.json': {
@@ -271,16 +277,19 @@ class StorageManager {
             return true;
         } catch (error) {
             console.error('同步到Gist失败:', error);
-            // 检查是否是跨域错误
-            if (error.message.includes('CORS')) {
-                console.error('跨域错误，可能是浏览器阻止了请求');
-                alert('同步失败: 浏览器阻止了跨域请求，请尝试在本地服务器中打开应用');
+            // 检查错误类型并提供详细的用户友好提示
+            if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
+                console.error('跨域错误或网络错误');
+                alert('同步失败: 浏览器阻止了跨域请求或网络连接问题。\n\n建议：\n1. 使用"保存到文件"功能作为备用\n2. 在本地服务器中打开应用\n3. 检查网络连接');
             } else if (error.message.includes('403')) {
                 console.error('GitHub API速率限制');
-                alert('同步失败: GitHub API速率限制，请稍后再试');
+                alert('同步失败: GitHub API速率限制，请稍后再试。\n\n建议：\n1. 等待60分钟后再试\n2. 使用"保存到文件"功能作为备用');
             } else if (error.message.includes('404')) {
                 console.error('Gist不存在');
-                alert('同步失败: Gist不存在，请检查Gist ID');
+                alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
+            } else {
+                console.error('其他错误:', error);
+                alert('同步失败: ' + error.message + '\n\n建议使用"保存到文件"功能作为备用。');
             }
             return false;
         }
@@ -294,7 +303,17 @@ class StorageManager {
                 return false;
             }
 
-            const response = await fetch(`https://api.github.com/gists/${this.gistId}`);
+            // 构建请求选项
+            const requestOptions = {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                mode: 'cors',
+                cache: 'no-cache'
+            };
+
+            const response = await fetch(`https://api.github.com/gists/${this.gistId}`, requestOptions);
             if (!response.ok) {
                 throw new Error(`获取Gist失败: ${response.status}`);
             }
@@ -312,6 +331,20 @@ class StorageManager {
             return false;
         } catch (error) {
             console.error('从Gist同步失败:', error);
+            // 检查错误类型并提供详细的用户友好提示
+            if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
+                console.error('跨域错误或网络错误');
+                alert('同步失败: 浏览器阻止了跨域请求或网络连接问题。\n\n建议：\n1. 检查网络连接\n2. 确保Gist ID正确');
+            } else if (error.message.includes('403')) {
+                console.error('GitHub API速率限制');
+                alert('同步失败: GitHub API速率限制，请稍后再试。');
+            } else if (error.message.includes('404')) {
+                console.error('Gist不存在');
+                alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
+            } else {
+                console.error('其他错误:', error);
+                alert('同步失败: ' + error.message);
+            }
             return false;
         }
     }
