@@ -34,7 +34,7 @@ class ChartManager {
                 labels: [],
                 datasets: [
                     {
-                        label: '钻石',
+                        label: i18n.getText('diamond'),
                         data: [],
                         borderColor: this.colors.diamond,
                         backgroundColor: this.colors.diamond,
@@ -43,7 +43,7 @@ class ChartManager {
                         yAxisID: 'y'
                     },
                     {
-                        label: '突破券',
+                        label: i18n.getText('breakthrough'),
                         data: [],
                         borderColor: this.colors.breakthrough,
                         backgroundColor: this.colors.breakthrough,
@@ -52,7 +52,7 @@ class ChartManager {
                         yAxisID: 'y'
                     },
                     {
-                        label: '原石',
+                        label: i18n.getText('rawstone'),
                         data: [],
                         borderColor: this.colors.rawstone,
                         backgroundColor: this.colors.rawstone,
@@ -61,7 +61,7 @@ class ChartManager {
                         yAxisID: 'y'
                     },
                     {
-                        label: '白金',
+                        label: i18n.getText('platinum'),
                         data: [],
                         borderColor: this.colors.platinum,
                         backgroundColor: this.colors.platinum,
@@ -133,15 +133,15 @@ class ChartManager {
         this.incomeExpenseChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['钻石', '突破券', '原石', '白金'],
+                labels: [i18n.getText('diamond'), i18n.getText('breakthrough'), i18n.getText('rawstone'), i18n.getText('platinum')],
                 datasets: [
                     {
-                        label: '收入',
+                        label: i18n.getText('income'),
                         data: [0, 0, 0, 0],
                         backgroundColor: this.colors.income,
                     },
                     {
-                        label: '支出',
+                        label: i18n.getText('expense'),
                         data: [0, 0, 0, 0],
                         backgroundColor: this.colors.expense,
                     }
