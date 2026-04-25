@@ -352,6 +352,28 @@ class ChartManager {
 
         return records.filter(record => record.date >= cutoffStr);
     }
+    
+    // 更新图表（用于语言切换）
+    updateCharts() {
+        console.log('更新图表标签');
+        
+        // 更新趋势图表标签
+        if (this.trendChart) {
+            this.trendChart.data.datasets[0].label = i18n.getText('diamond');
+            this.trendChart.data.datasets[1].label = i18n.getText('breakthrough');
+            this.trendChart.data.datasets[2].label = i18n.getText('rawstone');
+            this.trendChart.data.datasets[3].label = i18n.getText('platinum');
+            this.trendChart.update();
+        }
+        
+        // 更新收支对比图表标签
+        if (this.incomeExpenseChart) {
+            this.incomeExpenseChart.data.labels = [i18n.getText('diamond'), i18n.getText('breakthrough'), i18n.getText('rawstone'), i18n.getText('platinum')];
+            this.incomeExpenseChart.data.datasets[0].label = i18n.getText('income');
+            this.incomeExpenseChart.data.datasets[1].label = i18n.getText('expense');
+            this.incomeExpenseChart.update();
+        }
+    }
 }
 
 // 导出图表管理器实例

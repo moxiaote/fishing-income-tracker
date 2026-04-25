@@ -20,33 +20,58 @@ class I18n {
     // 加载翻译文件
     async loadTranslations() {
         try {
+            console.log('开始加载翻译文件...');
+            
             // 加载中文翻译
+            console.log('加载中文翻译...');
             const zhResponse = await fetch('locales/zh.json');
+            console.log('中文翻译响应状态:', zhResponse.status);
             this.translations.zh = await zhResponse.json();
+            console.log('中文翻译加载成功');
             
             // 加载繁体中文翻译
+            console.log('加载繁体中文翻译...');
             const zhTwResponse = await fetch('locales/zh-TW.json');
+            console.log('繁体中文翻译响应状态:', zhTwResponse.status);
             this.translations['zh-TW'] = await zhTwResponse.json();
+            console.log('繁体中文翻译加载成功');
             
             // 加载英文翻译
+            console.log('加载英文翻译...');
             const enResponse = await fetch('locales/en.json');
+            console.log('英文翻译响应状态:', enResponse.status);
             this.translations.en = await enResponse.json();
+            console.log('英文翻译加载成功');
             
             // 加载韩文翻译
+            console.log('加载韩文翻译...');
             const koResponse = await fetch('locales/ko.json');
+            console.log('韩文翻译响应状态:', koResponse.status);
             this.translations.ko = await koResponse.json();
+            console.log('韩文翻译加载成功');
             
             // 加载越南语翻译
+            console.log('加载越南语翻译...');
             const viResponse = await fetch('locales/vi.json');
+            console.log('越南语翻译响应状态:', viResponse.status);
             this.translations.vi = await viResponse.json();
+            console.log('越南语翻译加载成功');
+            
+            console.log('所有翻译文件加载成功');
+            console.log('支持的语言:', Object.keys(this.translations));
+            console.log('当前语言:', this.currentLang);
             
             // 如果当前语言不在支持的列表中，默认使用中文
             if (!this.translations[this.currentLang]) {
+                console.log('当前语言不在支持列表中，默认使用中文');
                 this.currentLang = 'zh';
             }
+            
+            console.log('最终使用的语言:', this.currentLang);
         } catch (error) {
             console.error('加载翻译文件失败:', error);
             // 使用默认翻译
+            console.log('使用默认翻译');
             this.translations = {
                 zh: {
                     appTitle: '钓鱼发烧友：财富积累日记',
@@ -84,7 +109,17 @@ class I18n {
                     previous: '上一页',
                     next: '下一页',
                     last: '末页',
-                    loadMore: '加载更多'
+                    loadMore: '加载更多',
+                    gistSync: 'Gist 同步功能',
+                    laboratory: '(实验室)',
+                    githubLogin: 'GitHub登录',
+                    loadFromGist: '从Gist ID加载',
+                    uploadBackup: '上传备份',
+                    gistId: 'Gist ID',
+                    copy: '复制',
+                    syncNote1: '此功能处于测试阶段，可能会遇到同步失败的情况。',
+                    syncNote2: '如遇网络失败，请访问 CORS代理演示页面 获取临时权限。',
+                    autoGenerate: '登录GitHub 之后自动生成'
                 },
                 'zh-TW': {
                     appTitle: '釣魚發燒友：財富積累日記',
@@ -245,7 +280,40 @@ class I18n {
     // 应用语言
     applyLanguage() {
         const translation = this.translations[this.currentLang];
-        document.querySelectorAll('[data-i18n]').forEach(element => {
+        console.log('应用语言:', this.currentLang);
+        console.log('翻译对象:', translation);
+        
+        // 确保翻译对象存在
+        if (!translation) {
+            console.error('翻译对象不存在:', this.currentLang);
+            return;
+        }
+        
+        // 显示当前语言的文本，隐藏其他语言的文本
+        console.log('显示当前语言的文本，隐藏其他语言的文本');
+        
+        // 隐藏所有语言的文本
+        document.querySelectorAll('[class^="lang-"]').forEach(element => {
+            element.style.display = 'none';
+        });
+        
+        // 显示当前语言的文本
+        document.querySelectorAll('.lang-' + this.currentLang).forEach(element => {
+            element.style.display = 'inline';
+        });
+        
+        // 处理Gist ID输入框提示
+        const gistIdInput = document.getElementById('gist-id');
+        if (gistIdInput && !gistIdInput.value) {
+            console.log('更新Gist ID输入框提示:', translation.autoGenerate);
+            gistIdInput.value = translation.autoGenerate || '登录GitHub 之后自动生成';
+        }
+        
+        // 遍历所有带有data-i18n属性的元素
+        const elements = document.querySelectorAll('[data-i18n]');
+        console.log('找到带有data-i18n属性的元素数量:', elements.length);
+        
+        elements.forEach(element => {
             const key = element.getAttribute('data-i18n');
             if (translation[key]) {
                 element.textContent = translation[key];
@@ -257,6 +325,12 @@ class I18n {
         
         // 更新语言选择器显示
         this.updateLanguageSelector();
+        
+        // 更新图表标签
+        console.log('更新图表标签');
+        if (typeof chartManager !== 'undefined' && chartManager.updateCharts) {
+            chartManager.updateCharts();
+        }
     }
 
     // 更新网页标题
@@ -290,9 +364,17 @@ class I18n {
 
     // 切换语言
     changeLanguage(lang) {
+        console.log('开始切换语言:', lang);
+        console.log('当前支持的语言:', Object.keys(this.translations));
+        
         if (this.translations[lang]) {
+            console.log('语言存在，切换到:', lang);
             this.currentLang = lang;
+            console.log('调用applyLanguage()');
             this.applyLanguage();
+            console.log('语言切换完成');
+        } else {
+            console.error('语言不存在:', lang);
         }
     }
 }
