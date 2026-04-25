@@ -37,5 +37,15 @@
     "previous": "Trang trước",
     "next": "Trang sau",
     "last": "Trang cuối",
-    "loadMore": "Tải thêm"
+    "loadMore": "Tải thêm",
+    "gistSync": "Chức năng đồng bộ Gist",
+    "laboratory": "(Phòng thí nghiệm)",
+    "githubLogin": "Đăng nhập GitHub",
+    "loadFromGist": "Tải từ Gist ID",
+    "uploadBackup": "Tải lên sao lưu",
+    "gistId": "Gist ID",
+    "copy": "Sao chép",
+    "syncNote1": "Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.",
+    "syncNote2": "Nếu mạng lỗi, hãy truy cập trang demo proxy CORS để lấy quyền truy cập tạm thời.",
+    "autoGenerate": "Tự động tạo sau khi đăng nhập GitHub"
 }

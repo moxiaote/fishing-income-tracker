@@ -37,5 +37,15 @@
     "previous": "이전 페이지",
     "next": "다음 페이지",
     "last": "마지막 페이지",
-    "loadMore": "더 로드"
+    "loadMore": "더 로드",
+    "gistSync": "Gist 동기화 기능",
+    "laboratory": "(실험실)",
+    "githubLogin": "GitHub 로그인",
+    "loadFromGist": "Gist ID에서 로드",
+    "uploadBackup": "백업 업로드",
+    "gistId": "Gist ID",
+    "copy": "복사",
+    "syncNote1": "이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.",
+    "syncNote2": "네트워크가 실패하면 CORS 프록시 데모 페이지에 방문하여 임시 액세스를 얻으세요.",
+    "autoGenerate": "GitHub 로그인 후 자동 생성됩니다"
 }

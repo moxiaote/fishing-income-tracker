@@ -190,25 +190,25 @@
                 
                 <div class="border-top border-secondary pt-4 mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6>Gist 同步功能 <span class="text-muted small">(实验室)</span></h6>
+                        <h6><span data-i18n="gistSync">Gist 同步功能</span> <span class="text-muted small" data-i18n="laboratory">(实验室)</span></h6>
                         <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section" style="font-size: 1.2em;">
                             v
                         </button>
                     </div>
                     <div class="collapse" id="gist-sync-section">
                         <div class="d-flex gap-2 mb-3">
-                            <button id="github-login" class="btn btn-outline-secondary">GitHub登录</button>
-                            <button id="load-from-gist" class="btn btn-outline-primary">从Gist ID加载</button>
-                            <button id="sync-to-cloud" class="btn btn-outline-primary">上传备份</button>
+                            <button id="github-login" class="btn btn-outline-secondary" data-i18n="githubLogin">GitHub登录</button>
+                            <button id="load-from-gist" class="btn btn-outline-primary" data-i18n="loadFromGist">从Gist ID加载</button>
+                            <button id="sync-to-cloud" class="btn btn-outline-primary" data-i18n="uploadBackup">上传备份</button>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <label for="gist-id" class="form-label mb-0">Gist ID</label>
+                            <label for="gist-id" class="form-label mb-0" data-i18n="gistId">Gist ID</label>
                             <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
-                            <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">复制</button>
+                            <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm" data-i18n="copy">复制</button>
                         </div>
                         <div class="mt-2 text-sm text-muted">
-                            <p>此功能处于测试阶段，可能会遇到同步失败的情况。</p>
-                            <p>如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</p>
+                            <p data-i18n="syncNote1">此功能处于测试阶段，可能会遇到同步失败的情况。</p>
+                            <p data-i18n="syncNote2">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</p>
                         </div>
                     </div>
                 </div>

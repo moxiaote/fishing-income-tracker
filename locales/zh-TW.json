@@ -37,5 +37,15 @@
     "previous": "上一頁",
     "next": "下一頁",
     "last": "末頁",
-    "loadMore": "加載更多"
+    "loadMore": "加載更多",
+    "gistSync": "Gist 同步功能",
+    "laboratory": "(實驗室)",
+    "githubLogin": "GitHub登錄",
+    "loadFromGist": "從Gist ID加載",
+    "uploadBackup": "上傳備份",
+    "gistId": "Gist ID",
+    "copy": "複製",
+    "syncNote1": "此功能處於測試階段，可能會遇到同步失敗的情況。",
+    "syncNote2": "如遇網路失敗，請訪問 CORS代理演示頁面 獲取臨時許可權。",
+    "autoGenerate": "登錄GitHub 之後自動生成"
 }

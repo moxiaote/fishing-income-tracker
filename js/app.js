@@ -441,7 +441,7 @@ class App {
         const gistIdElement = document.getElementById('gist-id');
         if (gistIdElement) {
             const gistId = storageManager.getGistId();
-            gistIdElement.value = gistId || '登录GitHub 之后自动生成';
+            gistIdElement.value = gistId || i18n.getText('autoGenerate');
             gistIdElement.readOnly = true;
         }
         
