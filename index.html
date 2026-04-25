@@ -49,6 +49,11 @@
         .table th {
             font-size: 13px;
             font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+        }
+        .table th:hover {
+            background-color: #f8f9fa;
         }
         .table td {
             font-size: 13px;
@@ -67,6 +72,11 @@
         .pagination .page-item .page-link {
             font-size: 13px;
             padding: 6px 12px;
+        }
+        .sort-indicator {
+            margin-left: 5px;
+            font-size: 10px;
+            color: #666;
         }
         @media (max-width: 768px) {
             .container {
@@ -235,12 +245,12 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th data-i18n="date">日期</th>
-                                <th data-i18n="type">类型</th>
-                                <th data-i18n="diamond">钻石</th>
-                                <th data-i18n="breakthrough">突破券</th>
-                                <th data-i18n="rawstone">原石</th>
-                                <th data-i18n="platinum">白金</th>
+                                <th onclick="sortBy('date')" data-i18n="date">日期 <span class="sort-indicator" id="sort-date">↓</span></th>
+                                <th onclick="sortBy('type')" data-i18n="type">类型 <span class="sort-indicator" id="sort-type"></span></th>
+                                <th onclick="sortBy('diamond')" data-i18n="diamond">钻石 <span class="sort-indicator" id="sort-diamond"></span></th>
+                                <th onclick="sortBy('breakthrough')" data-i18n="breakthrough">突破券 <span class="sort-indicator" id="sort-breakthrough"></span></th>
+                                <th onclick="sortBy('rawstone')" data-i18n="rawstone">原石 <span class="sort-indicator" id="sort-rawstone"></span></th>
+                                <th onclick="sortBy('platinum')" data-i18n="platinum">白金 <span class="sort-indicator" id="sort-platinum"></span></th>
                                 <th data-i18n="remark">备注</th>
                                 <th data-i18n="action">操作</th>
                             </tr>
@@ -369,6 +379,10 @@
         const recordsPerPage = 100;
         let currentPage = 1;
         let totalPages = 1;
+        
+        // 排序相关变量
+        let sortField = 'date';
+        let sortOrder = 'desc'; // 'asc' 或 'desc'
 
         // 检查浏览器是否支持IndexedDB
         function checkIndexedDBSupport() {
@@ -549,6 +563,72 @@
             document.getElementById('total-platinum').textContent = total.platinum;
         }
 
+        // 排序记录
+        function sortRecords() {
+            records.sort((a, b) => {
+                let aVal = a[sortField];
+                let bVal = b[sortField];
+                
+                // 处理日期类型
+                if (sortField === 'date') {
+                    aVal = new Date(aVal);
+                    bVal = new Date(bVal);
+                }
+                
+                // 处理数字类型
+                if (['diamond', 'breakthrough', 'rawstone', 'platinum'].includes(sortField)) {
+                    aVal = parseInt(aVal) || 0;
+                    bVal = parseInt(bVal) || 0;
+                }
+                
+                // 比较值
+                if (aVal < bVal) {
+                    return sortOrder === 'asc' ? -1 : 1;
+                }
+                if (aVal > bVal) {
+                    return sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+        }
+
+        // 切换排序
+        function sortBy(field) {
+            // 如果点击的是当前排序字段，则切换排序顺序
+            if (sortField === field) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                // 否则，设置新的排序字段，默认降序
+                sortField = field;
+                sortOrder = 'desc';
+            }
+            
+            // 更新排序指示器
+            updateSortIndicators();
+            
+            // 排序记录
+            sortRecords();
+            
+            // 重新分页和显示
+            currentPage = 1;
+            updatePagination();
+            displayRecords();
+        }
+
+        // 更新排序指示器
+        function updateSortIndicators() {
+            // 清除所有排序指示器
+            document.querySelectorAll('.sort-indicator').forEach(indicator => {
+                indicator.textContent = '';
+            });
+            
+            // 设置当前排序字段的指示器
+            const indicator = document.getElementById(`sort-${sortField}`);
+            if (indicator) {
+                indicator.textContent = sortOrder === 'asc' ? '↑' : '↓';
+            }
+        }
+
         // 更新分页控件
         function updatePagination() {
             totalPages = Math.ceil(records.length / recordsPerPage);
@@ -574,7 +654,7 @@
             // 上一页按钮
             const prevLi = document.createElement('li');
             prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
-            prevLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage - 1})">&laquo; ${translations[currentLang].previous || '上一页'}</a>`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage - 1})" )">&laquo; ${translations[currentLang].previous || '上一页'}</a>`;
             pagination.appendChild(prevLi);
 
             // 页码按钮
@@ -584,20 +664,20 @@
             for (let i = startPage; i <= endPage; i++) {
                 const li = document.createElement('li');
                 li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                li.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${i})")">${i}</a>`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${i})" )">${i}</a>`;
                 pagination.appendChild(li);
             }
 
             // 下一页按钮
             const nextLi = document.createElement('li');
             nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-            nextLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage + 1})")">${translations[currentLang].next || '下一页'} &raquo;</a>`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${currentPage + 1})" )">${translations[currentLang].next || '下一页'} &raquo;</a>`;
             pagination.appendChild(nextLi);
 
             // 末页按钮
             const lastLi = document.createElement('li');
             lastLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
-            lastLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${totalPages})")">${translations[currentLang].last || '末页'}</a>`;
+            lastLi.innerHTML = `<a class="page-link" href="#" onclick="goToPage(${totalPages})" )">${translations[currentLang].last || '末页'}</a>`;
             pagination.appendChild(lastLi);
         }
 
@@ -664,6 +744,10 @@
 
             // 将新记录添加到数组开头，使最新的记录显示在最上面
             records.unshift(record);
+            
+            // 重新排序
+            sortRecords();
+            
             saveRecords(records);
 
             // 重置表单
@@ -708,7 +792,12 @@
                     try {
                         const content = e.target.result;
                         const loadedRecords = JSON.parse(content);
-                        saveRecords(loadedRecords);
+                        records = loadedRecords;
+                        
+                        // 重新排序
+                        sortRecords();
+                        
+                        saveRecords(records);
                         alert(translations[currentLang].dataLoaded || '数据已从文件加载');
                     } catch (error) {
                         alert(translations[currentLang].fileFormatError || '文件格式错误，无法加载数据');
@@ -727,6 +816,11 @@
                 await initDB();
                 const loadedRecords = await loadRecords();
                 records = loadedRecords;
+                
+                // 初始排序
+                sortRecords();
+                updateSortIndicators();
+                
                 updatePagination();
                 displayRecords();
                 calculateTotal();
