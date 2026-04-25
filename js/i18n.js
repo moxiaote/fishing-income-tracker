@@ -49,7 +49,7 @@ class I18n {
             // 使用默认翻译
             this.translations = {
                 zh: {
-                    appTitle: '钓鱼收入统计系统',
+                    appTitle: '钓鱼发烧友：财富积累日记',
                     usageTips: '使用提示：',
                     tip1: '添加记录后，数据会自动保存到浏览器中',
                     tip2: '点击"保存到文件"按钮可将数据备份到本地文件',
@@ -87,7 +87,7 @@ class I18n {
                     loadMore: '加载更多'
                 },
                 'zh-TW': {
-                    appTitle: '釣魚收入統計系統',
+                    appTitle: '釣魚發燒友：財富積累日記',
                     usageTips: '使用提示：',
                     tip1: '添加記錄後，數據會自動保存到瀏覽器中',
                     tip2: '點擊"保存到文件"按鈕可將數據備份到本地文件',
@@ -125,7 +125,7 @@ class I18n {
                     loadMore: '加載更多'
                 },
                 en: {
-                    appTitle: 'Fishing Income Tracking System',
+                    appTitle: 'Ace Fishing : Wild Catch',
                     usageTips: 'Usage Tips:',
                     tip1: 'After adding records, data will be automatically saved to the browser',
                     tip2: 'Click the "Save to File" button to back up data to a local file',
@@ -163,7 +163,7 @@ class I18n {
                     loadMore: 'Load More'
                 },
                 ko: {
-                    appTitle: '낚시 수입 추적 시스템',
+                    appTitle: '낚시의 신',
                     usageTips: '사용 팁:',
                     tip1: '기록을 추가한 후 데이터가 브라우저에 자동으로 저장됩니다',
                     tip2: '데이터를 로컬 파일에 백업하려면 "파일에 저장" 버튼을 클릭하세요',
@@ -201,7 +201,7 @@ class I18n {
                     loadMore: '더 로드'
                 },
                 vi: {
-                    appTitle: 'Hệ thống thống kê thu nhập câu cá',
+                    appTitle: 'Người yêu câu cá: Nhật ký tích luỹ tài sản',
                     usageTips: 'Lưu ý sử dụng：',
                     tip1: 'Sau khi thêm ghi chú, dữ liệu sẽ tự động được lưu vào trình duyệt',
                     tip2: 'Nhấn nút "Lưu vào tệp" để sao lưu dữ liệu vào tệp cục bộ',
@@ -252,8 +252,19 @@ class I18n {
             }
         });
         
+        // 更新网页标题
+        this.updatePageTitle();
+        
         // 更新语言选择器显示
         this.updateLanguageSelector();
+    }
+
+    // 更新网页标题
+    updatePageTitle() {
+        const translation = this.translations[this.currentLang];
+        if (translation.appTitle) {
+            document.title = translation.appTitle;
+        }
     }
 
     // 更新语言选择器显示

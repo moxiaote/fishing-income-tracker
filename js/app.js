@@ -24,6 +24,13 @@ class App {
             // 加载记录
             this.records = await storageManager.loadRecords();
             
+            // 从Gist同步数据
+            const synced = await storageManager.syncFromGist();
+            if (synced) {
+                // 同步成功，重新加载记录
+                this.records = await storageManager.loadRecords();
+            }
+            
             // 初始排序
             sorting.sortRecords(this.records);
             sorting.updateSortIndicators();
@@ -40,6 +47,9 @@ class App {
             // 初始化DOM元素
             this.statsCard = document.getElementById('statsCard');
             this.fixedTotal = document.getElementById('fixedTotal');
+            
+            // 显示Gist ID
+            this.displayGistId();
             
             // 添加滚动监听
             this.addScrollListener();
@@ -95,6 +105,24 @@ class App {
                 this.loadMoreRecords();
             });
         }
+
+        // 从Gist ID加载按钮事件
+        const loadFromGistButton = document.getElementById('load-from-gist');
+        if (loadFromGistButton) {
+            loadFromGistButton.addEventListener('click', () => {
+                this.loadFromGist();
+            });
+        }
+
+        // 手动同步按钮事件
+        const syncToCloudButton = document.getElementById('sync-to-cloud');
+        if (syncToCloudButton) {
+            syncToCloudButton.addEventListener('click', () => {
+                this.syncToCloud();
+            });
+        }
+
+
     }
 
     // 添加滚动监听
@@ -142,6 +170,9 @@ class App {
         // 保存记录
         await storageManager.saveRecords(this.records);
         
+        // 同步到Gist
+        await storageManager.syncToGist();
+        
         // 重置加载记录数
         this.loadedRecords = 30;
         
@@ -169,6 +200,9 @@ class App {
     async deleteRecord(index) {
         this.records.splice(index, 1);
         await storageManager.saveRecords(this.records);
+        
+        // 同步到Gist
+        await storageManager.syncToGist();
         
         // 更新分页
         pagination.updatePagination(this.records.length);
@@ -204,6 +238,9 @@ class App {
                 // 保存记录
                 await storageManager.saveRecords(this.records);
                 
+                // 同步到Gist
+                await storageManager.syncToGist();
+                
                 // 重置加载记录数
                 this.loadedRecords = 30;
                 
@@ -218,6 +255,8 @@ class App {
                 chartManager.updateStatCards(this.records);
                 
                 alert(i18n.getText('dataLoaded') || '数据已从文件加载');
+                alert('数据已同步到云端');
+
             } catch (error) {
                 alert(i18n.getText('fileFormatError') || '文件格式错误，无法加载数据');
             }
@@ -279,7 +318,7 @@ class App {
         };
 
         this.records.forEach(record => {
-            const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
+            const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
             total.diamond += record.diamond * multiplier;
             total.breakthrough += record.breakthrough * multiplier;
             total.rawstone += record.rawstone * multiplier;
@@ -297,7 +336,7 @@ class App {
 
         this.records.forEach(record => {
             if (record.date === today) {
-                const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
+                const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
                 todayChange.diamond += record.diamond * multiplier;
                 todayChange.breakthrough += record.breakthrough * multiplier;
                 todayChange.rawstone += record.rawstone * multiplier;
@@ -386,6 +425,85 @@ class App {
         pagination.updatePagination(this.records.length);
         this.displayRecords();
     }
+
+    // 显示Gist ID
+    displayGistId() {
+        const gistIdElement = document.getElementById('gist-id');
+        const copyGistIdButton = document.getElementById('copy-gist-id');
+        
+        if (gistIdElement) {
+            // 从storageManager获取Gist ID
+            gistIdElement.value = storageManager.gistId || '未创建';
+        }
+        
+        if (copyGistIdButton) {
+            copyGistIdButton.addEventListener('click', () => {
+                if (gistIdElement) {
+                    gistIdElement.select();
+                    document.execCommand('copy');
+                    // 显示复制成功提示
+                    const originalText = copyGistIdButton.textContent;
+                    copyGistIdButton.textContent = '已复制';
+                    setTimeout(() => {
+                        copyGistIdButton.textContent = originalText;
+                    }, 1000);
+                }
+            });
+        }
+    }
+
+    // 从Gist ID加载数据
+    async loadFromGist() {
+        try {
+            const success = await storageManager.loadFromGist();
+            if (success) {
+                // 重新加载记录
+                this.records = await storageManager.loadRecords();
+                
+                // 重新排序
+                sorting.sortRecords(this.records);
+                
+                // 重置加载记录数
+                this.loadedRecords = 30;
+                
+                // 显示记录
+                this.displayRecords();
+                
+                // 计算总量
+                this.calculateTotal();
+                
+                // 更新图表
+                chartManager.updateCharts(this.records);
+                chartManager.updateStatCards(this.records);
+                
+                alert('数据加载成功！');
+            } else {
+                alert('数据加载失败，请检查Gist ID是否正确。');
+            }
+        } catch (error) {
+            console.error('加载失败:', error);
+            alert('数据加载失败，请稍后重试。');
+        }
+    }
+
+    // 手动同步到云端
+    async syncToCloud() {
+        try {
+            const success = await storageManager.syncToGist();
+            if (success) {
+                // 更新Gist ID显示
+                this.displayGistId();
+                alert('数据同步成功！');
+            } else {
+                alert('数据同步失败，请稍后重试。');
+            }
+        } catch (error) {
+            console.error('同步失败:', error);
+            alert('数据同步失败，请稍后重试。');
+        }
+    }
+
+
 }
 
 // 创建应用实例

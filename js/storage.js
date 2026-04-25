@@ -3,6 +3,27 @@ class StorageManager {
     constructor() {
         this.db = null;
         this.useLocalStorage = false;
+        this.deviceId = this.getDeviceId();
+        this.gistId = localStorage.getItem('gistId');
+    }
+
+    // 获取Gist ID（公共方法）
+    getGistId() {
+        return this.gistId;
+    }
+
+    // 获取设备ID（公共方法）
+    getDeviceId() {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+            localStorage.setItem('deviceId', deviceId);
+        }
+        return deviceId;
     }
 
     // 检查浏览器是否支持IndexedDB
@@ -174,6 +195,151 @@ class StorageManager {
             };
             reader.readAsText(file);
         });
+    }
+
+    // 同步到GitHub Gist
+    async syncToGist() {
+        try {
+            console.log('开始同步到Gist...');
+            const records = await this.loadRecords();
+            console.log('加载记录成功:', records.length, '条');
+            
+            const data = {
+                deviceId: this.deviceId,
+                records: records,
+                timestamp: new Date().toISOString()
+            };
+
+            if (!this.gistId) {
+                console.log('创建新Gist...');
+                // 创建新Gist
+                const response = await fetch('https://api.github.com/gists', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        description: 'Fishing Income Data',
+                        public: false,
+                        files: {
+                            'data.json': {
+                                content: JSON.stringify(data, null, 2)
+                            }
+                        }
+                    })
+                });
+
+                console.log('创建Gist响应状态:', response.status);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('创建Gist失败详情:', errorText);
+                    throw new Error(`创建Gist失败: ${response.status} - ${errorText}`);
+                }
+
+                const gistData = await response.json();
+                console.log('Gist创建成功:', gistData);
+                this.gistId = gistData.id;
+                localStorage.setItem('gistId', this.gistId);
+                console.log('Gist ID保存成功:', this.gistId);
+            } else {
+                console.log('更新现有Gist:', this.gistId);
+                // 更新现有Gist
+                const response = await fetch(`https://api.github.com/gists/${this.gistId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        files: {
+                            'data.json': {
+                                content: JSON.stringify(data, null, 2)
+                            }
+                        }
+                    })
+                });
+
+                console.log('更新Gist响应状态:', response.status);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('更新Gist失败详情:', errorText);
+                    throw new Error(`更新Gist失败: ${response.status} - ${errorText}`);
+                }
+
+                console.log('Gist更新成功:', this.gistId);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('同步到Gist失败:', error);
+            // 检查是否是跨域错误
+            if (error.message.includes('CORS')) {
+                console.error('跨域错误，可能是浏览器阻止了请求');
+                alert('同步失败: 浏览器阻止了跨域请求，请尝试在本地服务器中打开应用');
+            } else if (error.message.includes('403')) {
+                console.error('GitHub API速率限制');
+                alert('同步失败: GitHub API速率限制，请稍后再试');
+            } else if (error.message.includes('404')) {
+                console.error('Gist不存在');
+                alert('同步失败: Gist不存在，请检查Gist ID');
+            }
+            return false;
+        }
+    }
+
+    // 从GitHub Gist同步
+    async syncFromGist() {
+        try {
+            if (!this.gistId) {
+                console.log('未找到Gist ID，跳过同步');
+                return false;
+            }
+
+            const response = await fetch(`https://api.github.com/gists/${this.gistId}`);
+            if (!response.ok) {
+                throw new Error(`获取Gist失败: ${response.status}`);
+            }
+
+            const gistData = await response.json();
+            const content = gistData.files['data.json'].content;
+            const parsedData = JSON.parse(content);
+
+            if (parsedData.records) {
+                await this.saveRecords(parsedData.records);
+                console.log('从Gist同步成功');
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('从Gist同步失败:', error);
+            return false;
+        }
+    }
+
+    // 从Gist ID加载数据
+    async loadFromGist() {
+        try {
+            // 提示用户输入目标设备的Gist ID
+            const gistId = prompt('请输入Gist ID:');
+            if (!gistId) return false;
+            
+            // 临时保存当前Gist ID
+            const originalGistId = this.gistId;
+            
+            // 临时设置为目标设备的Gist ID
+            this.gistId = gistId;
+            
+            // 尝试从Gist同步数据
+            const synced = await this.syncFromGist();
+            
+            // 恢复原始Gist ID
+            this.gistId = originalGistId;
+            
+            return synced;
+        } catch (error) {
+            console.error('从Gist ID加载失败:', error);
+            return false;
+        }
     }
 }
 
