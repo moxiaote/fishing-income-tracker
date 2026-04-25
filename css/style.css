@@ -291,31 +291,34 @@ h1 {
 }
 
 .collapse-btn[aria-expanded="false"] .collapse-icon .line.horizontal {
-    display: none;
+    opacity: 0;
+    transform: rotate(0deg) scale(0);
 }
 
 .collapse-btn[aria-expanded="false"] .collapse-icon .line.vertical {
-    display: block;
-    transform: rotate(0deg);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
 .collapse-btn[aria-expanded="false"] .collapse-icon .line.diagonal {
-    display: block;
-    transform: rotate(45deg);
+    opacity: 1;
+    transform: rotate(45deg) scale(1);
 }
 
 /* 展开状态下的图标 */
 .collapse-btn[aria-expanded="true"] .collapse-icon .line.horizontal {
-    display: block;
-    transform: rotate(0deg);
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
 
 .collapse-btn[aria-expanded="true"] .collapse-icon .line.vertical {
-    display: none;
+    opacity: 0;
+    transform: rotate(0deg) scale(0);
 }
 
 .collapse-btn[aria-expanded="true"] .collapse-icon .line.diagonal {
-    display: none;
+    opacity: 0;
+    transform: rotate(45deg) scale(0);
 }
 
 /* 动画效果 */
