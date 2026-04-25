@@ -150,12 +150,21 @@ h1 {
 
 /* 统计卡片样式 */
 .stat-card {
-    display: flex;
-    align-items: center;
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 10px;
     color: white;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-icon {
+    margin: 8px 0;
 }
 
 .stat-card.bg-primary {
@@ -168,7 +177,7 @@ h1 {
 
 .stat-card.bg-warning {
     background: linear-gradient(135deg, #ffc107, #e0a800);
-    color: #333;
+    color: white;
 }
 
 .stat-card.bg-info {
