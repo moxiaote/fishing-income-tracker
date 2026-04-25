@@ -117,7 +117,7 @@ class App {
             });
         }
 
-        // 手动同步按钮事件
+        // 上传备份按钮事件
         const syncToCloudButton = document.getElementById('sync-to-cloud');
         if (syncToCloudButton) {
             syncToCloudButton.addEventListener('click', () => {
@@ -717,20 +717,20 @@ class App {
         }
     }
 
-    // 手动同步到云端
+    // 上传备份到云端
     async syncToCloud() {
         try {
             const success = await storageManager.syncToGist();
             if (success) {
                 // 更新Gist ID显示
                 this.displayGistId();
-                alert('数据同步成功！');
+                alert('数据备份成功！');
             } else {
-                alert('数据同步失败，请稍后重试。');
+                alert('数据备份失败，请稍后重试。');
             }
         } catch (error) {
-            console.error('同步失败:', error);
-            alert('数据同步失败，请稍后重试。');
+            console.error('备份失败:', error);
+            alert('数据备份失败，请稍后重试。');
         }
     }
 
