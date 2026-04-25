@@ -153,7 +153,9 @@ h1 {
     padding: 15px;
     border-radius: 8px;
     margin-bottom: 10px;
-    color: white;
+    color: #333;
+    background: white;
+    border: 1px solid #dee2e6;
 }
 
 .stat-label {
@@ -172,10 +174,10 @@ h1 {
 .stat-icon {
     flex: 0 0 80px;
     text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: none;
     padding: 10px;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: white;
 }
 
 .stat-icon img {
@@ -202,36 +204,18 @@ h1 {
     margin-top: 5px;
 }
 
-.stat-card.bg-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-}
-
-.stat-card.bg-success {
-    background: linear-gradient(135deg, #28a745, #1e7e34);
-}
-
-.stat-card.bg-warning {
-    background: linear-gradient(135deg, #ffc107, #e0a800);
-    color: white;
-}
-
+.stat-card.bg-primary,
+.stat-card.bg-success,
+.stat-card.bg-warning,
 .stat-card.bg-info {
-    background: linear-gradient(135deg, #17a2b8, #138496);
+    border-left: none;
 }
 
 .stat-change.positive {
-    color: #90EE90;
-}
-
-.stat-change.negative {
-    color: #FFB6C1;
-}
-
-.bg-warning .stat-change.positive {
     color: #28a745;
 }
 
-.bg-warning .stat-change.negative {
+.stat-change.negative {
     color: #dc3545;
 }
 

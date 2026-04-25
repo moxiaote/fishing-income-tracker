@@ -5,14 +5,14 @@ class ChartManager {
         this.incomeExpenseChart = null;
         this.resourcePieChart = null;
         
-        // 颜色配置
+        // 颜色配置 - 与总量信息卡片颜色匹配
         this.colors = {
             income: '#28a745',      // 绿色 - 收入
             expense: '#dc3545',     // 红色 - 支出
-            diamond: '#007bff',     // 蓝色
-            breakthrough: '#ffc107', // 黄色
-            rawstone: '#6f42c1',    // 紫色
-            platinum: '#20c997',    // 青色
+            diamond: '#007bff',     // 蓝色 - 匹配 bg-primary
+            breakthrough: '#28a745', // 绿色 - 匹配 bg-success
+            rawstone: '#ffc107',    // 黄色 - 匹配 bg-warning
+            platinum: '#17a2b8',    // 青色 - 匹配 bg-info
             grid: 'rgba(0, 0, 0, 0.1)'
         };
     }
@@ -39,7 +39,8 @@ class ChartManager {
                         borderColor: this.colors.diamond,
                         backgroundColor: this.colors.diamond,
                         tension: 0.4,
-                        fill: false
+                        fill: false,
+                        yAxisID: 'y'
                     },
                     {
                         label: '突破券',
@@ -47,7 +48,8 @@ class ChartManager {
                         borderColor: this.colors.breakthrough,
                         backgroundColor: this.colors.breakthrough,
                         tension: 0.4,
-                        fill: false
+                        fill: false,
+                        yAxisID: 'y'
                     },
                     {
                         label: '原石',
@@ -55,7 +57,8 @@ class ChartManager {
                         borderColor: this.colors.rawstone,
                         backgroundColor: this.colors.rawstone,
                         tension: 0.4,
-                        fill: false
+                        fill: false,
+                        yAxisID: 'y'
                     },
                     {
                         label: '白金',
@@ -63,7 +66,8 @@ class ChartManager {
                         borderColor: this.colors.platinum,
                         backgroundColor: this.colors.platinum,
                         tension: 0.4,
-                        fill: false
+                        fill: false,
+                        yAxisID: 'y1'
                     }
                 ]
             },
@@ -81,9 +85,29 @@ class ChartManager {
                 },
                 scales: {
                     y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: '钻石/突破券/原石'
+                        },
                         beginAtZero: true,
                         grid: {
                             color: this.colors.grid
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: '白金'
+                        },
+                        beginAtZero: true,
+                        grid: {
+                            drawOnChartArea: false
                         }
                     },
                     x: {
@@ -206,15 +230,12 @@ class ChartManager {
     updateIncomeExpenseChart(records) {
         if (!this.incomeExpenseChart) return;
 
-        const totals = this.calculateTotals(records);
-        
         // 计算收入和支出
         const income = [0, 0, 0, 0];
         const expense = [0, 0, 0, 0];
 
         records.forEach(record => {
-            const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
-            if (multiplier > 0) {
+            if (record.type === '收入' || record.type === 'Thu nhập') {
                 income[0] += record.diamond;
                 income[1] += record.breakthrough;
                 income[2] += record.rawstone;
@@ -274,14 +295,35 @@ class ChartManager {
         document.getElementById('stat-rawstone').textContent = totals.rawstone;
         document.getElementById('stat-platinum').textContent = totals.platinum;
 
-        // 计算变化趋势（最近7天）
-        const recentRecords = this.getRecentRecords(records, 7);
-        const recentTotals = this.calculateTotals(recentRecords);
+        // 计算相比昨天的增长量
+        const todayChange = this.calculateDailyChange(records, new Date().toISOString().split('T')[0]);
 
-        this.updateChangeIndicator('stat-diamond-change', recentTotals.diamond);
-        this.updateChangeIndicator('stat-breakthrough-change', recentTotals.breakthrough);
-        this.updateChangeIndicator('stat-rawstone-change', recentTotals.rawstone);
-        this.updateChangeIndicator('stat-platinum-change', recentTotals.platinum);
+        this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);
+        this.updateChangeIndicator('stat-breakthrough-change', todayChange.breakthrough);
+        this.updateChangeIndicator('stat-rawstone-change', todayChange.rawstone);
+        this.updateChangeIndicator('stat-platinum-change', todayChange.platinum);
+    }
+
+    // 计算指定日期的日变化量
+    calculateDailyChange(records, targetDate) {
+        let dailyChange = {
+            diamond: 0,
+            breakthrough: 0,
+            rawstone: 0,
+            platinum: 0
+        };
+
+        records.forEach(record => {
+            if (record.date === targetDate) {
+                const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
+                dailyChange.diamond += record.diamond * multiplier;
+                dailyChange.breakthrough += record.breakthrough * multiplier;
+                dailyChange.rawstone += record.rawstone * multiplier;
+                dailyChange.platinum += record.platinum * multiplier;
+            }
+        });
+
+        return dailyChange;
     }
 
     // 更新变化指示器

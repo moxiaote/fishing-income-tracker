@@ -286,21 +286,23 @@ class App {
             total.platinum += record.platinum * multiplier;
         });
 
-        // 计算最近7天的变化
-        const recentRecords = this.getRecentRecords(7);
-        let recentChange = {
+        // 计算今天的变化量
+        const today = new Date().toISOString().split('T')[0];
+        let todayChange = {
             diamond: 0,
             breakthrough: 0,
             rawstone: 0,
             platinum: 0
         };
 
-        recentRecords.forEach(record => {
-            const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
-            recentChange.diamond += record.diamond * multiplier;
-            recentChange.breakthrough += record.breakthrough * multiplier;
-            recentChange.rawstone += record.rawstone * multiplier;
-            recentChange.platinum += record.platinum * multiplier;
+        this.records.forEach(record => {
+            if (record.date === today) {
+                const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
+                todayChange.diamond += record.diamond * multiplier;
+                todayChange.breakthrough += record.breakthrough * multiplier;
+                todayChange.rawstone += record.rawstone * multiplier;
+                todayChange.platinum += record.platinum * multiplier;
+            }
         });
 
         // 更新统计概览显示
@@ -310,10 +312,10 @@ class App {
         document.getElementById('stat-platinum').textContent = total.platinum;
 
         // 更新统计概览变化显示
-        this.updateChangeIndicator('stat-diamond-change', recentChange.diamond);
-        this.updateChangeIndicator('stat-breakthrough-change', recentChange.breakthrough);
-        this.updateChangeIndicator('stat-rawstone-change', recentChange.rawstone);
-        this.updateChangeIndicator('stat-platinum-change', recentChange.platinum);
+        this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);
+        this.updateChangeIndicator('stat-breakthrough-change', todayChange.breakthrough);
+        this.updateChangeIndicator('stat-rawstone-change', todayChange.rawstone);
+        this.updateChangeIndicator('stat-platinum-change', todayChange.platinum);
         
         // 更新固定总量显示（显示统计概览数据）
         document.getElementById('fixed-diamond').textContent = total.diamond;
@@ -328,24 +330,24 @@ class App {
         const fixedPlatinumChange = document.getElementById('fixed-platinum-change');
 
         if (fixedDiamondChange) {
-            const prefix = recentChange.diamond >= 0 ? '+' : '';
-            fixedDiamondChange.textContent = `${prefix}${recentChange.diamond}`;
-            fixedDiamondChange.className = recentChange.diamond >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+            const prefix = todayChange.diamond >= 0 ? '+' : '';
+            fixedDiamondChange.textContent = `${prefix}${todayChange.diamond}`;
+            fixedDiamondChange.className = todayChange.diamond >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
         }
         if (fixedBreakthroughChange) {
-            const prefix = recentChange.breakthrough >= 0 ? '+' : '';
-            fixedBreakthroughChange.textContent = `${prefix}${recentChange.breakthrough}`;
-            fixedBreakthroughChange.className = recentChange.breakthrough >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+            const prefix = todayChange.breakthrough >= 0 ? '+' : '';
+            fixedBreakthroughChange.textContent = `${prefix}${todayChange.breakthrough}`;
+            fixedBreakthroughChange.className = todayChange.breakthrough >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
         }
         if (fixedRawstoneChange) {
-            const prefix = recentChange.rawstone >= 0 ? '+' : '';
-            fixedRawstoneChange.textContent = `${prefix}${recentChange.rawstone}`;
-            fixedRawstoneChange.className = recentChange.rawstone >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+            const prefix = todayChange.rawstone >= 0 ? '+' : '';
+            fixedRawstoneChange.textContent = `${prefix}${todayChange.rawstone}`;
+            fixedRawstoneChange.className = todayChange.rawstone >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
         }
         if (fixedPlatinumChange) {
-            const prefix = recentChange.platinum >= 0 ? '+' : '';
-            fixedPlatinumChange.textContent = `${prefix}${recentChange.platinum}`;
-            fixedPlatinumChange.className = recentChange.platinum >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+            const prefix = todayChange.platinum >= 0 ? '+' : '';
+            fixedPlatinumChange.textContent = `${prefix}${todayChange.platinum}`;
+            fixedPlatinumChange.className = todayChange.platinum >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
         }
     }
 
