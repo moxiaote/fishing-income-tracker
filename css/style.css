@@ -201,3 +201,17 @@ h1 {
     width: 100%;
     margin: 0 auto;
 }
+
+/* 正方形图表 */
+.square-chart {
+    padding-top: 100%;
+    position: relative;
+}
+
+.square-chart canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+}

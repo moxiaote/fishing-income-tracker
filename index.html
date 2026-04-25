@@ -101,35 +101,6 @@
             </div>
         </div>
 
-        <!-- 图表区域 -->
-        <div class="card">
-            <div class="card-header" data-i18n="trendChart">趋势图表</div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- 收支对比图 -->
-        <div class="card">
-            <div class="card-header" data-i18n="incomeExpenseCompare">收支对比</div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="chart-container">
-                            <canvas id="incomeExpenseChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="chart-container">
-                            <canvas id="resourcePieChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- 总量信息 -->
         <div class="card" id="totalCard">
             <div class="card-header" data-i18n="totalInfo">总量信息</div>
@@ -220,6 +191,43 @@
                     <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
                     <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
                     <input type="file" id="file-input" style="display: none;" accept=".txt">
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="row">
+            <!-- 趋势图表 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header" data-i18n="trendChart">趋势图表</div>
+                    <div class="card-body">
+                        <div class="chart-container square-chart">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 收支对比图 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header" data-i18n="incomeExpenseCompare">收支对比</div>
+                    <div class="card-body">
+                        <div class="chart-container square-chart">
+                            <canvas id="incomeExpenseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 资源分布饼图 -->
+        <div class="card">
+            <div class="card-header" data-i18n="resourceDistribution">资源分布</div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="resourcePieChart"></canvas>
                 </div>
             </div>
         </div>
