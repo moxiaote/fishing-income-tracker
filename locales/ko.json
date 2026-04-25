@@ -48,5 +48,5 @@
     "copy": "복사",
     "syncNote1": "이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.",
     "syncNote2": "네트워크가 실패하면 CORS 프록시 데모 페이지에 방문하여 임시 액세스를 얻으세요.",
-    "autoGenerate": "GitHub 로그인 후 자동 생성됩니다"
+    "autoGenerate": "GitHub 로그인 후 백업 업로드 클릭하여 생성"
 }
