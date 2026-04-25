@@ -156,15 +156,49 @@ h1 {
     color: white;
 }
 
-.stat-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.stat-label {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
     text-align: center;
 }
 
+.stat-content {
+    display: flex;
+    align-items: center;
+}
+
 .stat-icon {
-    margin: 8px 0;
+    flex: 0 0 80px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stat-icon img {
+    width: 50px;
+    height: 50px;
+    display: block;
+    margin: 0 auto;
+}
+
+.stat-value-container {
+    flex: 1;
+    text-align: right;
+    padding-left: 15px;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.stat-change {
+    font-size: 18px;
+    margin-top: 5px;
 }
 
 .stat-card.bg-primary {
@@ -182,30 +216,6 @@ h1 {
 
 .stat-card.bg-info {
     background: linear-gradient(135deg, #17a2b8, #138496);
-}
-
-.stat-icon {
-    font-size: 2rem;
-    margin-right: 15px;
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-label {
-    font-size: 0.875rem;
-    opacity: 0.9;
-}
-
-.stat-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.stat-change {
-    font-size: 0.875rem;
-    margin-top: 2px;
 }
 
 .stat-change.positive {
