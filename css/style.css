@@ -194,9 +194,23 @@ h1 {
 }
 
 .stat-value {
-    font-size: 36px;
+    font-size: 28px;
     font-weight: bold;
     line-height: 1;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+@media (max-width: 576px) {
+    .stat-value {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 992px) {
+    .stat-value {
+        font-size: 36px;
+    }
 }
 
 .stat-change {
