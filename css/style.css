@@ -238,3 +238,91 @@ h1 {
     width: 100% !important;
     height: 100% !important;
 }
+
+/* 折叠按钮图标样式 */
+.collapse-btn {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+}
+
+.collapse-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.collapse-icon .line {
+    position: absolute;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+.collapse-icon .line.horizontal {
+    width: 12px;
+    height: 2px;
+    transform: rotate(0deg);
+}
+
+.collapse-icon .line.vertical {
+    width: 2px;
+    height: 12px;
+    transform: rotate(0deg);
+}
+
+.collapse-icon .line.diagonal {
+    width: 12px;
+    height: 2px;
+    transform: rotate(45deg);
+    top: 7px;
+    left: 2px;
+}
+
+/* 折叠状态下的图标 */
+.collapse-btn[aria-expanded="false"] .collapse-icon {
+    position: relative;
+}
+
+.collapse-btn[aria-expanded="false"] .collapse-icon .line.horizontal {
+    display: none;
+}
+
+.collapse-btn[aria-expanded="false"] .collapse-icon .line.vertical {
+    display: block;
+    transform: rotate(0deg);
+}
+
+.collapse-btn[aria-expanded="false"] .collapse-icon .line.diagonal {
+    display: block;
+    transform: rotate(45deg);
+}
+
+/* 展开状态下的图标 */
+.collapse-btn[aria-expanded="true"] .collapse-icon .line.horizontal {
+    display: block;
+    transform: rotate(0deg);
+}
+
+.collapse-btn[aria-expanded="true"] .collapse-icon .line.vertical {
+    display: none;
+}
+
+.collapse-btn[aria-expanded="true"] .collapse-icon .line.diagonal {
+    display: none;
+}
+
+/* 动画效果 */
+.collapse-btn[aria-expanded="true"] .collapse-icon .line {
+    transition: all 0.3s ease;
+}
+
+.collapse-btn[aria-expanded="false"] .collapse-icon .line {
+    transition: all 0.3s ease;
+}
