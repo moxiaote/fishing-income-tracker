@@ -8,6 +8,11 @@ class I18n {
     // 检测语言
     detectLanguage() {
         const userLang = navigator.language || navigator.userLanguage;
+        // 检查是否是繁体中文
+        if (userLang === 'zh-TW' || userLang === 'zh-HK' || userLang === 'zh-MO') {
+            return 'zh-TW';
+        }
+        // 其他语言只取第一部分
         const langCode = userLang.split('-')[0];
         return langCode;
     }
@@ -18,6 +23,14 @@ class I18n {
             // 加载中文翻译
             const zhResponse = await fetch('locales/zh.json');
             this.translations.zh = await zhResponse.json();
+            
+            // 加载繁体中文翻译
+            const zhTwResponse = await fetch('locales/zh-TW.json');
+            this.translations['zh-TW'] = await zhTwResponse.json();
+            
+            // 加载英文翻译
+            const enResponse = await fetch('locales/en.json');
+            this.translations.en = await enResponse.json();
             
             // 加载越南语翻译
             const viResponse = await fetch('locales/vi.json');
@@ -66,7 +79,84 @@ class I18n {
                     first: '首页',
                     previous: '上一页',
                     next: '下一页',
-                    last: '末页'
+                    last: '末页',
+                    loadMore: '加载更多'
+                },
+                'zh-TW': {
+                    appTitle: '釣魚收入統計系統',
+                    usageTips: '使用提示：',
+                    tip1: '添加記錄後，數據會自動保存到瀏覽器中',
+                    tip2: '點擊"保存到文件"按鈕可將數據備份到本地文件',
+                    tip3: '點擊"從文件加載"按鈕可恢復之前備份的數據',
+                    tip4: '定期備份數據，以防瀏覽器數據丟失',
+                    totalInfo: '總量信息',
+                    addRecord: '添加記錄',
+                    dataManagement: '數據管理',
+                    recordDetails: '記錄明細',
+                    date: '日期',
+                    type: '類型',
+                    diamond: '鑽石',
+                    breakthrough: '突破強化券',
+                    rawstone: '原石',
+                    platinum: '白金',
+                    remark: '備註',
+                    action: '操作',
+                    income: '收入',
+                    expense: '支出',
+                    addRecordBtn: '添加記錄',
+                    saveToFile: '保存到文件',
+                    loadFromFile: '從文件加載',
+                    delete: '刪除',
+                    recordAdded: '記錄添加成功！',
+                    dataSaved: '數據已保存到 fishing_income.txt 文件',
+                    dataLoaded: '數據已從文件加載',
+                    fileFormatError: '文件格式錯誤，無法加載數據',
+                    page: '頁',
+                    of: '共',
+                    totalRecords: '總記錄數',
+                    first: '首頁',
+                    previous: '上一頁',
+                    next: '下一頁',
+                    last: '末頁',
+                    loadMore: '加載更多'
+                },
+                en: {
+                    appTitle: 'Fishing Income Tracking System',
+                    usageTips: 'Usage Tips:',
+                    tip1: 'After adding records, data will be automatically saved to the browser',
+                    tip2: 'Click the "Save to File" button to back up data to a local file',
+                    tip3: 'Click the "Load from File" button to restore previously backed up data',
+                    tip4: 'Back up data regularly to avoid browser data loss',
+                    totalInfo: 'Total Information',
+                    addRecord: 'Add Record',
+                    dataManagement: 'Data Management',
+                    recordDetails: 'Record Details',
+                    date: 'Date',
+                    type: 'Type',
+                    diamond: 'Diamond',
+                    breakthrough: 'Breakthrough Voucher',
+                    rawstone: 'Raw Stone',
+                    platinum: 'Platinum',
+                    remark: 'Remark',
+                    action: 'Action',
+                    income: 'Income',
+                    expense: 'Expense',
+                    addRecordBtn: 'Add Record',
+                    saveToFile: 'Save to File',
+                    loadFromFile: 'Load from File',
+                    delete: 'Delete',
+                    recordAdded: 'Record added successfully!',
+                    dataSaved: 'Data has been saved to fishing_income.txt',
+                    dataLoaded: 'Data has been loaded from file',
+                    fileFormatError: 'File format error, cannot load data',
+                    page: 'page',
+                    of: 'of',
+                    totalRecords: 'Total records',
+                    first: 'First',
+                    previous: 'Previous',
+                    next: 'Next',
+                    last: 'Last',
+                    loadMore: 'Load More'
                 },
                 vi: {
                     appTitle: 'Hệ thống thống kê thu nhập câu cá',
@@ -82,7 +172,7 @@ class I18n {
                     date: 'Ngày',
                     type: 'Loại',
                     diamond: 'Kim cương',
-                    breakthrough: 'Voucher突破',
+                    breakthrough: 'Voucher tăng cường',
                     rawstone: 'Nguyên đá',
                     platinum: 'Bạch kim',
                     remark: 'Ghi chú',
@@ -103,7 +193,8 @@ class I18n {
                     first: 'Trang đầu',
                     previous: 'Trang trước',
                     next: 'Trang sau',
-                    last: 'Trang cuối'
+                    last: 'Trang cuối',
+                    loadMore: 'Tải thêm'
                 }
             };
         }
