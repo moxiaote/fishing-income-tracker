@@ -291,6 +291,9 @@ class StorageManager {
             } else if (error.message.includes('404')) {
                 console.error('Gist不存在');
                 alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
+            } else if (error.message.includes('401')) {
+                console.error('GitHub API认证错误');
+                alert('同步失败: GitHub API要求身份认证。\n\n建议：\n1. 使用"保存到文件"功能作为主要的备份和同步方式\n2. 该功能仅用于测试，文件操作更加可靠');
             } else {
                 console.error('其他错误:', error);
                 alert('同步失败: ' + error.message + '\n\n建议使用"保存到文件"功能作为备用。');
@@ -348,10 +351,13 @@ class StorageManager {
                 alert('同步失败: GitHub API速率限制，请稍后再试。');
             } else if (error.message.includes('404')) {
                 console.error('Gist不存在');
-                alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
+                alert('加载失败: Gist不存在，请检查Gist ID是否正确。');
+            } else if (error.message.includes('401')) {
+                console.error('GitHub API认证错误');
+                alert('加载失败: GitHub API要求身份认证。\n\n建议：\n1. 使用"从文件加载"功能作为主要的同步方式\n2. 该功能仅用于测试，文件操作更加可靠');
             } else {
                 console.error('其他错误:', error);
-                alert('同步失败: ' + error.message);
+                alert('加载失败: ' + error.message);
             }
             return false;
         }
