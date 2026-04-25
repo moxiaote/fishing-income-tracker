@@ -3,6 +3,8 @@ class App {
     constructor() {
         this.records = [];
         this.fileName = 'fishing_income.txt';
+        this.totalCard = null;
+        this.fixedTotal = null;
     }
 
     // 初始化应用
@@ -35,6 +37,13 @@ class App {
             
             // 绑定事件
             this.bindEvents();
+            
+            // 初始化DOM元素
+            this.totalCard = document.getElementById('totalCard');
+            this.fixedTotal = document.getElementById('fixedTotal');
+            
+            // 添加滚动监听
+            this.addScrollListener();
             
             console.log('初始化成功，使用' + (storageManager.useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
         } catch (error) {
@@ -72,6 +81,30 @@ class App {
 
         // 初始化日期为今天
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
+    }
+
+    // 添加滚动监听
+    addScrollListener() {
+        window.addEventListener('scroll', () => {
+            this.handleScroll();
+        });
+        
+        // 初始检查
+        this.handleScroll();
+    }
+
+    // 处理滚动事件
+    handleScroll() {
+        if (!this.totalCard || !this.fixedTotal) return;
+        
+        const totalCardRect = this.totalCard.getBoundingClientRect();
+        
+        // 当总量信息卡片顶部移出视口时，显示固定总量信息
+        if (totalCardRect.top < 0) {
+            this.fixedTotal.style.display = 'block';
+        } else {
+            this.fixedTotal.style.display = 'none';
+        }
     }
 
     // 添加记录
@@ -220,6 +253,12 @@ class App {
         document.getElementById('total-breakthrough').textContent = total.breakthrough;
         document.getElementById('total-rawstone').textContent = total.rawstone;
         document.getElementById('total-platinum').textContent = total.platinum;
+        
+        // 更新固定总量显示
+        document.getElementById('fixed-diamond').textContent = total.diamond;
+        document.getElementById('fixed-breakthrough').textContent = total.breakthrough;
+        document.getElementById('fixed-rawstone').textContent = total.rawstone;
+        document.getElementById('fixed-platinum').textContent = total.platinum;
     }
 
     // 排序并显示

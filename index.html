@@ -13,6 +13,28 @@
     <link href="css/responsive.css" rel="stylesheet">
 </head>
 <body>
+    <!-- 固定总量信息 -->
+    <div class="fixed-total" id="fixedTotal">
+        <div class="fixed-total-content">
+            <div class="fixed-total-item">
+                <div class="fixed-total-label" data-i18n="diamond">钻石</div>
+                <div class="fixed-total-value" id="fixed-diamond">0</div>
+            </div>
+            <div class="fixed-total-item">
+                <div class="fixed-total-label" data-i18n="breakthrough">突破券</div>
+                <div class="fixed-total-value" id="fixed-breakthrough">0</div>
+            </div>
+            <div class="fixed-total-item">
+                <div class="fixed-total-label" data-i18n="rawstone">原石</div>
+                <div class="fixed-total-value" id="fixed-rawstone">0</div>
+            </div>
+            <div class="fixed-total-item">
+                <div class="fixed-total-label" data-i18n="platinum">白金</div>
+                <div class="fixed-total-value" id="fixed-platinum">0</div>
+            </div>
+        </div>
+    </div>
+
     <div class="container mt-4">
         <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
         
@@ -28,7 +50,7 @@
         </div>
 
         <!-- 总量信息 -->
-        <div class="card">
+        <div class="card" id="totalCard">
             <div class="card-header" data-i18n="totalInfo">总量信息</div>
             <div class="card-body">
                 <div class="row">
