@@ -275,7 +275,7 @@ class ChartManager {
         };
 
         records.forEach(record => {
-            const multiplier = record.type === '收入' || record.type === 'Thu nhập' ? 1 : -1;
+            const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
             total.diamond += record.diamond * multiplier;
             total.breakthrough += record.breakthrough * multiplier;
             total.rawstone += record.rawstone * multiplier;
@@ -354,12 +354,14 @@ class ChartManager {
     }
     
     // 更新图表（用于语言切换）
-    updateCharts() {
+    updateCharts(records = null) {
         console.log('更新图表标签');
         
         // 确保有记录数据
         const app = window.app;
-        if (!app || !app.records || app.records.length === 0) {
+        const chartData = records || (app ? app.records : null);
+        
+        if (!chartData || chartData.length === 0) {
             console.warn('没有记录数据，无法更新图表');
             return;
         }
@@ -373,7 +375,7 @@ class ChartManager {
             this.trendChart.data.datasets[3].label = i18n.getText('platinum');
             
             // 重新计算并更新数据
-            this.updateTrendChart(app.records);
+            this.updateTrendChart(chartData);
         }
         
         // 更新收支对比图表标签和数据
@@ -384,7 +386,7 @@ class ChartManager {
             this.incomeExpenseChart.data.datasets[1].label = i18n.getText('expense');
             
             // 重新计算并更新数据
-            this.updateIncomeExpenseChart(app.records);
+            this.updateIncomeExpenseChart(chartData);
         }
     }
 }

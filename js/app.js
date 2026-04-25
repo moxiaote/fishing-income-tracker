@@ -7,6 +7,9 @@ class App {
         this.fixedTotal = null;
         this.loadedRecords = 30; // 默认加载30条
         this.loadBatchSize = 30; // 每次加载30条
+        
+        // 暴露app实例到全局，供其他模块访问
+        window.app = this;
     }
 
     // 初始化应用
@@ -759,5 +762,7 @@ function goToPage(page) {
 
 // 语言切换函数
 function changeLanguage(lang) {
+    console.log('切换语言:', lang);
     i18n.changeLanguage(lang);
+    console.log('语言切换完成');
 }
