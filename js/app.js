@@ -501,24 +501,68 @@ class App {
         const redirectUri = 'https://moxiaote.github.io/fishing-income-tracker/';
         
         try {
-            const response = await fetch('https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    client_id: clientId,
-                    client_secret: clientSecret,
-                    code: code,
-                    redirect_uri: redirectUri
-                })
-            });
+            console.log('开始交换访问令牌...');
+            console.log('Code:', code);
             
-            const data = await response.json();
+            // 尝试使用不同的CORS代理
+            const corsProxies = [
+                'https://cors-anywhere.herokuapp.com/',
+                'https://api.allorigins.win/raw?url='
+            ];
+            
+            let response;
+            let proxyUsed;
+            
+            // 尝试每个代理，直到成功
+            for (const proxy of corsProxies) {
+                try {
+                    console.log('尝试使用代理:', proxy);
+                    const apiUrl = proxy + 'https://github.com/login/oauth/access_token';
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            client_id: clientId,
+                            client_secret: clientSecret,
+                            code: code,
+                            redirect_uri: redirectUri
+                        })
+                    });
+                    proxyUsed = proxy;
+                    console.log('代理请求成功:', proxyUsed);
+                    break;
+                } catch (proxyError) {
+                    console.error('代理请求失败:', proxy, proxyError);
+                    continue;
+                }
+            }
+            
+            if (!response) {
+                throw new Error('所有CORS代理都失败了');
+            }
+            
+            console.log('响应状态:', response.status);
+            console.log('响应头:', response.headers);
+            
+            const responseText = await response.text();
+            console.log('响应文本:', responseText);
+            
+            let data;
+            try {
+                data = JSON.parse(responseText);
+                console.log('解析后的响应数据:', data);
+            } catch (parseError) {
+                console.error('解析响应失败:', parseError);
+                throw new Error('解析响应失败: ' + parseError.message);
+            }
+            
             if (data.access_token) {
                 // 存储访问令牌
                 localStorage.setItem('github_access_token', data.access_token);
+                console.log('访问令牌存储成功');
                 alert('GitHub登录成功！');
                 // 更新UI
                 const githubLoginButton = document.getElementById('github-login');
@@ -527,11 +571,12 @@ class App {
                     githubLoginButton.disabled = true;
                 }
             } else {
-                alert('GitHub登录失败: ' + data.error);
+                console.error('登录失败:', data);
+                alert('GitHub登录失败: ' + (data.error || '未知错误'));
             }
         } catch (error) {
             console.error('交换令牌失败:', error);
-            alert('GitHub登录失败，请稍后重试。');
+            alert('GitHub登录失败，请稍后重试。\n\n错误详情: ' + error.message);
         }
     }
 
