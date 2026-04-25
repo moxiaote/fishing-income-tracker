@@ -343,20 +343,23 @@ class App {
 
     // 格式化大数字为缩写形式（如67K、1M）
     formatNumber(num) {
-        if (num >= 1000000) {
+        // 确保num是数字类型
+        const numericValue = Number(num) || 0;
+        
+        if (numericValue >= 1000000) {
             return {
-                display: (num / 1000000).toFixed(1) + 'M',
-                full: num
+                display: (numericValue / 1000000).toFixed(1) + 'M',
+                full: numericValue
             };
-        } else if (num >= 1000) {
+        } else if (numericValue >= 1000) {
             return {
-                display: (num / 1000).toFixed(1) + 'K',
-                full: num
+                display: (numericValue / 1000).toFixed(1) + 'K',
+                full: numericValue
             };
         } else {
             return {
-                display: num.toString(),
-                full: num
+                display: numericValue.toString(),
+                full: numericValue
             };
         }
     }
