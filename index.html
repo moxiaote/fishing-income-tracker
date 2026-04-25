@@ -65,7 +65,7 @@
             </div>
             
             <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
-            </div>
+        </div>
         
         <!-- 提示信息 -->
         <div class="alert alert-info">
@@ -79,7 +79,7 @@
         </div>
 
         <!-- 总量信息 -->
-        <div class="card" id="statsCard">
+        <div class="card mb-3" id="statsCard">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span data-i18n="totalInfo">总量信息</span>
                 <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#total-info-section" aria-expanded="true" aria-controls="total-info-section" style="font-size: 1.2em;">
@@ -88,51 +88,52 @@
             </div>
             <div class="collapse show" id="total-info-section">
                 <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="stat-card">
-                            <div class="stat-label" data-i18n="diamond">钻石</div>
-                            <div class="stat-content">
-                                <div class="stat-icon"><img src="images/钻石.png" alt="钻石"></div>
-                                <div class="stat-value-container">
-                                    <div class="stat-value" id="stat-diamond">0</div>
-                                    <div class="stat-change positive" id="stat-diamond-change">+0</div>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card">
+                                <div class="stat-label" data-i18n="diamond">钻石</div>
+                                <div class="stat-content">
+                                    <div class="stat-icon"><img src="images/钻石.png" alt="钻石"></div>
+                                    <div class="stat-value-container">
+                                        <div class="stat-value" id="stat-diamond">0</div>
+                                        <div class="stat-change positive" id="stat-diamond-change">+0</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="stat-card">
-                            <div class="stat-label" data-i18n="breakthrough">突破券</div>
-                            <div class="stat-content">
-                                <div class="stat-icon"><img src="images/突破券.png" alt="突破券"></div>
-                                <div class="stat-value-container">
-                                    <div class="stat-value" id="stat-breakthrough">0</div>
-                                    <div class="stat-change positive" id="stat-breakthrough-change">+0</div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card">
+                                <div class="stat-label" data-i18n="breakthrough">突破券</div>
+                                <div class="stat-content">
+                                    <div class="stat-icon"><img src="images/突破券.png" alt="突破券"></div>
+                                    <div class="stat-value-container">
+                                        <div class="stat-value" id="stat-breakthrough">0</div>
+                                        <div class="stat-change positive" id="stat-breakthrough-change">+0</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="stat-card">
-                            <div class="stat-label" data-i18n="rawstone">原石</div>
-                            <div class="stat-content">
-                                <div class="stat-icon"><img src="images/原石.png" alt="原石"></div>
-                                <div class="stat-value-container">
-                                    <div class="stat-value" id="stat-rawstone">0</div>
-                                    <div class="stat-change positive" id="stat-rawstone-change">+0</div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card">
+                                <div class="stat-label" data-i18n="rawstone">原石</div>
+                                <div class="stat-content">
+                                    <div class="stat-icon"><img src="images/原石.png" alt="原石"></div>
+                                    <div class="stat-value-container">
+                                        <div class="stat-value" id="stat-rawstone">0</div>
+                                        <div class="stat-change positive" id="stat-rawstone-change">+0</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="stat-card">
-                            <div class="stat-label" data-i18n="platinum">白金</div>
-                            <div class="stat-content">
-                                <div class="stat-icon"><img src="images/白金.png" alt="白金"></div>
-                                <div class="stat-value-container">
-                                    <div class="stat-value" id="stat-platinum">0</div>
-                                    <div class="stat-change positive" id="stat-platinum-change">+0</div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stat-card">
+                                <div class="stat-label" data-i18n="platinum">白金</div>
+                                <div class="stat-content">
+                                    <div class="stat-icon"><img src="images/白金.png" alt="白金"></div>
+                                    <div class="stat-value-container">
+                                        <div class="stat-value" id="stat-platinum">0</div>
+                                        <div class="stat-change positive" id="stat-platinum-change">+0</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +143,7 @@
         </div>
 
         <!-- 添加记录表单 -->
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span data-i18n="addRecord">添加记录</span>
                 <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#add-record-section" aria-expanded="true" aria-controls="add-record-section" style="font-size: 1.2em;">
@@ -152,45 +153,45 @@
             <div class="collapse show" id="add-record-section">
                 <div class="card-body">
                     <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="date" class="form-label mb-0" data-i18n="date">日期</label>
-                        <input type="date" class="form-control" id="date">
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="type" class="form-label mb-0" data-i18n="type">类型</label>
-                        <select class="form-control" id="type">
-                            <option value="收入" data-i18n="income">收入</option>
-                            <option value="支出" data-i18n="expense">支出</option>
-                        </select>
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="diamond" class="form-label mb-0" data-i18n="diamond">钻石</label>
-                        <input type="number" class="form-control" id="diamond" min="0" style="width: 70px;">
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="breakthrough" class="form-label mb-0" data-i18n="breakthrough">突破券</label>
-                        <input type="number" class="form-control" id="breakthrough" min="0" style="width: 70px;">
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="rawstone" class="form-label mb-0" data-i18n="rawstone">原石</label>
-                        <input type="number" class="form-control" id="rawstone" min="0" style="width: 70px;">
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="platinum" class="form-label mb-0" data-i18n="platinum">白金</label>
-                        <input type="number" class="form-control" id="platinum" min="0" style="width: 70px;">
-                    </div>
-                    <div class="d-flex align-items-center gap-1">
-                        <label for="remark" class="form-label mb-0" data-i18n="remark">备注</label>
-                        <input type="text" class="form-control" id="remark" style="width: 120px;">
-                    </div>
-                    <button type="submit" class="btn btn-primary" data-i18n="addRecordBtn">添加记录</button>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="date" class="form-label mb-0" data-i18n="date">日期</label>
+                            <input type="date" class="form-control" id="date">
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="type" class="form-label mb-0" data-i18n="type">类型</label>
+                            <select class="form-control" id="type">
+                                <option value="收入" data-i18n="income">收入</option>
+                                <option value="支出" data-i18n="expense">支出</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="diamond" class="form-label mb-0" data-i18n="diamond">钻石</label>
+                            <input type="number" class="form-control" id="diamond" min="0" style="width: 70px;">
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="breakthrough" class="form-label mb-0" data-i18n="breakthrough">突破券</label>
+                            <input type="number" class="form-control" id="breakthrough" min="0" style="width: 70px;">
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="rawstone" class="form-label mb-0" data-i18n="rawstone">原石</label>
+                            <input type="number" class="form-control" id="rawstone" min="0" style="width: 70px;">
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="platinum" class="form-label mb-0" data-i18n="platinum">白金</label>
+                            <input type="number" class="form-control" id="platinum" min="0" style="width: 70px;">
+                        </div>
+                        <div class="d-flex align-items-center gap-1">
+                            <label for="remark" class="form-label mb-0" data-i18n="remark">备注</label>
+                            <input type="text" class="form-control" id="remark" style="width: 120px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-i18n="addRecordBtn">添加记录</button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- 文件操作按钮 -->
-        <div class="card">
+        <!-- 数据管理 -->
+        <div class="card mb-3">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span data-i18n="dataManagement">数据管理</span>
                 <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#data-management-section" aria-expanded="true" aria-controls="data-management-section" style="font-size: 1.2em;">
@@ -200,103 +201,102 @@
             <div class="collapse show" id="data-management-section">
                 <div class="card-body">
                     <div class="mb-4">
-                    <h6 data-i18n="fileOperations">文件操作</h6>
-                    <div class="d-flex gap-2">
-                        <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
-                        <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
-                        <input type="file" id="file-input" style="display: none;" accept=".txt">
+                        <h6 data-i18n="fileOperations">文件操作</h6>
+                        <div class="d-flex gap-2">
+                            <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
+                            <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
+                            <input type="file" id="file-input" style="display: none;" accept=".txt">
+                        </div>
+                    </div>
+                    
+                    <div class="border-top border-secondary pt-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6>
+                                <span class="lang-zh">Gist 同步功能</span>
+                                <span class="lang-zh-TW">Gist 同步功能</span>
+                                <span class="lang-en">Gist Sync</span>
+                                <span class="lang-ko">Gist 동기화 기능</span>
+                                <span class="lang-vi">Chức năng đồng bộ Gist</span>
+                                <span class="text-muted small">
+                                    <span class="lang-zh">(实验室)</span>
+                                    <span class="lang-zh-TW">(實驗室)</span>
+                                    <span class="lang-en">(Laboratory)</span>
+                                    <span class="lang-ko">(실험실)</span>
+                                    <span class="lang-vi">(Phòng thí nghiệm)</span>
+                                </span>
+                            </h6>
+                            <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section" style="font-size: 1.2em;">
+                                v
+                            </button>
+                        </div>
+                        <div class="collapse" id="gist-sync-section">
+                            <div class="d-flex gap-2 mb-3">
+                                <button id="github-login" class="btn btn-outline-secondary">
+                                    <span class="lang-zh">GitHub登录</span>
+                                    <span class="lang-zh-TW">GitHub登錄</span>
+                                    <span class="lang-en">GitHub Login</span>
+                                    <span class="lang-ko">GitHub 로그인</span>
+                                    <span class="lang-vi">Đăng nhập GitHub</span>
+                                </button>
+                                <button id="load-from-gist" class="btn btn-outline-primary">
+                                    <span class="lang-zh">从Gist ID加载</span>
+                                    <span class="lang-zh-TW">從Gist ID加載</span>
+                                    <span class="lang-en">Load from Gist ID</span>
+                                    <span class="lang-ko">Gist ID에서 로드</span>
+                                    <span class="lang-vi">Tải từ Gist ID</span>
+                                </button>
+                                <button id="sync-to-cloud" class="btn btn-outline-primary">
+                                    <span class="lang-zh">上传备份</span>
+                                    <span class="lang-zh-TW">上傳備份</span>
+                                    <span class="lang-en">Upload Backup</span>
+                                    <span class="lang-ko">백업 업로드</span>
+                                    <span class="lang-vi">Tải lên sao lưu</span>
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="gist-id" class="form-label mb-0">
+                                    <span class="lang-zh">Gist ID</span>
+                                    <span class="lang-zh-TW">Gist ID</span>
+                                    <span class="lang-en">Gist ID</span>
+                                    <span class="lang-ko">Gist ID</span>
+                                    <span class="lang-vi">Gist ID</span>
+                                </label>
+                                <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
+                                <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">
+                                    <span class="lang-zh">复制</span>
+                                    <span class="lang-zh-TW">複製</span>
+                                    <span class="lang-en">Copy</span>
+                                    <span class="lang-ko">복사</span>
+                                    <span class="lang-vi">Sao chép</span>
+                                </button>
+                            </div>
+                            <div class="mt-2 text-sm text-muted">
+                                <p>
+                                    <span class="lang-zh">此功能处于测试阶段，可能会遇到同步失败的情况。</span>
+                                    <span class="lang-zh-TW">此功能處於測試階段，可能會遇到同步失敗的情況。</span>
+                                    <span class="lang-en">This feature is in testing phase and may encounter sync failures.</span>
+                                    <span class="lang-ko">이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.</span>
+                                    <span class="lang-vi">Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.</span>
+                                </p>
+                                <p>
+                                    <span class="lang-zh">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</span>
+                                    <span class="lang-zh-TW">如遇網路失敗，請訪問 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示頁面</a> 獲取臨時許可權。</span>
+                                    <span class="lang-en">If network fails, please visit <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS proxy demo page</a> to get temporary access.</span>
+                                    <span class="lang-ko">네트워크가 실패하면 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS 프록시 데모 페이지</a>에 방문하여 임시 액세스를 얻으세요.</span>
+                                    <span class="lang-vi">Nếu mạng lỗi, hãy truy cập <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">trang demo proxy CORS</a> để lấy quyền truy cập tạm thời.</span>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="border-top border-secondary pt-4 mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6>
-                            <span class="lang-zh">Gist 同步功能</span>
-                            <span class="lang-zh-TW">Gist 同步功能</span>
-                            <span class="lang-en">Gist Sync</span>
-                            <span class="lang-ko">Gist 동기화 기능</span>
-                            <span class="lang-vi">Chức năng đồng bộ Gist</span>
-                            <span class="text-muted small">
-                                <span class="lang-zh">(实验室)</span>
-                                <span class="lang-zh-TW">(實驗室)</span>
-                                <span class="lang-en">(Laboratory)</span>
-                                <span class="lang-ko">(실험실)</span>
-                                <span class="lang-vi">(Phòng thí nghiệm)</span>
-                            </span>
-                        </h6>
-                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section" style="font-size: 1.2em;">
-                            v
-                        </button>
-                    </div>
-                    <div class="collapse" id="gist-sync-section">
-                        <div class="d-flex gap-2 mb-3">
-                            <button id="github-login" class="btn btn-outline-secondary">
-                                <span class="lang-zh">GitHub登录</span>
-                                <span class="lang-zh-TW">GitHub登錄</span>
-                                <span class="lang-en">GitHub Login</span>
-                                <span class="lang-ko">GitHub 로그인</span>
-                                <span class="lang-vi">Đăng nhập GitHub</span>
-                            </button>
-                            <button id="load-from-gist" class="btn btn-outline-primary">
-                                <span class="lang-zh">从Gist ID加载</span>
-                                <span class="lang-zh-TW">從Gist ID加載</span>
-                                <span class="lang-en">Load from Gist ID</span>
-                                <span class="lang-ko">Gist ID에서 로드</span>
-                                <span class="lang-vi">Tải từ Gist ID</span>
-                            </button>
-                            <button id="sync-to-cloud" class="btn btn-outline-primary">
-                                <span class="lang-zh">上传备份</span>
-                                <span class="lang-zh-TW">上傳備份</span>
-                                <span class="lang-en">Upload Backup</span>
-                                <span class="lang-ko">백업 업로드</span>
-                                <span class="lang-vi">Tải lên sao lưu</span>
-                            </button>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <label for="gist-id" class="form-label mb-0">
-                                <span class="lang-zh">Gist ID</span>
-                                <span class="lang-zh-TW">Gist ID</span>
-                                <span class="lang-en">Gist ID</span>
-                                <span class="lang-ko">Gist ID</span>
-                                <span class="lang-vi">Gist ID</span>
-                            </label>
-                            <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
-                            <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">
-                                <span class="lang-zh">复制</span>
-                                <span class="lang-zh-TW">複製</span>
-                                <span class="lang-en">Copy</span>
-                                <span class="lang-ko">복사</span>
-                                <span class="lang-vi">Sao chép</span>
-                            </button>
-                        </div>
-                        <div class="mt-2 text-sm text-muted">
-                            <p>
-                                <span class="lang-zh">此功能处于测试阶段，可能会遇到同步失败的情况。</span>
-                                <span class="lang-zh-TW">此功能處於測試階段，可能會遇到同步失敗的情況。</span>
-                                <span class="lang-en">This feature is in testing phase and may encounter sync failures.</span>
-                                <span class="lang-ko">이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.</span>
-                                <span class="lang-vi">Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.</span>
-                            </p>
-                            <p>
-                                <span class="lang-zh">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</span>
-                                <span class="lang-zh-TW">如遇網路失敗，請訪問 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示頁面</a> 獲取臨時許可權。</span>
-                                <span class="lang-en">If network fails, please visit <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS proxy demo page</a> to get temporary access.</span>
-                                <span class="lang-ko">네트워크가 실패하면 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS 프록시 데모 페이지</a>에 방문하여 임시 액세스를 얻으세요.</span>
-                                <span class="lang-vi">Nếu mạng lỗi, hãy truy cập <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">trang demo proxy CORS</a> để lấy quyền truy cập tạm thời.</span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-
             </div>
         </div>
 
         <!-- 图表区域 -->
-        <div class="row g-4">
+        <div class="row mb-3">
             <!-- 趋势图表 -->
-            <div class="col-lg-6 col-md-6">
-                <div class="card">
+            <div class="col-md-6">
+                <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span data-i18n="trendChart">趋势图表</span>
                         <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#trend-chart-section" aria-expanded="true" aria-controls="trend-chart-section" style="font-size: 1.2em;">
@@ -305,16 +305,17 @@
                     </div>
                     <div class="collapse show" id="trend-chart-section">
                         <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="trendChart"></canvas>
+                            <div class="chart-container">
+                                <canvas id="trendChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- 收支对比图 -->
-            <div class="col-lg-6 col-md-6">
-                <div class="card">
+            <div class="col-md-6">
+                <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span data-i18n="incomeExpenseCompare">收支对比</span>
                         <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#income-expense-section" aria-expanded="true" aria-controls="income-expense-section" style="font-size: 1.2em;">
@@ -323,8 +324,9 @@
                     </div>
                     <div class="collapse show" id="income-expense-section">
                         <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="incomeExpenseChart"></canvas>
+                            <div class="chart-container">
+                                <canvas id="incomeExpenseChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -341,29 +343,29 @@
             </div>
             <div class="collapse show" id="record-details-section">
                 <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th onclick="sortBy('date')" data-i18n="date">日期 <span class="sort-indicator" id="sort-date">↓</span></th>
-                                <th onclick="sortBy('type')" data-i18n="type">类型 <span class="sort-indicator" id="sort-type"></span></th>
-                                <th onclick="sortBy('diamond')" data-i18n="diamond">钻石 <span class="sort-indicator" id="sort-diamond"></span></th>
-                                <th onclick="sortBy('breakthrough')" data-i18n="breakthrough">突破券 <span class="sort-indicator" id="sort-breakthrough"></span></th>
-                                <th onclick="sortBy('rawstone')" data-i18n="rawstone">原石 <span class="sort-indicator" id="sort-rawstone"></span></th>
-                                <th onclick="sortBy('platinum')" data-i18n="platinum">白金 <span class="sort-indicator" id="sort-platinum"></span></th>
-                                <th data-i18n="remark">备注</th>
-                                <th data-i18n="action">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="records-table">
-                            <!-- 记录将通过JavaScript动态添加 -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- 加载更多按钮 -->
-                <div class="text-center mt-3" id="load-more-container">
-                    <button id="load-more" class="btn btn-outline-primary" data-i18n="loadMore">加载更多</button>
-                </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortBy('date')" data-i18n="date">日期 <span class="sort-indicator" id="sort-date">↓</span></th>
+                                    <th onclick="sortBy('type')" data-i18n="type">类型 <span class="sort-indicator" id="sort-type"></span></th>
+                                    <th onclick="sortBy('diamond')" data-i18n="diamond">钻石 <span class="sort-indicator" id="sort-diamond"></span></th>
+                                    <th onclick="sortBy('breakthrough')" data-i18n="breakthrough">突破券 <span class="sort-indicator" id="sort-breakthrough"></span></th>
+                                    <th onclick="sortBy('rawstone')" data-i18n="rawstone">原石 <span class="sort-indicator" id="sort-rawstone"></span></th>
+                                    <th onclick="sortBy('platinum')" data-i18n="platinum">白金 <span class="sort-indicator" id="sort-platinum"></span></th>
+                                    <th data-i18n="remark">备注</th>
+                                    <th data-i18n="action">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-table">
+                                <!-- 记录将通过JavaScript动态添加 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 加载更多按钮 -->
+                    <div class="text-center mt-3" id="load-more-container">
+                        <button id="load-more" class="btn btn-outline-primary" data-i18n="loadMore">加载更多</button>
+                    </div>
                 </div>
             </div>
         </div>
