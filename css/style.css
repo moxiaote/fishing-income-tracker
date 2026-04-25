@@ -194,7 +194,7 @@ h1 {
 }
 
 .stat-value {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
     line-height: 1;
     word-wrap: break-word;
@@ -205,19 +205,31 @@ h1 {
 
 @media (max-width: 576px) {
     .stat-value {
-        font-size: 20px;
+        font-size: 16px;
     }
 }
 
 @media (min-width: 992px) {
     .stat-value {
-        font-size: 28px;
+        font-size: 24px;
     }
 }
 
 .stat-change {
-    font-size: 18px;
+    font-size: 16px;
     margin-top: 5px;
+}
+
+@media (max-width: 576px) {
+    .stat-change {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 992px) {
+    .stat-change {
+        font-size: 18px;
+    }
 }
 
 .stat-card.bg-primary,
