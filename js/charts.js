@@ -204,7 +204,7 @@ class ChartManager {
         dates.forEach(date => {
             const dayRecord = dailyData[date];
             dayRecord.forEach(record => {
-                const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
+                const multiplier = (record.type === '收入') ? 1 : -1;
                 cumulative.diamond += record.diamond * multiplier;
                 cumulative.breakthrough += record.breakthrough * multiplier;
                 cumulative.rawstone += record.rawstone * multiplier;
@@ -235,7 +235,7 @@ class ChartManager {
         const expense = [0, 0, 0, 0];
 
         records.forEach(record => {
-            if (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') {
+            if (record.type === '收入') {
                 income[0] += record.diamond;
                 income[1] += record.breakthrough;
                 income[2] += record.rawstone;
@@ -315,7 +315,7 @@ class ChartManager {
 
         records.forEach(record => {
             if (record.date === targetDate) {
-                const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
+                const multiplier = (record.type === '收入') ? 1 : -1;
                 dailyChange.diamond += record.diamond * multiplier;
                 dailyChange.breakthrough += record.breakthrough * multiplier;
                 dailyChange.rawstone += record.rawstone * multiplier;

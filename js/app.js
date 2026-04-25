@@ -351,7 +351,7 @@ class App {
         };
 
         this.records.forEach(record => {
-            const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
+            const multiplier = (record.type === '收入') ? 1 : -1;
             total.diamond += record.diamond * multiplier;
             total.breakthrough += record.breakthrough * multiplier;
             total.rawstone += record.rawstone * multiplier;
@@ -369,7 +369,7 @@ class App {
 
         this.records.forEach(record => {
             if (record.date === today) {
-                const multiplier = (record.type === '收入' || record.type === 'Thu nhập' || record.type === 'Income' || record.type === '수입') ? 1 : -1;
+                const multiplier = (record.type === '收入') ? 1 : -1;
                 todayChange.diamond += record.diamond * multiplier;
                 todayChange.breakthrough += record.breakthrough * multiplier;
                 todayChange.rawstone += record.rawstone * multiplier;
