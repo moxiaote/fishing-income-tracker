@@ -662,7 +662,8 @@
                 remark: document.getElementById('remark').value
             };
 
-            records.push(record);
+            // 将新记录添加到数组开头，使最新的记录显示在最上面
+            records.unshift(record);
             saveRecords(records);
 
             // 重置表单
