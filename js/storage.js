@@ -201,6 +201,15 @@ class StorageManager {
     async syncToGist() {
         try {
             console.log('开始同步到Gist...');
+            
+            // 检查访问令牌
+            const accessToken = localStorage.getItem('github_access_token');
+            console.log('访问令牌:', accessToken ? '存在' : '不存在');
+            
+            if (!accessToken) {
+                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+            }
+            
             const records = await this.loadRecords();
             console.log('加载记录成功:', records.length, '条');
             
@@ -210,81 +219,129 @@ class StorageManager {
                 timestamp: new Date().toISOString()
             };
 
-            // 使用CORS代理解决跨域问题
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            // 尝试使用不同的CORS代理
+            const corsProxies = [
+                'https://cors-anywhere.herokuapp.com/',
+                'https://api.allorigins.win/raw?url='
+            ];
             const githubApiBase = 'https://api.github.com';
-
-            // 获取GitHub访问令牌
-            const accessToken = localStorage.getItem('github_access_token');
 
             // 构建请求选项
             const requestOptions = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': `token ${accessToken}`
                 },
                 mode: 'cors',
                 cache: 'no-cache'
             };
 
-            // 如果有访问令牌，添加到请求头
-            if (accessToken) {
-                requestOptions.headers['Authorization'] = `token ${accessToken}`;
-                console.log('使用GitHub访问令牌进行认证');
-            }
+            console.log('使用GitHub访问令牌进行认证');
 
+            let response;
+            let proxyUsed;
+            
             if (!this.gistId) {
                 console.log('创建新Gist...');
-                // 创建新Gist
-                const response = await fetch(corsProxy + githubApiBase + '/gists', {
-                    ...requestOptions,
-                    body: JSON.stringify({
-                        description: 'Fishing Income Data',
-                        public: false,
-                        files: {
-                            'data.json': {
-                                content: JSON.stringify(data, null, 2)
-                            }
-                        }
-                    })
-                });
-
-                console.log('创建Gist响应状态:', response.status);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('创建Gist失败详情:', errorText);
-                    throw new Error(`创建Gist失败: ${response.status} - ${errorText}`);
+                // 尝试每个代理，直到成功
+                for (const proxy of corsProxies) {
+                    try {
+                        console.log('尝试使用代理:', proxy);
+                        const apiUrl = proxy + githubApiBase + '/gists';
+                        response = await fetch(apiUrl, {
+                            ...requestOptions,
+                            body: JSON.stringify({
+                                description: 'Fishing Income Data',
+                                public: false,
+                                files: {
+                                    'data.json': {
+                                        content: JSON.stringify(data, null, 2)
+                                    }
+                                }
+                            })
+                        });
+                        proxyUsed = proxy;
+                        console.log('代理请求成功:', proxyUsed);
+                        break;
+                    } catch (proxyError) {
+                        console.error('代理请求失败:', proxy, proxyError);
+                        continue;
+                    }
                 }
 
-                const gistData = await response.json();
-                console.log('Gist创建成功:', gistData);
+                if (!response) {
+                    throw new Error('所有CORS代理都失败了');
+                }
+
+                console.log('创建Gist响应状态:', response.status);
+                
+                const responseText = await response.text();
+                console.log('创建Gist响应文本:', responseText);
+                
+                if (!response.ok) {
+                    throw new Error(`创建Gist失败: ${response.status} - ${responseText}`);
+                }
+
+                let gistData;
+                try {
+                    gistData = JSON.parse(responseText);
+                    console.log('Gist创建成功:', gistData);
+                } catch (parseError) {
+                    throw new Error('解析Gist响应失败: ' + parseError.message);
+                }
+                
                 this.gistId = gistData.id;
                 localStorage.setItem('gistId', this.gistId);
                 console.log('Gist ID保存成功:', this.gistId);
+                
+                // 显示成功提示
+                alert('Gist创建成功！Gist ID: ' + this.gistId);
             } else {
                 console.log('更新现有Gist:', this.gistId);
-                // 更新现有Gist
-                const response = await fetch(corsProxy + githubApiBase + `/gists/${this.gistId}`, {
-                    ...requestOptions,
-                    method: 'PATCH',
-                    body: JSON.stringify({
-                        files: {
-                            'data.json': {
-                                content: JSON.stringify(data, null, 2)
-                            }
-                        }
-                    })
-                });
+                // 尝试每个代理，直到成功
+                for (const proxy of corsProxies) {
+                    try {
+                        console.log('尝试使用代理:', proxy);
+                        const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
+                        response = await fetch(apiUrl, {
+                            ...requestOptions,
+                            method: 'PATCH',
+                            body: JSON.stringify({
+                                files: {
+                                    'data.json': {
+                                        content: JSON.stringify(data, null, 2)
+                                    }
+                                }
+                            })
+                        });
+                        proxyUsed = proxy;
+                        console.log('代理请求成功:', proxyUsed);
+                        break;
+                    } catch (proxyError) {
+                        console.error('代理请求失败:', proxy, proxyError);
+                        continue;
+                    }
+                }
+
+                if (!response) {
+                    throw new Error('所有CORS代理都失败了');
+                }
 
                 console.log('更新Gist响应状态:', response.status);
+                
+                const responseText = await response.text();
+                console.log('更新Gist响应文本:', responseText);
+                
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('更新Gist失败详情:', errorText);
-                    throw new Error(`更新Gist失败: ${response.status} - ${errorText}`);
+                    throw new Error(`更新Gist失败: ${response.status} - ${responseText}`);
                 }
 
                 console.log('Gist更新成功:', this.gistId);
+                
+                // 显示成功提示
+                alert('Gist更新成功！Gist ID: ' + this.gistId);
             }
 
             return true;
@@ -303,6 +360,9 @@ class StorageManager {
             } else if (error.message.includes('401')) {
                 console.error('GitHub API认证错误');
                 alert('同步失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"保存到文件"功能作为备用');
+            } else if (error.message.includes('未找到GitHub访问令牌')) {
+                console.error('访问令牌缺失');
+                alert('同步失败: 未找到GitHub访问令牌，请先登录GitHub。');
             } else {
                 console.error('其他错误:', error);
                 alert('同步失败: ' + error.message + '\n\n建议使用"保存到文件"功能作为备用。');
@@ -319,42 +379,99 @@ class StorageManager {
                 return false;
             }
 
-            // 使用CORS代理解决跨域问题
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const githubApiBase = 'https://api.github.com';
-
-            // 获取GitHub访问令牌
+            // 检查访问令牌
             const accessToken = localStorage.getItem('github_access_token');
+            console.log('访问令牌:', accessToken ? '存在' : '不存在');
+            
+            if (!accessToken) {
+                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+            }
+
+            // 尝试使用不同的CORS代理
+            const corsProxies = [
+                'https://cors-anywhere.herokuapp.com/',
+                'https://api.allorigins.win/raw?url='
+            ];
+            const githubApiBase = 'https://api.github.com';
 
             // 构建请求选项
             const requestOptions = {
                 method: 'GET',
                 headers: {
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Authorization': `token ${accessToken}`
                 },
                 mode: 'cors',
                 cache: 'no-cache'
             };
 
-            // 如果有访问令牌，添加到请求头
-            if (accessToken) {
-                requestOptions.headers['Authorization'] = `token ${accessToken}`;
-                console.log('使用GitHub访问令牌进行认证');
+            console.log('使用GitHub访问令牌进行认证');
+
+            let response;
+            let proxyUsed;
+            
+            // 尝试每个代理，直到成功
+            for (const proxy of corsProxies) {
+                try {
+                    console.log('尝试使用代理:', proxy);
+                    const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
+                    response = await fetch(apiUrl, requestOptions);
+                    proxyUsed = proxy;
+                    console.log('代理请求成功:', proxyUsed);
+                    break;
+                } catch (proxyError) {
+                    console.error('代理请求失败:', proxy, proxyError);
+                    continue;
+                }
             }
 
-            const response = await fetch(corsProxy + githubApiBase + `/gists/${this.gistId}`, requestOptions);
+            if (!response) {
+                throw new Error('所有CORS代理都失败了');
+            }
+
+            console.log('获取Gist响应状态:', response.status);
+            
+            const responseText = await response.text();
+            console.log('获取Gist响应文本:', responseText);
+            
             if (!response.ok) {
-                throw new Error(`获取Gist失败: ${response.status}`);
+                throw new Error(`获取Gist失败: ${response.status} - ${responseText}`);
             }
 
-            const gistData = await response.json();
+            let gistData;
+            try {
+                gistData = JSON.parse(responseText);
+                console.log('Gist数据获取成功:', gistData);
+            } catch (parseError) {
+                throw new Error('解析Gist响应失败: ' + parseError.message);
+            }
+
+            if (!gistData.files || !gistData.files['data.json']) {
+                throw new Error('Gist中不存在data.json文件');
+            }
+
             const content = gistData.files['data.json'].content;
-            const parsedData = JSON.parse(content);
+            console.log('data.json内容:', content);
+            
+            let parsedData;
+            try {
+                parsedData = JSON.parse(content);
+                console.log('解析data.json成功:', parsedData);
+            } catch (parseError) {
+                throw new Error('解析data.json失败: ' + parseError.message);
+            }
 
             if (parsedData.records) {
+                console.log('找到记录:', parsedData.records.length, '条');
                 await this.saveRecords(parsedData.records);
                 console.log('从Gist同步成功');
+                
+                // 显示成功提示
+                alert('从Gist同步成功！加载了 ' + parsedData.records.length + ' 条记录。');
+                
                 return true;
+            } else {
+                throw new Error('Gist中没有找到records数据');
             }
 
             return false;
@@ -373,6 +490,9 @@ class StorageManager {
             } else if (error.message.includes('401')) {
                 console.error('GitHub API认证错误');
                 alert('加载失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"从文件加载"功能作为备用');
+            } else if (error.message.includes('未找到GitHub访问令牌')) {
+                console.error('访问令牌缺失');
+                alert('同步失败: 未找到GitHub访问令牌，请先登录GitHub。');
             } else {
                 console.error('其他错误:', error);
                 alert('加载失败: ' + error.message);
@@ -384,25 +504,46 @@ class StorageManager {
     // 从Gist ID加载数据
     async loadFromGist() {
         try {
+            console.log('开始从Gist ID加载数据...');
+            
             // 提示用户输入目标设备的Gist ID
             const gistId = prompt('请输入Gist ID:');
-            if (!gistId) return false;
+            if (!gistId) {
+                console.log('用户取消输入Gist ID');
+                return false;
+            }
+            
+            console.log('用户输入的Gist ID:', gistId);
+            
+            // 检查访问令牌
+            const accessToken = localStorage.getItem('github_access_token');
+            console.log('访问令牌:', accessToken ? '存在' : '不存在');
+            
+            if (!accessToken) {
+                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+            }
             
             // 临时保存当前Gist ID
             const originalGistId = this.gistId;
+            console.log('原始Gist ID:', originalGistId);
             
             // 临时设置为目标设备的Gist ID
             this.gistId = gistId;
+            console.log('临时设置的Gist ID:', this.gistId);
             
             // 尝试从Gist同步数据
+            console.log('开始同步数据...');
             const synced = await this.syncFromGist();
+            console.log('同步结果:', synced);
             
             // 恢复原始Gist ID
             this.gistId = originalGistId;
+            console.log('恢复原始Gist ID:', this.gistId);
             
             return synced;
         } catch (error) {
             console.error('从Gist ID加载失败:', error);
+            alert('加载失败: ' + error.message);
             return false;
         }
     }
