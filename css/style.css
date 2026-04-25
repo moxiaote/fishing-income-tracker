@@ -217,14 +217,12 @@ h1 {
 
 /* 正方形图表 */
 .square-chart {
-    padding-top: 100%;
     position: relative;
+    min-height: 300px;
+    height: 400px;
 }
 
 .square-chart canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100% !important;
     height: 100% !important;
 }
