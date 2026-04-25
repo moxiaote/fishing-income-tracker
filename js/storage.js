@@ -214,6 +214,9 @@ class StorageManager {
             const corsProxy = 'https://cors-anywhere.herokuapp.com/';
             const githubApiBase = 'https://api.github.com';
 
+            // 获取GitHub访问令牌
+            const accessToken = localStorage.getItem('github_access_token');
+
             // 构建请求选项
             const requestOptions = {
                 method: 'POST',
@@ -224,6 +227,12 @@ class StorageManager {
                 mode: 'cors',
                 cache: 'no-cache'
             };
+
+            // 如果有访问令牌，添加到请求头
+            if (accessToken) {
+                requestOptions.headers['Authorization'] = `token ${accessToken}`;
+                console.log('使用GitHub访问令牌进行认证');
+            }
 
             if (!this.gistId) {
                 console.log('创建新Gist...');
@@ -293,7 +302,7 @@ class StorageManager {
                 alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
             } else if (error.message.includes('401')) {
                 console.error('GitHub API认证错误');
-                alert('同步失败: GitHub API要求身份认证。\n\n建议：\n1. 使用"保存到文件"功能作为主要的备份和同步方式\n2. 该功能仅用于测试，文件操作更加可靠');
+                alert('同步失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"保存到文件"功能作为备用');
             } else {
                 console.error('其他错误:', error);
                 alert('同步失败: ' + error.message + '\n\n建议使用"保存到文件"功能作为备用。');
@@ -314,6 +323,9 @@ class StorageManager {
             const corsProxy = 'https://cors-anywhere.herokuapp.com/';
             const githubApiBase = 'https://api.github.com';
 
+            // 获取GitHub访问令牌
+            const accessToken = localStorage.getItem('github_access_token');
+
             // 构建请求选项
             const requestOptions = {
                 method: 'GET',
@@ -323,6 +335,12 @@ class StorageManager {
                 mode: 'cors',
                 cache: 'no-cache'
             };
+
+            // 如果有访问令牌，添加到请求头
+            if (accessToken) {
+                requestOptions.headers['Authorization'] = `token ${accessToken}`;
+                console.log('使用GitHub访问令牌进行认证');
+            }
 
             const response = await fetch(corsProxy + githubApiBase + `/gists/${this.gistId}`, requestOptions);
             if (!response.ok) {
@@ -354,7 +372,7 @@ class StorageManager {
                 alert('加载失败: Gist不存在，请检查Gist ID是否正确。');
             } else if (error.message.includes('401')) {
                 console.error('GitHub API认证错误');
-                alert('加载失败: GitHub API要求身份认证。\n\n建议：\n1. 使用"从文件加载"功能作为主要的同步方式\n2. 该功能仅用于测试，文件操作更加可靠');
+                alert('加载失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"从文件加载"功能作为备用');
             } else {
                 console.error('其他错误:', error);
                 alert('加载失败: ' + error.message);

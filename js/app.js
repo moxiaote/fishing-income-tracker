@@ -12,6 +12,9 @@ class App {
     // 初始化应用
     async init() {
         try {
+            // 处理GitHub登录回调
+            this.handleGitHubCallback();
+            
             // 加载翻译文件
             await i18n.loadTranslations();
             
@@ -122,6 +125,13 @@ class App {
             });
         }
 
+        // GitHub登录按钮事件
+        const githubLoginButton = document.getElementById('github-login');
+        if (githubLoginButton) {
+            githubLoginButton.addEventListener('click', () => {
+                this.githubLogin();
+            });
+        }
 
     }
 
@@ -449,6 +459,79 @@ class App {
                     }, 1000);
                 }
             });
+        }
+    }
+
+    // GitHub登录
+    githubLogin() {
+        // GitHub OAuth应用信息
+        const clientId = 'YOUR_GITHUB_CLIENT_ID';
+        const redirectUri = encodeURIComponent('https://moxiaote.github.io/fishing-income-tracker/');
+        const scope = 'gist';
+        
+        // 生成随机状态
+        const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem('github_oauth_state', state);
+        
+        // 重定向到GitHub登录页面
+        const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+        window.location.href = githubAuthUrl;
+    }
+
+    // 处理GitHub登录回调
+    handleGitHubCallback() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        const state = urlParams.get('state');
+        const storedState = localStorage.getItem('github_oauth_state');
+        
+        if (code && state && state === storedState) {
+            // 清除存储的状态
+            localStorage.removeItem('github_oauth_state');
+            
+            // 交换代码获取访问令牌
+            this.exchangeCodeForToken(code);
+        }
+    }
+
+    // 交换代码获取访问令牌
+    async exchangeCodeForToken(code) {
+        const clientId = 'YOUR_GITHUB_CLIENT_ID';
+        const clientSecret = 'YOUR_GITHUB_CLIENT_SECRET';
+        const redirectUri = 'https://moxiaote.github.io/fishing-income-tracker/';
+        
+        try {
+            const response = await fetch('https://cors-anywhere.herokuapp.com/https://github.com/login/oauth/access_token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    code: code,
+                    redirect_uri: redirectUri
+                })
+            });
+            
+            const data = await response.json();
+            if (data.access_token) {
+                // 存储访问令牌
+                localStorage.setItem('github_access_token', data.access_token);
+                alert('GitHub登录成功！');
+                // 更新UI
+                const githubLoginButton = document.getElementById('github-login');
+                if (githubLoginButton) {
+                    githubLoginButton.textContent = '已登录';
+                    githubLoginButton.disabled = true;
+                }
+            } else {
+                alert('GitHub登录失败: ' + data.error);
+            }
+        } catch (error) {
+            console.error('交换令牌失败:', error);
+            alert('GitHub登录失败，请稍后重试。');
         }
     }
 
