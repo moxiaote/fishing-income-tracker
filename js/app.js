@@ -341,6 +341,26 @@ class App {
         this.displayRecords();
     }
 
+    // 格式化大数字为缩写形式（如67K、1M）
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return {
+                display: (num / 1000000).toFixed(1) + 'M',
+                full: num
+            };
+        } else if (num >= 1000) {
+            return {
+                display: (num / 1000).toFixed(1) + 'K',
+                full: num
+            };
+        } else {
+            return {
+                display: num.toString(),
+                full: num
+            };
+        }
+    }
+
     // 计算总量
     calculateTotal() {
         let total = {
@@ -377,11 +397,16 @@ class App {
             }
         });
 
+        // 格式化白金数量
+        const formattedPlatinum = this.formatNumber(total.platinum);
+        
         // 更新统计概览显示
         document.getElementById('stat-diamond').textContent = total.diamond;
         document.getElementById('stat-breakthrough').textContent = total.breakthrough;
         document.getElementById('stat-rawstone').textContent = total.rawstone;
-        document.getElementById('stat-platinum').textContent = total.platinum;
+        const platinumElement = document.getElementById('stat-platinum');
+        platinumElement.textContent = formattedPlatinum.display;
+        platinumElement.title = formattedPlatinum.full;
 
         // 更新统计概览变化显示
         this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);
@@ -393,7 +418,9 @@ class App {
         document.getElementById('fixed-diamond').textContent = total.diamond;
         document.getElementById('fixed-breakthrough').textContent = total.breakthrough;
         document.getElementById('fixed-rawstone').textContent = total.rawstone;
-        document.getElementById('fixed-platinum').textContent = total.platinum;
+        const fixedPlatinumElement = document.getElementById('fixed-platinum');
+        fixedPlatinumElement.textContent = formattedPlatinum.display;
+        fixedPlatinumElement.title = formattedPlatinum.full;
 
         // 更新固定总量变化显示
         const fixedDiamondChange = document.getElementById('fixed-diamond-change');

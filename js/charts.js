@@ -16,6 +16,26 @@ class ChartManager {
             grid: 'rgba(0, 0, 0, 0.1)'
         };
     }
+    
+    // 格式化大数字为缩写形式（如67K、1M）
+    formatNumber(num) {
+        if (num >= 1000000) {
+            return {
+                display: (num / 1000000).toFixed(1) + 'M',
+                full: num
+            };
+        } else if (num >= 1000) {
+            return {
+                display: (num / 1000).toFixed(1) + 'K',
+                full: num
+            };
+        } else {
+            return {
+                display: num.toString(),
+                full: num
+            };
+        }
+    }
 
     // 初始化所有图表
     initCharts() {
@@ -81,6 +101,13 @@ class ChartManager {
                     tooltip: {
                         mode: 'index',
                         intersect: false,
+                        callbacks: {
+                            label: (context) => {
+                                const value = context.parsed.y;
+                                const formatted = this.formatNumber(value);
+                                return `${context.dataset.label}: ${formatted.display} (${formatted.full})`;
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -153,6 +180,15 @@ class ChartManager {
                 plugins: {
                     legend: {
                         position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const value = context.parsed.y;
+                                const formatted = this.formatNumber(value);
+                                return `${context.dataset.label}: ${formatted.display} (${formatted.full})`;
+                            }
+                        }
                     }
                 },
                 scales: {
