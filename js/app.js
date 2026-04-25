@@ -397,13 +397,25 @@ class App {
             }
         });
 
-        // 格式化白金数量
+        // 格式化所有资源数量
+        const formattedDiamond = this.formatNumber(total.diamond);
+        const formattedBreakthrough = this.formatNumber(total.breakthrough);
+        const formattedRawstone = this.formatNumber(total.rawstone);
         const formattedPlatinum = this.formatNumber(total.platinum);
         
         // 更新统计概览显示
-        document.getElementById('stat-diamond').textContent = total.diamond;
-        document.getElementById('stat-breakthrough').textContent = total.breakthrough;
-        document.getElementById('stat-rawstone').textContent = total.rawstone;
+        const diamondElement = document.getElementById('stat-diamond');
+        diamondElement.textContent = formattedDiamond.display;
+        diamondElement.title = formattedDiamond.full;
+        
+        const breakthroughElement = document.getElementById('stat-breakthrough');
+        breakthroughElement.textContent = formattedBreakthrough.display;
+        breakthroughElement.title = formattedBreakthrough.full;
+        
+        const rawstoneElement = document.getElementById('stat-rawstone');
+        rawstoneElement.textContent = formattedRawstone.display;
+        rawstoneElement.title = formattedRawstone.full;
+        
         const platinumElement = document.getElementById('stat-platinum');
         platinumElement.textContent = formattedPlatinum.display;
         platinumElement.title = formattedPlatinum.full;
@@ -415,9 +427,18 @@ class App {
         this.updateChangeIndicator('stat-platinum-change', todayChange.platinum);
         
         // 更新固定总量显示（显示统计概览数据）
-        document.getElementById('fixed-diamond').textContent = total.diamond;
-        document.getElementById('fixed-breakthrough').textContent = total.breakthrough;
-        document.getElementById('fixed-rawstone').textContent = total.rawstone;
+        const fixedDiamondElement = document.getElementById('fixed-diamond');
+        fixedDiamondElement.textContent = formattedDiamond.display;
+        fixedDiamondElement.title = formattedDiamond.full;
+        
+        const fixedBreakthroughElement = document.getElementById('fixed-breakthrough');
+        fixedBreakthroughElement.textContent = formattedBreakthrough.display;
+        fixedBreakthroughElement.title = formattedBreakthrough.full;
+        
+        const fixedRawstoneElement = document.getElementById('fixed-rawstone');
+        fixedRawstoneElement.textContent = formattedRawstone.display;
+        fixedRawstoneElement.title = formattedRawstone.full;
+        
         const fixedPlatinumElement = document.getElementById('fixed-platinum');
         fixedPlatinumElement.textContent = formattedPlatinum.display;
         fixedPlatinumElement.title = formattedPlatinum.full;
