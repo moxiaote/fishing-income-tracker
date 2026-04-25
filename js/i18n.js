@@ -258,16 +258,16 @@ class I18n {
 
     // 更新语言选择器显示
     updateLanguageSelector() {
-        const languageNames = {
-            'zh': '中文简体',
-            'zh-TW': '中文繁體',
-            'en': 'English',
-            'ko': '한국어',
-            'vi': 'Việt Nam'
+        const languageCodes = {
+            'zh': 'CN',
+            'zh-TW': 'TW',
+            'en': 'EN',
+            'ko': 'KR',
+            'vi': 'VN'
         };
         const currentLanguageElement = document.getElementById('currentLanguage');
         if (currentLanguageElement) {
-            currentLanguageElement.textContent = languageNames[this.currentLang] || this.currentLang;
+            currentLanguageElement.textContent = languageCodes[this.currentLang] || this.currentLang;
         }
     }
 
