@@ -207,7 +207,8 @@ class StorageManager {
             console.log('访问令牌:', accessToken ? '存在' : '不存在');
             
             if (!accessToken) {
-                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+                console.log('没有GitHub访问令牌，跳过同步');
+                return false; // 没有令牌，直接返回，不尝试网络请求
             }
             
             const records = await this.loadRecords();
@@ -219,13 +220,8 @@ class StorageManager {
                 timestamp: new Date().toISOString()
             };
 
-            // 尝试使用不同的CORS代理
-            const corsProxies = [
-                'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url=',
-                'https://cors.bridged.cc/',
-                'https://proxy.cors.sh/'
-            ];
+            // 使用单个主要CORS代理，带较短超时
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
             const githubApiBase = 'https://api.github.com';
 
             // 构建请求选项
@@ -243,45 +239,41 @@ class StorageManager {
             console.log('使用GitHub访问令牌进行认证');
 
             let response;
-            let proxyUsed;
             
             if (!this.gistId) {
                 console.log('创建新Gist...');
-                // 尝试每个代理，直到成功
-                for (const proxy of corsProxies) {
-                    try {
-                        console.log('尝试使用代理:', proxy);
-                        const apiUrl = proxy + githubApiBase + '/gists';
-                        // 添加超时处理
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-                        
-                        response = await fetch(apiUrl, {
-                            ...requestOptions,
-                            body: JSON.stringify({
-                                description: 'Fishing Income Data',
-                                public: false,
-                                files: {
-                                    'data.json': {
-                                        content: JSON.stringify(data, null, 2)
-                                    }
+                const apiUrl = corsProxy + githubApiBase + '/gists';
+                // 添加超时处理 - 5秒超时
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                try {
+                    console.log('尝试使用代理:', corsProxy);
+                    response = await fetch(apiUrl, {
+                        ...requestOptions,
+                        body: JSON.stringify({
+                            description: 'Fishing Income Data',
+                            public: false,
+                            files: {
+                                'data.json': {
+                                    content: JSON.stringify(data, null, 2)
                                 }
-                            }),
-                            signal: controller.signal
-                        });
-                        
-                        clearTimeout(timeoutId);
-                        proxyUsed = proxy;
-                        console.log('代理请求成功:', proxyUsed);
-                        break;
-                    } catch (proxyError) {
-                        console.error('代理请求失败:', proxy, proxyError);
-                        continue;
-                    }
+                            }
+                        }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    console.log('代理请求成功:', corsProxy);
+                } catch (proxyError) {
+                    clearTimeout(timeoutId);
+                    console.error('CORS代理请求失败:', proxyError);
+                    alert('同步失败：网络请求超时，请检查网络连接后重试。');
+                    return false;
                 }
-
+                
                 if (!response) {
-                    throw new Error('所有CORS代理都失败了');
+                    alert('同步失败：网络请求失败，请检查网络连接后重试。');
+                    return false;
                 }
 
                 console.log('创建Gist响应状态:', response.status);
@@ -334,36 +326,32 @@ class StorageManager {
                 alert('Gist创建成功！Gist ID: ' + this.gistId);
             } else {
                 console.log('更新现有Gist:', this.gistId);
-                // 尝试每个代理，直到成功
-                for (const proxy of corsProxies) {
-                    try {
-                        console.log('尝试使用代理:', proxy);
-                        const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
-                        // 添加超时处理
-                        const controller = new AbortController();
-                        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-                        
-                        response = await fetch(apiUrl, {
-                            ...requestOptions,
-                            method: 'PATCH',
-                            body: JSON.stringify({
-                                files: {
-                                    'data.json': {
-                                        content: JSON.stringify(data, null, 2)
-                                    }
+                const apiUrl = corsProxy + githubApiBase + `/gists/${this.gistId}`;
+                // 添加超时处理 - 5秒超时
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                try {
+                    console.log('尝试使用代理:', corsProxy);
+                    response = await fetch(apiUrl, {
+                        ...requestOptions,
+                        method: 'PATCH',
+                        body: JSON.stringify({
+                            files: {
+                                'data.json': {
+                                    content: JSON.stringify(data, null, 2)
                                 }
-                            }),
-                            signal: controller.signal
-                        });
-                        
-                        clearTimeout(timeoutId);
-                        proxyUsed = proxy;
-                        console.log('代理请求成功:', proxyUsed);
-                        break;
-                    } catch (proxyError) {
-                        console.error('代理请求失败:', proxy, proxyError);
-                        continue;
-                    }
+                            }
+                        }),
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    console.log('代理请求成功:', corsProxy);
+                } catch (proxyError) {
+                    clearTimeout(timeoutId);
+                    console.error('CORS代理请求失败:', proxyError);
+                    alert('同步失败：网络请求超时，请检查网络连接后重试。');
+                    return false;
                 }
 
                 if (!response) {
@@ -458,16 +446,12 @@ class StorageManager {
             console.log('访问令牌:', accessToken ? '存在' : '不存在');
             
             if (!accessToken) {
-                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+                console.log('没有GitHub访问令牌，跳过同步');
+                return false; // 没有令牌，直接返回，不尝试网络请求
             }
 
-            // 尝试使用不同的CORS代理
-            const corsProxies = [
-                'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url=',
-                'https://cors.bridged.cc/',
-                'https://proxy.cors.sh/'
-            ];
+            // 使用单个主要CORS代理，带较短超时
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
             const githubApiBase = 'https://api.github.com';
 
             // 构建请求选项
@@ -484,35 +468,30 @@ class StorageManager {
             console.log('使用GitHub访问令牌进行认证');
 
             let response;
-            let proxyUsed;
             
-            // 尝试每个代理，直到成功
-            for (const proxy of corsProxies) {
-                try {
-                    console.log('尝试使用代理:', proxy);
-                    const apiUrl = proxy + githubApiBase + `/gists/${this.gistId}`;
-                    
-                    // 添加超时处理
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-                    
-                    response = await fetch(apiUrl, {
-                        ...requestOptions,
-                        signal: controller.signal
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    proxyUsed = proxy;
-                    console.log('代理请求成功:', proxyUsed);
-                    break;
-                } catch (proxyError) {
-                    console.error('代理请求失败:', proxy, proxyError);
-                    continue;
-                }
+            // 尝试使用单个主要CORS代理，带较短超时
+            const apiUrl = corsProxy + githubApiBase + `/gists/${this.gistId}`;
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
+            
+            try {
+                console.log('尝试使用代理:', corsProxy);
+                response = await fetch(apiUrl, {
+                    ...requestOptions,
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                console.log('代理请求成功:', corsProxy);
+            } catch (proxyError) {
+                clearTimeout(timeoutId);
+                console.error('CORS代理请求失败:', proxyError);
+                alert('加载失败：网络请求超时，请检查网络连接后重试。');
+                return false;
             }
-
+            
             if (!response) {
-                throw new Error('所有CORS代理都失败了');
+                alert('加载失败：网络请求失败，请检查网络连接后重试。');
+                return false;
             }
 
             console.log('获取Gist响应状态:', response.status);
@@ -631,7 +610,9 @@ class StorageManager {
             console.log('访问令牌:', accessToken ? '存在' : '不存在');
             
             if (!accessToken) {
-                throw new Error('未找到GitHub访问令牌，请先登录GitHub');
+                console.log('没有GitHub访问令牌，跳过加载');
+                alert('加载失败：请先登录GitHub。');
+                return false;
             }
             
             // 临时保存当前Gist ID

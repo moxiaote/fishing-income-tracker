@@ -570,54 +570,43 @@ class App {
             console.log('开始交换访问令牌...');
             console.log('Code:', code);
             
-            // 尝试使用不同的CORS代理
-            const corsProxies = [
-                'https://cors-anywhere.herokuapp.com/',
-                'https://api.allorigins.win/raw?url=',
-                'https://cors.bridged.cc/',
-                'https://proxy.cors.sh/'
-            ];
+            // 使用单个主要CORS代理，带较短超时
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            const apiUrl = corsProxy + 'https://github.com/login/oauth/access_token';
+            
+            // 添加超时处理 - 5秒超时，避免长时间等待
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
             
             let response;
-            let proxyUsed;
-            
-            // 尝试每个代理，直到成功
-            for (const proxy of corsProxies) {
-                try {
-                    console.log('尝试使用代理:', proxy);
-                    const apiUrl = proxy + 'https://github.com/login/oauth/access_token';
-                    
-                    // 添加超时处理
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-                    
-                    response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            client_id: clientId,
-                            client_secret: clientSecret,
-                            code: code,
-                            redirect_uri: redirectUri
-                        }),
-                        signal: controller.signal
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    proxyUsed = proxy;
-                    console.log('代理请求成功:', proxyUsed);
-                    break;
-                } catch (proxyError) {
-                    console.error('代理请求失败:', proxy, proxyError);
-                    continue;
-                }
+            try {
+                console.log('尝试使用代理:', corsProxy);
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        client_id: clientId,
+                        client_secret: clientSecret,
+                        code: code,
+                        redirect_uri: redirectUri
+                    }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+                console.log('代理请求成功:', corsProxy);
+            } catch (proxyError) {
+                clearTimeout(timeoutId);
+                console.error('CORS代理请求失败:', proxyError);
+                alert('网络请求超时，请检查网络连接后重试。');
+                return;
             }
             
             if (!response) {
-                throw new Error('所有CORS代理都失败了');
+                alert('网络请求失败，请检查网络连接后重试。');
+                return;
             }
             
             console.log('响应状态:', response.status);
