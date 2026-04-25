@@ -90,7 +90,7 @@ class ChartManager {
                         position: 'left',
                         title: {
                             display: true,
-                            text: '钻石/突破券/原石'
+                            text: i18n.getText('diamond') + '/' + i18n.getText('breakthrough') + '/' + i18n.getText('rawstone')
                         },
                         beginAtZero: true,
                         grid: {
@@ -103,7 +103,7 @@ class ChartManager {
                         position: 'right',
                         title: {
                             display: true,
-                            text: '白金'
+                            text: i18n.getText('platinum')
                         },
                         beginAtZero: true,
                         grid: {
