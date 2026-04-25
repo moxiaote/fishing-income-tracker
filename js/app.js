@@ -439,13 +439,17 @@ class App {
     // 显示Gist ID
     displayGistId() {
         const gistIdElement = document.getElementById('gist-id');
-        const copyGistIdButton = document.getElementById('copy-gist-id');
-        
         if (gistIdElement) {
-            // 从storageManager获取Gist ID
-            gistIdElement.value = storageManager.gistId || '未创建';
+            const gistId = storageManager.getGistId();
+            gistIdElement.value = gistId || '未创建';
+            gistIdElement.readOnly = true;
         }
         
+        // 显示登录状态
+        this.displayLoginStatus();
+        
+        // 绑定复制按钮事件
+        const copyGistIdButton = document.getElementById('copy-gist-id');
         if (copyGistIdButton) {
             copyGistIdButton.addEventListener('click', () => {
                 if (gistIdElement) {
@@ -460,6 +464,68 @@ class App {
                 }
             });
         }
+    }
+    
+    // 显示登录状态
+    displayLoginStatus() {
+        const githubLoginButton = document.getElementById('github-login');
+        const loginStatusElement = document.getElementById('login-status');
+        const accessToken = localStorage.getItem('github_access_token');
+        
+        if (githubLoginButton) {
+            if (accessToken) {
+                // 已登录
+                githubLoginButton.style.display = 'none';
+                
+                // 创建或更新登录状态显示
+                if (!loginStatusElement) {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.id = 'login-status';
+                    statusDiv.className = 'mt-2 text-center';
+                    statusDiv.innerHTML = '<span class="text-success">已登录GitHub</span> <a href="#" id="logout-link" class="text-danger ms-2">[退出登录]</a>';
+                    githubLoginButton.parentNode.appendChild(statusDiv);
+                    
+                    // 绑定退出登录事件
+                    const logoutLink = document.getElementById('logout-link');
+                    if (logoutLink) {
+                        logoutLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            this.logoutGitHub();
+                        });
+                    }
+                }
+            } else {
+                // 未登录
+                githubLoginButton.style.display = 'inline-block';
+                githubLoginButton.textContent = 'GitHub登录';
+                githubLoginButton.disabled = false;
+                
+                // 移除登录状态显示
+                if (loginStatusElement) {
+                    loginStatusElement.remove();
+                }
+            }
+        }
+    }
+    
+    // 退出GitHub登录
+    logoutGitHub() {
+        // 清除访问令牌
+        localStorage.removeItem('github_access_token');
+        
+        // 清除Gist ID
+        localStorage.removeItem('gistId');
+        
+        // 更新UI
+        this.displayLoginStatus();
+        
+        // 清空Gist ID显示
+        const gistIdElement = document.getElementById('gist-id');
+        if (gistIdElement) {
+            gistIdElement.value = '';
+        }
+        
+        alert('已退出GitHub登录');
     }
 
     // GitHub登录
@@ -599,12 +665,9 @@ class App {
                 localStorage.setItem('github_access_token', data.access_token);
                 console.log('访问令牌存储成功');
                 alert('GitHub登录成功！');
+                
                 // 更新UI
-                const githubLoginButton = document.getElementById('github-login');
-                if (githubLoginButton) {
-                    githubLoginButton.textContent = '已登录';
-                    githubLoginButton.disabled = true;
-                }
+                this.displayLoginStatus();
                 
                 // 自动同步到Gist
                 console.log('自动同步到Gist...');
