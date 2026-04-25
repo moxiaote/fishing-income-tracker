@@ -79,8 +79,14 @@
 
         <!-- 总量信息 -->
         <div class="card" id="statsCard">
-            <div class="card-header" data-i18n="totalInfo">总量信息</div>
-            <div class="card-body">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span data-i18n="totalInfo">总量信息</span>
+                <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#total-info-section" aria-expanded="true" aria-controls="total-info-section" style="font-size: 1.2em;">
+                    v
+                </button>
+            </div>
+            <div class="collapse show" id="total-info-section">
+                <div class="card-body">
                 <div class="row">
                     <div class="col-md-3 col-sm-6">
                         <div class="stat-card">
@@ -136,9 +142,15 @@
 
         <!-- 添加记录表单 -->
         <div class="card">
-            <div class="card-header" data-i18n="addRecord">添加记录</div>
-            <div class="card-body">
-                <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span data-i18n="addRecord">添加记录</span>
+                <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#add-record-section" aria-expanded="true" aria-controls="add-record-section" style="font-size: 1.2em;">
+                    v
+                </button>
+            </div>
+            <div class="collapse show" id="add-record-section">
+                <div class="card-body">
+                    <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
                     <div class="d-flex align-items-center gap-1">
                         <label for="date" class="form-label mb-0" data-i18n="date">日期</label>
                         <input type="date" class="form-control" id="date">
@@ -171,15 +183,22 @@
                         <input type="text" class="form-control" id="remark" style="width: 120px;">
                     </div>
                     <button type="submit" class="btn btn-primary" data-i18n="addRecordBtn">添加记录</button>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
 
         <!-- 文件操作按钮 -->
         <div class="card">
-            <div class="card-header" data-i18n="dataManagement">数据管理</div>
-            <div class="card-body">
-                <div class="mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span data-i18n="dataManagement">数据管理</span>
+                <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#data-management-section" aria-expanded="true" aria-controls="data-management-section" style="font-size: 1.2em;">
+                    v
+                </button>
+            </div>
+            <div class="collapse show" id="data-management-section">
+                <div class="card-body">
+                    <div class="mb-4">
                     <h6 data-i18n="fileOperations">文件操作</h6>
                     <div class="d-flex gap-2">
                         <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
@@ -277,8 +296,14 @@
             <!-- 趋势图表 -->
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header" data-i18n="trendChart">趋势图表</div>
-                    <div class="card-body">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span data-i18n="trendChart">趋势图表</span>
+                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#trend-chart-section" aria-expanded="true" aria-controls="trend-chart-section" style="font-size: 1.2em;">
+                            v
+                        </button>
+                    </div>
+                    <div class="collapse show" id="trend-chart-section">
+                        <div class="card-body">
                         <div class="chart-container">
                             <canvas id="trendChart"></canvas>
                         </div>
@@ -289,8 +314,14 @@
             <!-- 收支对比图 -->
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header" data-i18n="incomeExpenseCompare">收支对比</div>
-                    <div class="card-body">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span data-i18n="incomeExpenseCompare">收支对比</span>
+                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#income-expense-section" aria-expanded="true" aria-controls="income-expense-section" style="font-size: 1.2em;">
+                            v
+                        </button>
+                    </div>
+                    <div class="collapse show" id="income-expense-section">
+                        <div class="card-body">
                         <div class="chart-container">
                             <canvas id="incomeExpenseChart"></canvas>
                         </div>
@@ -301,8 +332,14 @@
 
         <!-- 记录列表 -->
         <div class="card">
-            <div class="card-header" data-i18n="recordDetails">记录明细</div>
-            <div class="card-body">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span data-i18n="recordDetails">记录明细</span>
+                <button class="btn btn-sm px-2 py-0 border border-secondary rounded" type="button" data-bs-toggle="collapse" data-bs-target="#record-details-section" aria-expanded="true" aria-controls="record-details-section" style="font-size: 1.2em;">
+                    v
+                </button>
+            </div>
+            <div class="collapse show" id="record-details-section">
+                <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -325,6 +362,7 @@
                 <!-- 加载更多按钮 -->
                 <div class="text-center mt-3" id="load-more-container">
                     <button id="load-more" class="btn btn-outline-primary" data-i18n="loadMore">加载更多</button>
+                </div>
                 </div>
             </div>
         </div>
