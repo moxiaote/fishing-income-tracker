@@ -119,7 +119,7 @@ class I18n {
                     copy: '复制',
                     syncNote1: '此功能处于测试阶段，可能会遇到同步失败的情况。',
                     syncNote2: '如遇网络失败，请访问 CORS代理演示页面 获取临时权限。',
-                    autoGenerate: '登录GitHub 之后自动生成'
+                    autoGenerate: '登录GitHub 之后点击上传备份生成'
                 },
                 'zh-TW': {
                     appTitle: '釣魚發燒友：財富積累日記',
@@ -306,7 +306,7 @@ class I18n {
         const gistIdInput = document.getElementById('gist-id');
         if (gistIdInput && !gistIdInput.value) {
             console.log('更新Gist ID输入框提示:', translation.autoGenerate);
-            gistIdInput.value = translation.autoGenerate || '登录GitHub 之后自动生成';
+            gistIdInput.value = translation.autoGenerate || '登录GitHub 之后点击上传备份生成';
         }
         
         // 遍历所有带有data-i18n属性的元素

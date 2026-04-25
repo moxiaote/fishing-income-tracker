@@ -48,5 +48,5 @@
     "copy": "复制",
     "syncNote1": "此功能处于测试阶段，可能会遇到同步失败的情况。",
     "syncNote2": "如遇网络失败，请访问 CORS代理演示页面 获取临时权限。",
-    "autoGenerate": "登录GitHub 之后自动生成"
+    "autoGenerate": "登录GitHub 之后点击上传备份生成"
 }
