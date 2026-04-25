@@ -21,7 +21,6 @@ class ChartManager {
     initCharts() {
         this.initTrendChart();
         this.initIncomeExpenseChart();
-        this.initResourcePieChart();
     }
 
     // 初始化趋势图表
@@ -151,56 +150,10 @@ class ChartManager {
         });
     }
 
-    // 初始化资源分布饼图
-    initResourcePieChart() {
-        const ctx = document.getElementById('resourcePieChart');
-        if (!ctx) return;
-
-        this.resourcePieChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['钻石', '突破券', '原石', '白金'],
-                datasets: [{
-                    data: [0, 0, 0, 0],
-                    backgroundColor: [
-                        this.colors.diamond,
-                        this.colors.breakthrough,
-                        this.colors.rawstone,
-                        this.colors.platinum,
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                aspectRatio: 1.5,
-                plugins: {
-                    legend: {
-                        position: 'right',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
     // 更新所有图表
     updateCharts(records) {
         this.updateTrendChart(records);
         this.updateIncomeExpenseChart(records);
-        this.updateResourcePieChart(records);
     }
 
     // 更新趋势图表
@@ -279,24 +232,6 @@ class ChartManager {
         this.incomeExpenseChart.data.datasets[0].data = income;
         this.incomeExpenseChart.data.datasets[1].data = expense;
         this.incomeExpenseChart.update();
-    }
-
-    // 更新资源分布饼图
-    updateResourcePieChart(records) {
-        if (!this.resourcePieChart) return;
-
-        const totals = this.calculateTotals(records);
-        
-        // 只显示正值（总量）
-        const data = [
-            Math.max(0, totals.diamond),
-            Math.max(0, totals.breakthrough),
-            Math.max(0, totals.rawstone),
-            Math.max(0, totals.platinum)
-        ];
-
-        this.resourcePieChart.data.datasets[0].data = data;
-        this.resourcePieChart.update();
     }
 
     // 按日期分组

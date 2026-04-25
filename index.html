@@ -22,18 +22,22 @@
             <div class="fixed-total-item">
                 <div class="fixed-total-label" data-i18n="diamond">钻石</div>
                 <div class="fixed-total-value" id="fixed-diamond">0</div>
+                <div class="fixed-total-change" id="fixed-diamond-change">+0</div>
             </div>
             <div class="fixed-total-item">
                 <div class="fixed-total-label" data-i18n="breakthrough">突破券</div>
                 <div class="fixed-total-value" id="fixed-breakthrough">0</div>
+                <div class="fixed-total-change" id="fixed-breakthrough-change">+0</div>
             </div>
             <div class="fixed-total-item">
                 <div class="fixed-total-label" data-i18n="rawstone">原石</div>
                 <div class="fixed-total-value" id="fixed-rawstone">0</div>
+                <div class="fixed-total-change" id="fixed-rawstone-change">+0</div>
             </div>
             <div class="fixed-total-item">
                 <div class="fixed-total-label" data-i18n="platinum">白金</div>
                 <div class="fixed-total-value" id="fixed-platinum">0</div>
+                <div class="fixed-total-change" id="fixed-platinum-change">+0</div>
             </div>
         </div>
     </div>
@@ -53,7 +57,7 @@
         </div>
 
         <!-- 统计概览 -->
-        <div class="card">
+        <div class="card" id="statsCard">
             <div class="card-header" data-i18n="statsOverview">统计概览</div>
             <div class="card-body">
                 <div class="row">
@@ -94,47 +98,6 @@
                                 <div class="stat-label" data-i18n="platinum">白金</div>
                                 <div class="stat-value" id="stat-platinum">0</div>
                                 <div class="stat-change positive" id="stat-platinum-change">+0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 总量信息 -->
-        <div class="card" id="totalCard">
-            <div class="card-header" data-i18n="totalInfo">总量信息</div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light total-card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title" data-i18n="diamond">钻石</h5>
-                                <p class="card-text display-4" id="total-diamond">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light total-card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title" data-i18n="breakthrough">突破券</h5>
-                                <p class="card-text display-4" id="total-breakthrough">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light total-card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title" data-i18n="rawstone">原石</h5>
-                                <p class="card-text display-4" id="total-rawstone">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="card bg-light total-card">
-                            <div class="card-body text-center">
-                                <h5 class="card-title" data-i18n="platinum">白金</h5>
-                                <p class="card-text display-4" id="total-platinum">0</p>
                             </div>
                         </div>
                     </div>
@@ -218,16 +181,6 @@
                             <canvas id="incomeExpenseChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 资源分布饼图 -->
-        <div class="card">
-            <div class="card-header" data-i18n="resourceDistribution">资源分布</div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="resourcePieChart"></canvas>
                 </div>
             </div>
         </div>

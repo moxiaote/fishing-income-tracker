@@ -128,6 +128,19 @@ h1 {
     font-weight: bold;
 }
 
+.fixed-total-change {
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.fixed-total-change.positive {
+    color: #28a745;
+}
+
+.fixed-total-change.negative {
+    color: #dc3545;
+}
+
 /* 统计卡片样式 */
 .stat-card {
     display: flex;
