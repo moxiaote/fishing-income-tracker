@@ -5,6 +5,8 @@ class App {
         this.fileName = 'fishing_income.txt';
         this.statsCard = null;
         this.fixedTotal = null;
+        this.loadedRecords = 30; // 默认加载30条
+        this.loadBatchSize = 30; // 每次加载30条
     }
 
     // 初始化应用
@@ -25,9 +27,6 @@ class App {
             // 初始排序
             sorting.sortRecords(this.records);
             sorting.updateSortIndicators();
-            
-            // 更新分页
-            pagination.updatePagination(this.records.length);
             
             // 显示记录
             this.displayRecords();
@@ -88,6 +87,14 @@ class App {
 
         // 初始化日期为今天
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+        // 加载更多按钮事件
+        const loadMoreButton = document.getElementById('load-more');
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', () => {
+                this.loadMoreRecords();
+            });
+        }
     }
 
     // 添加滚动监听
@@ -135,8 +142,8 @@ class App {
         // 保存记录
         await storageManager.saveRecords(this.records);
         
-        // 更新分页
-        pagination.updatePagination(this.records.length);
+        // 重置加载记录数
+        this.loadedRecords = 30;
         
         // 显示记录
         this.displayRecords();
@@ -197,8 +204,8 @@ class App {
                 // 保存记录
                 await storageManager.saveRecords(this.records);
                 
-                // 更新分页
-                pagination.updatePagination(this.records.length);
+                // 重置加载记录数
+                this.loadedRecords = 30;
                 
                 // 显示记录
                 this.displayRecords();
@@ -222,9 +229,8 @@ class App {
         const tableBody = document.getElementById('records-table');
         tableBody.innerHTML = '';
 
-        // 计算当前页的记录范围
-        const { startIndex, endIndex } = pagination.getCurrentPageRange(this.records.length);
-        const currentRecords = this.records.slice(startIndex, endIndex);
+        // 显示已加载的记录
+        const currentRecords = this.records.slice(0, this.loadedRecords);
 
         currentRecords.forEach((record, index) => {
             const row = document.createElement('tr');
@@ -235,19 +241,32 @@ class App {
                 <td>${record.breakthrough}</td>
                 <td>${record.rawstone}</td>
                 <td>${record.platinum}</td>
-                <td>${record.remark}</td>
+                <td>${record.remark || '-'}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="app.deleteRecord(${startIndex + index})" data-i18n="delete">删除</button>
+                    <button class="btn btn-danger btn-sm" onclick="app.deleteRecord(${index})" data-i18n="delete">删除</button>
                 </td>
             `;
             tableBody.appendChild(row);
         });
         
+        // 显示/隐藏加载更多按钮
+        const loadMoreContainer = document.getElementById('load-more-container');
+        if (loadMoreContainer) {
+            if (this.loadedRecords < this.records.length) {
+                loadMoreContainer.style.display = 'block';
+            } else {
+                loadMoreContainer.style.display = 'none';
+            }
+        }
+        
         // 应用语言到新添加的元素
         i18n.applyLanguage();
-        
-        // 渲染分页控件
-        pagination.renderPagination('pagination', i18n.translations[i18n.currentLang]);
+    }
+
+    // 加载更多记录
+    loadMoreRecords() {
+        this.loadedRecords += this.loadBatchSize;
+        this.displayRecords();
     }
 
     // 计算总量
