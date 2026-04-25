@@ -194,22 +194,24 @@ h1 {
 }
 
 .stat-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
     line-height: 1;
     word-wrap: break-word;
     white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 576px) {
     .stat-value {
-        font-size: 24px;
+        font-size: 20px;
     }
 }
 
 @media (min-width: 992px) {
     .stat-value {
-        font-size: 36px;
+        font-size: 28px;
     }
 }
 
