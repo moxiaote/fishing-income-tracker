@@ -357,21 +357,34 @@ class ChartManager {
     updateCharts() {
         console.log('更新图表标签');
         
-        // 更新趋势图表标签
+        // 确保有记录数据
+        const app = window.app;
+        if (!app || !app.records || app.records.length === 0) {
+            console.warn('没有记录数据，无法更新图表');
+            return;
+        }
+        
+        // 更新趋势图表标签和数据
         if (this.trendChart) {
+            // 更新标签
             this.trendChart.data.datasets[0].label = i18n.getText('diamond');
             this.trendChart.data.datasets[1].label = i18n.getText('breakthrough');
             this.trendChart.data.datasets[2].label = i18n.getText('rawstone');
             this.trendChart.data.datasets[3].label = i18n.getText('platinum');
-            this.trendChart.update();
+            
+            // 重新计算并更新数据
+            this.updateTrendChart(app.records);
         }
         
-        // 更新收支对比图表标签
+        // 更新收支对比图表标签和数据
         if (this.incomeExpenseChart) {
+            // 更新标签
             this.incomeExpenseChart.data.labels = [i18n.getText('diamond'), i18n.getText('breakthrough'), i18n.getText('rawstone'), i18n.getText('platinum')];
             this.incomeExpenseChart.data.datasets[0].label = i18n.getText('income');
             this.incomeExpenseChart.data.datasets[1].label = i18n.getText('expense');
-            this.incomeExpenseChart.update();
+            
+            // 重新计算并更新数据
+            this.updateIncomeExpenseChart(app.records);
         }
     }
 }
