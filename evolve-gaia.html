@@ -267,6 +267,8 @@
         let baseProbability = 1.78; // 初始概率
         let greenWater = 0;
         let redWater = 0;
+        let evolvedSuccessfully = false;
+        let hideTimeoutId = null;
         
         // 累计消费
         let totalPowder = 0;
@@ -333,33 +335,43 @@
         
         // 显示结果消息
         function showResult(success) {
+            // 清除之前的定时器，避免多个定时器导致提示被提前隐藏
+            if (hideTimeoutId) {
+                clearTimeout(hideTimeoutId);
+                hideTimeoutId = null;
+            }
+            
             evolveResultElement.style.display = 'block';
             if (success) {
                 evolveResultElement.className = 'result-message success-message';
                 evolveResultElement.textContent = '进化成功！';
-                // 重置进化次数和水的数量，但保留累计消费
-                setTimeout(() => {
-                    evolveCount = 0;
-                    greenWater = 0;
-                    redWater = 0;
-                    greenWaterElement.value = 0;
-                    redWaterElement.value = 0;
-                    evolveCountElement.textContent = evolveCount;
-                    updateProbability();
-                }, 5000);
+                evolvedSuccessfully = true;
             } else {
                 evolveResultElement.className = 'result-message failure-message';
                 evolveResultElement.textContent = '进化失败！概率增加1%。';
             }
             
-            // 5秒后隐藏消息
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 5000);
+            // 10秒后隐藏消息
+            hideTimeoutId = setTimeout(() => {
+                evolveResultElement.style.display = 'none';
+                hideTimeoutId = null;
+            }, 10000);
         }
         
         // 进化
         function evolve() {
+            // 如果上次进化成功，重置进化次数和水的数量
+            if (evolvedSuccessfully) {
+                evolveCount = 0;
+                greenWater = 0;
+                redWater = 0;
+                greenWaterElement.value = 0;
+                redWaterElement.value = 0;
+                evolveCountElement.textContent = evolveCount;
+                updateProbability();
+                evolvedSuccessfully = false;
+            }
+            
             // 计算总概率
             const waterBonus = (greenWater * 0.01) + (redWater * 0.10);
             const totalProbability = baseProbability + (evolveCount * 1) + waterBonus;
@@ -391,6 +403,25 @@
         // 绑定事件
         evolveButton.addEventListener('click', () => {
             evolve();
+        });
+        
+        // 监听输入框变化
+        greenWaterElement.addEventListener('input', () => {
+            greenWater = parseInt(greenWaterElement.value) || 0;
+            // 确保不超过最大值
+            greenWater = Math.min(2000, greenWater);
+            greenWater = Math.max(0, greenWater);
+            // 调整以确保总概率加成不超过20%
+            adjustWater('green', 0);
+        });
+        
+        redWaterElement.addEventListener('input', () => {
+            redWater = parseInt(redWaterElement.value) || 0;
+            // 确保不超过最大值
+            redWater = Math.min(200, redWater);
+            redWater = Math.max(0, redWater);
+            // 调整以确保总概率加成不超过20%
+            adjustWater('red', 0);
         });
         
         // 初始更新概率
