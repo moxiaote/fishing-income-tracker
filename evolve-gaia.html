@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进化八星模拟器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        h3 {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        .equipment-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .level-display {
+            font-size: 13px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .probability-table {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .probability-table th,
+        .probability-table td {
+            text-align: center;
+            padding: 5px;
+        }
+        .result-message {
+            margin-top: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .failure-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cost-info {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .water-container {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            align-items: center;
+            justify-content: center;
+        }
+        .water-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .water-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .water-input input {
+            width: 80px;
+            text-align: center;
+            padding: 4px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+        .water-input button {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .water-info {
+            font-size: 12px;
+            white-space: nowrap;
+            text-align: center;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 767px) {
+            .row {
+                flex-wrap: wrap;
+            }
+            .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+                margin-right: 4%;
+                margin-bottom: 10px;
+            }
+            .col-md-6:nth-child(2) {
+                margin-right: 0;
+            }
+            .equipment-card {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            h3 {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            .level-display {
+                font-size: 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                width: 100%;
+            }
+            .cost-info {
+                font-size: 12px;
+                padding: 8px;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">进化八星模拟器</h2>
+        
+        <!-- 累计消费显示 -->
+        <div class="text-center mb-3">
+            <div class="cost-info" style="display: inline-block; padding: 8px; font-size: 12px;">
+                本次累计消费：神秘粉末 <span id="total-powder">0</span> 个 | 原石 <span id="total-ore">0</span> 个 | 白金 <span id="total-platinum">0</span> 个 | 钻石 <span id="total-diamond">0</span> 颗
+            </div>
+        </div>
+        
+        <!-- 装备列表 -->
+        <div class="row">
+            <!-- 盖亚进化 -->
+            <div class="col-md-12">
+                <div class="equipment-card">
+                    <h3>盖亚进化</h3>
+                    <div class="level-display">当前进化次数: <span id="evolve-count">0</span>次, 当前概率: <span id="current-probability">1.78</span>%</div>
+                    
+                    <!-- 绿水和红水输入 -->
+                    <div class="water-container">
+                        <div class="water-item">
+                            <div class="water-info mb-2">绿水 (0.01%/瓶)</div>
+                            <div class="water-input">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="adjustWater('green', -100)">-</button>
+                                <input type="number" id="green-water" value="0" min="0" max="2000">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="adjustWater('green', 100)">+</button>
+                            </div>
+                        </div>
+                        <div class="water-item">
+                            <div class="water-info mb-2">红水 (0.10%/瓶)</div>
+                            <div class="water-input">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="adjustWater('red', -10)">-</button>
+                                <input type="number" id="red-water" value="0" min="0" max="200">
+                                <button class="btn btn-sm btn-outline-secondary" onclick="adjustWater('red', 10)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cost-info">每次进化消耗: 250个神秘粉末, 300个原石, 10000个白金, 130颗钻石</div>
+                    <button id="evolve-button" class="btn btn-primary">进化</button>
+                    <div id="evolve-result" class="result-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 概率表（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 13px;">进化概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-table" aria-expanded="false" aria-controls="probability-table" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="probability-table">
+                <table class="table table-bordered probability-table">
+                    <thead>
+                        <tr>
+                            <th>进化次数</th>
+                            <th>基础概率</th>
+                            <th>每次失败增加</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0</td>
+                            <td>1.78%</td>
+                            <td rowspan="10">1.00%</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>2.78%</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>3.78%</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>4.78%</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>5.78%</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>6.78%</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>7.78%</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>8.78%</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>9.78%</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>10.78%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 进化统计
+        let evolveCount = 0;
+        let baseProbability = 1.78; // 初始概率
+        let greenWater = 0;
+        let redWater = 0;
+        
+        // 累计消费
+        let totalPowder = 0;
+        let totalOre = 0;
+        let totalPlatinum = 0;
+        let totalDiamond = 0;
+        
+        // 获取DOM元素
+        const evolveCountElement = document.getElementById('evolve-count');
+        const currentProbabilityElement = document.getElementById('current-probability');
+        const greenWaterElement = document.getElementById('green-water');
+        const redWaterElement = document.getElementById('red-water');
+        const totalPowderElement = document.getElementById('total-powder');
+        const totalOreElement = document.getElementById('total-ore');
+        const totalPlatinumElement = document.getElementById('total-platinum');
+        const totalDiamondElement = document.getElementById('total-diamond');
+        const evolveButton = document.getElementById('evolve-button');
+        const evolveResultElement = document.getElementById('evolve-result');
+        
+        // 调整水的数量
+        function adjustWater(type, delta) {
+            if (type === 'green') {
+                greenWater = Math.max(0, greenWater + delta);
+            } else if (type === 'red') {
+                redWater = Math.max(0, redWater + delta);
+            }
+            
+            // 确保总概率加成不超过20%
+            let totalBonus = (greenWater * 0.01) + (redWater * 0.10);
+            if (totalBonus > 20) {
+                // 如果超过20%，按比例减少
+                const excess = totalBonus - 20;
+                const greenContribution = greenWater * 0.01;
+                const redContribution = redWater * 0.10;
+                
+                if (greenContribution > 0) {
+                    const greenReduction = (excess * greenContribution) / totalBonus;
+                    greenWater = Math.max(0, Math.floor((greenContribution - greenReduction) / 0.01));
+                }
+                
+                totalBonus = (greenWater * 0.01) + (redWater * 0.10);
+                if (totalBonus > 20) {
+                    const remainingExcess = totalBonus - 20;
+                    redWater = Math.max(0, Math.floor((redContribution - remainingExcess) / 0.10));
+                }
+            }
+            
+            // 确保不超过各自的最大值
+            greenWater = Math.min(2000, greenWater);
+            redWater = Math.min(200, redWater);
+            
+            greenWaterElement.value = greenWater;
+            redWaterElement.value = redWater;
+            
+            updateProbability();
+        }
+        
+        // 更新概率显示
+        function updateProbability() {
+            const waterBonus = (greenWater * 0.01) + (redWater * 0.10);
+            const totalProbability = baseProbability + (evolveCount * 1) + waterBonus;
+            currentProbabilityElement.textContent = totalProbability.toFixed(2);
+        }
+        
+        // 显示结果消息
+        function showResult(success) {
+            evolveResultElement.style.display = 'block';
+            if (success) {
+                evolveResultElement.className = 'result-message success-message';
+                evolveResultElement.textContent = '进化成功！';
+                // 重置进化次数和水的数量，但保留累计消费
+                setTimeout(() => {
+                    evolveCount = 0;
+                    greenWater = 0;
+                    redWater = 0;
+                    greenWaterElement.value = 0;
+                    redWaterElement.value = 0;
+                    evolveCountElement.textContent = evolveCount;
+                    updateProbability();
+                }, 5000);
+            } else {
+                evolveResultElement.className = 'result-message failure-message';
+                evolveResultElement.textContent = '进化失败！概率增加1%。';
+            }
+            
+            // 5秒后隐藏消息
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 进化
+        function evolve() {
+            // 计算总概率
+            const waterBonus = (greenWater * 0.01) + (redWater * 0.10);
+            const totalProbability = baseProbability + (evolveCount * 1) + waterBonus;
+            
+            // 每次进化消耗250个神秘粉末，300个原石，10000个白金，130颗钻石
+            totalPowder += 250;
+            totalOre += 300;
+            totalPlatinum += 10000;
+            totalDiamond += 130;
+            totalPowderElement.textContent = totalPowder;
+            totalOreElement.textContent = totalOre;
+            totalPlatinumElement.textContent = totalPlatinum;
+            totalDiamondElement.textContent = totalDiamond;
+            
+            // 随机判定
+            const random = Math.random() * 100;
+            const success = random < totalProbability;
+            
+            if (success) {
+                showResult(true);
+            } else {
+                evolveCount++;
+                evolveCountElement.textContent = evolveCount;
+                updateProbability();
+                showResult(false);
+            }
+        }
+        
+        // 绑定事件
+        evolveButton.addEventListener('click', () => {
+            evolve();
+        });
+        
+        // 初始更新概率
+        updateProbability();
+    </script>
+</body>
+</html>

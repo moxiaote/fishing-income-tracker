@@ -189,19 +189,19 @@
                             <td>0.2</td>
                         </tr>
                         <tr>
-                            <td>青龙勋章</td>
+                            <td>青龙勋章x3</td>
                             <td>0.75</td>
                         </tr>
                         <tr>
-                            <td>白虎勋章</td>
+                            <td>白虎勋章x3</td>
                             <td>0.75</td>
                         </tr>
                         <tr>
-                            <td>朱雀勋章</td>
+                            <td>朱雀勋章x3</td>
                             <td>0.75</td>
                         </tr>
                         <tr>
-                            <td>玄武勋章</td>
+                            <td>玄武勋章x3</td>
                             <td>0.75</td>
                         </tr>
                         <tr>
@@ -375,17 +375,33 @@
                 typeCounts[badge.type]++;
             });
             
+            // 定义真正的最高级勋章列表
+            const trueTopTierBadges = ['凤凰勋章', '獬豸勋章', '青龙勋章x3', '白虎勋章x3', '朱雀勋章x3', '玄武勋章x3'];
+            
+            // 统计真正的最高级勋章数量
+            let trueTopTierCount = 0;
+            results.forEach(badge => {
+                if (trueTopTierBadges.includes(badge.name)) {
+                    trueTopTierCount++;
+                }
+            });
+            
             // 显示类别统计
             html += '<div class="mb-3">';
             for (const [type, count] of Object.entries(typeCounts)) {
-                const isTopTier = type === '最高级勋章类';
-                const style = isTopTier ? 'color: red;' : '';
-                html += `<p style="font-size: 12px; margin: 0; ${style}">${type}：${count}个</p>`;
+                let style = '';
+                let displayCount = count;
+                if (type === '最高级勋章类') {
+                    style = 'color: red;';
+                    // 只显示真正的最高级勋章数量
+                    displayCount = trueTopTierCount;
+                }
+                html += `<p style="font-size: 12px; margin: 0; ${style}">${type}：${displayCount}个</p>`;
             }
             html += '</div>';
             
-            // 高亮显示最高级勋章提示
-            if (typeCounts['最高级勋章类'] && typeCounts['最高级勋章类'] > 0) {
+            // 高亮显示真正的最高级勋章提示
+            if (trueTopTierCount > 0) {
                 html += '<div class="mb-3" style="padding: 8px; background-color: #fff3f3; border-radius: 4px; border: 1px solid #ffcdd2;">';
                 html += '<p style="font-size: 12px; margin: 0; color: red;">恭喜获得最高级勋章！</p>';
                 html += '</div>';
@@ -394,9 +410,9 @@
             // 显示详细结果
             html += '<div class="row">';
             results.forEach((badge, index) => {
-                const isTopTier = badge.type === '最高级勋章类';
-                const nameStyle = isTopTier ? 'color: red;' : '';
-                const typeStyle = isTopTier ? 'color: red;' : '';
+                const isTrueTopTier = trueTopTierBadges.includes(badge.name);
+                const nameStyle = isTrueTopTier ? 'color: red;' : '';
+                const typeStyle = isTrueTopTier ? 'color: red;' : '';
                 
                 html += `
                     <div class="col-6 mb-2">
