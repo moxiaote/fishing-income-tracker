@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     font-size: 14px;
-    padding-top: 70px; /* 为固定头部预留空间 */
+    padding-top: 30px; /* 减小为固定头部预留的空间 */
 }
 
 .container {
