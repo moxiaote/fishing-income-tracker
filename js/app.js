@@ -164,10 +164,38 @@ class App {
                             container.classList.remove('show');
                         }
                         
-                        // 立即设置新的iframe源
-                        const iframe = document.getElementById('simulator-iframe');
-                        if (iframe) {
-                            iframe.src = target;
+                        // 检查是否是打赏按钮
+                        if (title === '打赏') {
+                            // 显示打赏图片，隐藏iframe
+                            const iframe = document.getElementById('simulator-iframe');
+                            if (iframe) {
+                                iframe.style.display = 'none';
+                            }
+                            const donationImg = document.getElementById('donation-image');
+                            if (donationImg) {
+                                donationImg.style.display = 'block';
+                            }
+                            // 更新说明文本
+                            const descriptionText = document.querySelector('.simulator-content p');
+                            if (descriptionText) {
+                                descriptionText.textContent = '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！';
+                            }
+                        } else {
+                            // 隐藏打赏图片，显示iframe
+                            const iframe = document.getElementById('simulator-iframe');
+                            if (iframe) {
+                                iframe.style.display = 'block';
+                                iframe.src = target;
+                            }
+                            const donationImg = document.getElementById('donation-image');
+                            if (donationImg) {
+                                donationImg.style.display = 'none';
+                            }
+                            // 恢复说明文本
+                            const descriptionText = document.querySelector('.simulator-content p');
+                            if (descriptionText) {
+                                descriptionText.textContent = '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。';
+                            }
                         }
                         
                         // 延迟添加显示类，确保iframe源已设置
