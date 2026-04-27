@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽勋章宝箱</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        h3 {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        .equipment-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .level-display {
+            font-size: 13px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .probability-table {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .probability-table th,
+        .probability-table td {
+            text-align: center;
+            padding: 5px;
+        }
+        .result-message {
+            margin-top: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .failure-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cost-info {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .badge-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .badge-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .badge-type {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 767px) {
+            .row {
+                flex-wrap: wrap;
+            }
+            .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+                margin-right: 4%;
+                margin-bottom: 10px;
+            }
+            .col-md-6:nth-child(2) {
+                margin-right: 0;
+            }
+            .equipment-card {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            h3 {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            .level-display {
+                font-size: 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                width: 100%;
+            }
+            .cost-info {
+                font-size: 12px;
+                padding: 8px;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">抽勋章宝箱</h2>
+        
+        <!-- 累计消费显示 -->
+        <div class="text-center mb-3">
+            <p class="cost-info" style="display: inline-block;">本次累计消费珊瑚：<span id="total-cost">0</span> 颗</p>
+        </div>
+        
+        <!-- 抽取区域 -->
+        <div class="equipment-card">
+            <h3>抽取设置</h3>
+            <div class="mb-3">
+                <label class="form-label" style="font-size: 13px;">抽取次数：</label>
+                <select id="draw-count" class="form-select form-select-sm">
+                    <option value="1">1次</option>
+                    <option value="10">10次</option>
+                    <option value="50">50次</option>
+                    <option value="100">100次</option>
+                </select>
+            </div>
+            <button id="draw-button" class="btn btn-primary">抽取勋章</button>
+        </div>
+        
+        <!-- 抽取结果 -->
+        <div class="equipment-card">
+            <h3>抽取结果</h3>
+            <div id="draw-results" class="badge-result">
+                <p style="font-size: 13px; text-align: center; color: #6c757d;">点击上方按钮开始抽取</p>
+            </div>
+        </div>
+        
+        <!-- 概率表（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 13px;">勋章概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-table" aria-expanded="false" aria-controls="probability-table" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="probability-table">
+                <table class="table table-bordered probability-table">
+                    <thead>
+                        <tr>
+                            <th>类别</th>
+                            <th>道具</th>
+                            <th>概率(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 最高级勋章类 -->
+                        <tr>
+                            <td rowspan="8">最高级勋章类</td>
+                            <td>凤凰勋章</td>
+                            <td>0.2</td>
+                        </tr>
+                        <tr>
+                            <td>獬豸勋章</td>
+                            <td>0.2</td>
+                        </tr>
+                        <tr>
+                            <td>青龙勋章</td>
+                            <td>0.25</td>
+                        </tr>
+                        <tr>
+                            <td>白虎勋章</td>
+                            <td>0.25</td>
+                        </tr>
+                        <tr>
+                            <td>朱雀勋章</td>
+                            <td>0.25</td>
+                        </tr>
+                        <tr>
+                            <td>玄武勋章</td>
+                            <td>0.25</td>
+                        </tr>
+                        <tr>
+                            <td>沙城勋章</td>
+                            <td>0.4</td>
+                        </tr>
+                        <tr>
+                            <td>冠军勋章</td>
+                            <td>1.66</td>
+                        </tr>
+                        <!-- 高级勋章类 -->
+                        <tr>
+                            <td rowspan="12">高级勋章类</td>
+                            <td>太阳伞勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>冲浪勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>探险家勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>富饶的勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>航海者勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>海盗勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>北极勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>南极勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>诞生勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>复生勋章</td>
+                            <td>3.03</td>
+                        </tr>
+                        <tr>
+                            <td>鲸鱼勋章</td>
+                            <td>4.85</td>
+                        </tr>
+                        <tr>
+                            <td>三叉戟勋章</td>
+                            <td>4.85</td>
+                        </tr>
+                        <!-- 普通勋章类 -->
+                        <tr>
+                            <td rowspan="5">普通勋章类</td>
+                            <td>船锚勋章</td>
+                            <td>6.85</td>
+                        </tr>
+                        <tr>
+                            <td>莱恩勋章</td>
+                            <td>6.85</td>
+                        </tr>
+                        <tr>
+                            <td>波涛勋章</td>
+                            <td>14.28</td>
+                        </tr>
+                        <tr>
+                            <td>旋涡勋章</td>
+                            <td>14.28</td>
+                        </tr>
+                        <tr>
+                            <td>海蛇勋章</td>
+                            <td>14.28</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 勋章概率数据
+        const badgeProbabilities = [
+            // 最高级勋章类
+            { name: "凤凰勋章", type: "最高级勋章类", probability: 0.2 },
+            { name: "獬豸勋章", type: "最高级勋章类", probability: 0.2 },
+            { name: "青龙勋章", type: "最高级勋章类", probability: 0.25 },
+            { name: "白虎勋章", type: "最高级勋章类", probability: 0.25 },
+            { name: "朱雀勋章", type: "最高级勋章类", probability: 0.25 },
+            { name: "玄武勋章", type: "最高级勋章类", probability: 0.25 },
+            { name: "沙城勋章", type: "最高级勋章类", probability: 0.4 },
+            { name: "冠军勋章", type: "最高级勋章类", probability: 1.66 },
+            // 高级勋章类
+            { name: "太阳伞勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "冲浪勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "探险家勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "富饶的勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "航海者勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "海盗勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "北极勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "南极勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "诞生勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "复生勋章", type: "高级勋章类", probability: 3.03 },
+            { name: "鲸鱼勋章", type: "高级勋章类", probability: 4.85 },
+            { name: "三叉戟勋章", type: "高级勋章类", probability: 4.85 },
+            // 普通勋章类
+            { name: "船锚勋章", type: "普通勋章类", probability: 6.85 },
+            { name: "莱恩勋章", type: "普通勋章类", probability: 6.85 },
+            { name: "波涛勋章", type: "普通勋章类", probability: 14.28 },
+            { name: "旋涡勋章", type: "普通勋章类", probability: 14.28 },
+            { name: "海蛇勋章", type: "普通勋章类", probability: 14.28 }
+        ];
+        
+        // 累计消费钻石
+        let totalCost = 0;
+        
+        // 获取DOM元素
+        const totalCostElement = document.getElementById('total-cost');
+        const drawCountElement = document.getElementById('draw-count');
+        const drawButton = document.getElementById('draw-button');
+        const drawResultsElement = document.getElementById('draw-results');
+        
+        // 单次抽取勋章
+        function drawBadge() {
+            const random = Math.random() * 100;
+            let cumulativeProbability = 0;
+            
+            for (const badge of badgeProbabilities) {
+                cumulativeProbability += badge.probability;
+                if (random <= cumulativeProbability) {
+                    return badge;
+                }
+            }
+            
+            // 兜底返回最后一个勋章
+            return badgeProbabilities[badgeProbabilities.length - 1];
+        }
+        
+        // 批量抽取勋章
+        function drawBadges(count) {
+            const results = [];
+            for (let i = 0; i < count; i++) {
+                results.push(drawBadge());
+            }
+            return results;
+        }
+        
+        // 显示抽取结果
+        function showDrawResults(results) {
+            if (results.length === 0) {
+                drawResultsElement.innerHTML = '<p style="font-size: 13px; text-align: center; color: #6c757d;">点击上方按钮开始抽取</p>';
+                return;
+            }
+            
+            let html = '';
+            
+            // 统计各类别数量
+            const typeCounts = {};
+            results.forEach(badge => {
+                if (!typeCounts[badge.type]) {
+                    typeCounts[badge.type] = 0;
+                }
+                typeCounts[badge.type]++;
+            });
+            
+            // 显示类别统计
+            html += '<div class="mb-3">';
+            for (const [type, count] of Object.entries(typeCounts)) {
+                const isTopTier = type === '最高级勋章类';
+                const style = isTopTier ? 'color: red;' : '';
+                html += `<p style="font-size: 12px; margin: 0; ${style}">${type}：${count}个</p>`;
+            }
+            html += '</div>';
+            
+            // 高亮显示最高级勋章提示
+            if (typeCounts['最高级勋章类'] && typeCounts['最高级勋章类'] > 0) {
+                html += '<div class="mb-3" style="padding: 8px; background-color: #fff3f3; border-radius: 4px; border: 1px solid #ffcdd2;">';
+                html += '<p style="font-size: 12px; margin: 0; color: red;">恭喜获得最高级勋章！</p>';
+                html += '</div>';
+            }
+            
+            // 显示详细结果
+            html += '<div class="row">';
+            results.forEach((badge, index) => {
+                const isTopTier = badge.type === '最高级勋章类';
+                const nameStyle = isTopTier ? 'color: red;' : '';
+                const typeStyle = isTopTier ? 'color: red;' : '';
+                
+                html += `
+                    <div class="col-6 mb-2">
+                        <div style="padding: 8px; background-color: #ffffff; border-radius: 4px; border: 1px solid #dee2e6;">
+                            <div class="badge-name" style="${nameStyle}">${badge.name}</div>
+                            <div class="badge-type" style="${typeStyle}">${badge.type}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            drawResultsElement.innerHTML = html;
+        }
+        
+        // 绑定事件
+        drawButton.addEventListener('click', () => {
+            const count = parseInt(drawCountElement.value);
+            // 每次抽取消耗12颗珊瑚
+            const cost = count * 12;
+            totalCost += cost;
+            totalCostElement.textContent = totalCost;
+            
+            const results = drawBadges(count);
+            showDrawResults(results);
+        });
+    </script>
+</body>
+</html>
