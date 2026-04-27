@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>附魔勋章模拟器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        h3 {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        .equipment-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .level-display {
+            font-size: 13px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .probability-table {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .probability-table th,
+        .probability-table td {
+            text-align: center;
+            padding: 5px;
+        }
+        .result-message {
+            margin-top: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .failure-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cost-info {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 767px) {
+            .row {
+                flex-wrap: wrap;
+            }
+            .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+                margin-right: 4%;
+                margin-bottom: 10px;
+            }
+            .col-md-6:nth-child(2) {
+                margin-right: 0;
+            }
+            .equipment-card {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            h3 {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            .level-display {
+                font-size: 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                width: 100%;
+            }
+            .cost-info {
+                font-size: 12px;
+                padding: 8px;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">附魔勋章模拟器</h2>
+        
+        <!-- 累计消费显示 -->
+        <div class="text-center mb-3">
+            <p class="cost-info" style="display: inline-block;">本次累计消费白金：<span id="total-platinum">0</span> 个</p>
+            <p class="cost-info" style="display: inline-block; margin-left: 10px;">本次累计消费钻石：<span id="total-diamond">0</span> 颗</p>
+        </div>
+        
+        <!-- 装备列表 -->
+        <div class="row">
+            <!-- 深渊神利维坦鱼竿 -->
+            <div class="col-md-6">
+                <div class="equipment-card">
+                    <h3>深渊神利维坦鱼竿</h3>
+                    <div class="level-display">附魔次数: 成功 <span id="rod-success">0</span> 次, 失败 <span id="rod-failure">0</span> 次</div>
+                    <div id="rod-cost" class="cost-info">每次附魔需要: 1600个白金, 70颗钻石</div>
+                    <button id="enchant-rod" class="btn btn-primary">附魔勋章</button>
+                    <div id="rod-result" class="result-message" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- 深渊神利维坦卷线轮 -->
+            <div class="col-md-6">
+                <div class="equipment-card">
+                    <h3>深渊神利维坦卷线轮</h3>
+                    <div class="level-display">附魔次数: 成功 <span id="reel-success">0</span> 次, 失败 <span id="reel-failure">0</span> 次</div>
+                    <div id="reel-cost" class="cost-info">每次附魔需要: 1600个白金, 70颗钻石</div>
+                    <button id="enchant-reel" class="btn btn-primary">附魔勋章</button>
+                    <div id="reel-result" class="result-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 概率表（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 13px;">附魔概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-table" aria-expanded="false" aria-controls="probability-table" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="probability-table">
+                <table class="table table-bordered probability-table">
+                    <thead>
+                        <tr>
+                            <th>操作</th>
+                            <th>成功率</th>
+                            <th>消耗</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>附魔勋章</td>
+                            <td>20.00%</td>
+                            <td>1600个白金, 70颗钻石</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 装备附魔统计
+        let rodSuccess = 0;
+        let rodFailure = 0;
+        let reelSuccess = 0;
+        let reelFailure = 0;
+        let rodEnchanted = false;
+        let reelEnchanted = false;
+        
+        // 累计消费
+        let totalPlatinum = 0;
+        let totalDiamond = 0;
+        
+        // 获取DOM元素
+        const rodSuccessElement = document.getElementById('rod-success');
+        const rodFailureElement = document.getElementById('rod-failure');
+        const reelSuccessElement = document.getElementById('reel-success');
+        const reelFailureElement = document.getElementById('reel-failure');
+        const rodCostElement = document.getElementById('rod-cost');
+        const reelCostElement = document.getElementById('reel-cost');
+        const totalPlatinumElement = document.getElementById('total-platinum');
+        const totalDiamondElement = document.getElementById('total-diamond');
+        const enchantRodButton = document.getElementById('enchant-rod');
+        const enchantReelButton = document.getElementById('enchant-reel');
+        const rodResultElement = document.getElementById('rod-result');
+        const reelResultElement = document.getElementById('reel-result');
+        
+        // 显示结果消息
+        function showResult(element, success) {
+            element.style.display = 'block';
+            if (success) {
+                element.className = 'result-message success-message';
+                element.textContent = '附魔成功！';
+            } else {
+                element.className = 'result-message failure-message';
+                element.textContent = '附魔失败！';
+            }
+            
+            // 3秒后隐藏消息
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 附魔装备
+        function enchantEquipment(type) {
+            // 计算本次附魔所需资源
+            const platinumCost = 1600;
+            const diamondCost = 70;
+            
+            // 增加累计消费
+            totalPlatinum += platinumCost;
+            totalDiamond += diamondCost;
+            
+            // 更新累计消费显示
+            totalPlatinumElement.textContent = totalPlatinum;
+            totalDiamondElement.textContent = totalDiamond;
+            
+            // 20%成功率
+            const probability = 0.2;
+            const random = Math.random();
+            const success = random < probability;
+            
+            if (type === 'rod') {
+                if (rodEnchanted) {
+                    // 已经成功附魔，重置数据
+                    rodSuccess = 0;
+                    rodFailure = 0;
+                    rodEnchanted = false;
+                }
+                
+                if (success) {
+                    rodSuccess++;
+                    rodEnchanted = true;
+                } else {
+                    rodFailure++;
+                }
+                
+                rodSuccessElement.textContent = rodSuccess;
+                rodFailureElement.textContent = rodFailure;
+                showResult(rodResultElement, success);
+            } else if (type === 'reel') {
+                if (reelEnchanted) {
+                    // 已经成功附魔，重置数据
+                    reelSuccess = 0;
+                    reelFailure = 0;
+                    reelEnchanted = false;
+                }
+                
+                if (success) {
+                    reelSuccess++;
+                    reelEnchanted = true;
+                } else {
+                    reelFailure++;
+                }
+                
+                reelSuccessElement.textContent = reelSuccess;
+                reelFailureElement.textContent = reelFailure;
+                showResult(reelResultElement, success);
+            }
+        }
+        
+        // 绑定事件
+        enchantRodButton.addEventListener('click', () => {
+            enchantEquipment('rod');
+        });
+        
+        enchantReelButton.addEventListener('click', () => {
+            enchantEquipment('reel');
+        });
+    </script>
+</body>
+</html>
