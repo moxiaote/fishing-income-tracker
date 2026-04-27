@@ -184,15 +184,64 @@ class App {
 
     // 添加记录
     async addRecord() {
-        const record = {
-            date: document.getElementById('date').value,
-            type: document.getElementById('type').value,
-            diamond: parseInt(document.getElementById('diamond').value) || 0,
-            breakthrough: parseInt(document.getElementById('breakthrough').value) || 0,
-            rawstone: parseInt(document.getElementById('rawstone').value) || 0,
-            platinum: parseInt(document.getElementById('platinum').value) || 0,
-            remark: document.getElementById('remark').value
-        };
+        const date = document.getElementById('date').value;
+        const type = document.getElementById('type').value;
+        const inputDiamond = parseInt(document.getElementById('diamond').value) || 0;
+        const inputBreakthrough = parseInt(document.getElementById('breakthrough').value) || 0;
+        const inputRawstone = parseInt(document.getElementById('rawstone').value) || 0;
+        const inputPlatinum = parseInt(document.getElementById('platinum').value) || 0;
+        const remark = document.getElementById('remark').value;
+
+        let record;
+
+        if (type === '设置总额') {
+            // 计算当前总量
+            let currentTotal = {
+                diamond: 0,
+                breakthrough: 0,
+                rawstone: 0,
+                platinum: 0
+            };
+
+            this.records.forEach(r => {
+                const multiplier = (r.type === '收入') ? 1 : -1;
+                currentTotal.diamond += r.diamond * multiplier;
+                currentTotal.breakthrough += r.breakthrough * multiplier;
+                currentTotal.rawstone += r.rawstone * multiplier;
+                currentTotal.platinum += r.platinum * multiplier;
+            });
+
+            // 计算差异
+            const diffDiamond = inputDiamond - currentTotal.diamond;
+            const diffBreakthrough = inputBreakthrough - currentTotal.breakthrough;
+            const diffRawstone = inputRawstone - currentTotal.rawstone;
+            const diffPlatinum = inputPlatinum - currentTotal.platinum;
+
+            // 确定记录类型（收入或支出）
+            const recordType = (diffDiamond >= 0 && diffBreakthrough >= 0 && diffRawstone >= 0 && diffPlatinum >= 0) ? '收入' : '支出';
+
+            // 创建记录，使用绝对值作为数量
+            record = {
+                date: date,
+                type: recordType,
+                diamond: Math.abs(diffDiamond),
+                breakthrough: Math.abs(diffBreakthrough),
+                rawstone: Math.abs(diffRawstone),
+                platinum: Math.abs(diffPlatinum),
+                remark: remark || `总额更新: ${inputDiamond}钻, ${inputBreakthrough}券, ${inputRawstone}石, ${inputPlatinum}金`
+            };
+        } else {
+            // 普通收入或支出记录
+            record = {
+                date: date,
+                type: type,
+                diamond: inputDiamond,
+                breakthrough: inputBreakthrough,
+                rawstone: inputRawstone,
+                platinum: inputPlatinum,
+                remark: remark
+            };
+        }
 
         // 将新记录添加到数组开头，使最新的记录显示在最上面
         this.records.unshift(record);

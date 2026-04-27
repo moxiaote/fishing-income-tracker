@@ -48,5 +48,6 @@
     "copy": "複製",
     "syncNote1": "此功能處於測試階段，可能會遇到同步失敗的情況。",
     "syncNote2": "如遇網路失敗，請訪問 CORS代理演示頁面 獲取臨時許可權。",
-    "autoGenerate": "登錄GitHub 之後點擊上傳備份生成"
+    "autoGenerate": "登錄GitHub 之後點擊上傳備份生成",
+    "total": "設定總額"
 }

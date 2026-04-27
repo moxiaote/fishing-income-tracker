@@ -48,5 +48,6 @@
     "copy": "Sao chép",
     "syncNote1": "Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.",
     "syncNote2": "Nếu mạng lỗi, hãy truy cập trang demo proxy CORS để lấy quyền truy cập tạm thời.",
-    "autoGenerate": "Tạo sau khi nhấn Tải lên sao lưu"
+    "autoGenerate": "Tạo sau khi nhấn Tải lên sao lưu",
+    "total": "Thiết lập tổng số"
 }

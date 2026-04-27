@@ -48,5 +48,6 @@
     "copy": "Copy",
     "syncNote1": "This feature is in testing phase and may encounter sync failures.",
     "syncNote2": "If network fails, please visit CORS proxy demo page to get temporary access.",
-    "autoGenerate": "Generate after clicking Upload Backup"
+    "autoGenerate": "Generate after clicking Upload Backup",
+    "total": "Set Total"
 }
