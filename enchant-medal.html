@@ -203,9 +203,16 @@
         const enchantReelButton = document.getElementById('enchant-reel');
         const rodResultElement = document.getElementById('rod-result');
         const reelResultElement = document.getElementById('reel-result');
+        let hideTimeoutId = null;
         
         // 显示结果消息
         function showResult(element, success) {
+            // 清除之前的定时器，避免多个定时器导致提示被提前隐藏
+            if (hideTimeoutId) {
+                clearTimeout(hideTimeoutId);
+                hideTimeoutId = null;
+            }
+            
             element.style.display = 'block';
             if (success) {
                 element.className = 'result-message success-message';
@@ -215,10 +222,11 @@
                 element.textContent = '附魔失败！';
             }
             
-            // 3秒后隐藏消息
-            setTimeout(() => {
+            // 10秒后隐藏消息
+            hideTimeoutId = setTimeout(() => {
                 element.style.display = 'none';
-            }, 3000);
+                hideTimeoutId = null;
+            }, 10000);
         }
         
         // 附魔装备

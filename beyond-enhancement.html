@@ -244,6 +244,7 @@
         const enhanceReelButton = document.getElementById('enhance-reel');
         const rodResultElement = document.getElementById('rod-result');
         const reelResultElement = document.getElementById('reel-result');
+        let hideTimeoutId = null;
         
         // 计算升级所需突破券数量
         function calculateCost(level) {
@@ -276,6 +277,12 @@
         
         // 显示结果消息
         function showResult(element, success, level) {
+            // 清除之前的定时器，避免多个定时器导致提示被提前隐藏
+            if (hideTimeoutId) {
+                clearTimeout(hideTimeoutId);
+                hideTimeoutId = null;
+            }
+            
             element.style.display = 'block';
             if (success) {
                 element.className = 'result-message success-message';
@@ -285,21 +292,32 @@
                 element.textContent = '强化失败！等级保持不变。';
             }
             
-            // 3秒后隐藏消息
-            setTimeout(() => {
+            // 10秒后隐藏消息
+            hideTimeoutId = setTimeout(() => {
                 element.style.display = 'none';
-            }, 3000);
+                hideTimeoutId = null;
+            }, 10000);
         }
         
         // 强化装备
         function enhanceEquipment(currentLevel, levelElement, resultElement) {
             if (currentLevel >= 20) {
+                // 清除之前的定时器，避免多个定时器导致提示被提前隐藏
+                if (hideTimeoutId) {
+                    clearTimeout(hideTimeoutId);
+                    hideTimeoutId = null;
+                }
+                
                 resultElement.style.display = 'block';
                 resultElement.className = 'result-message success-message';
                 resultElement.textContent = '已达到最高等级！';
-                setTimeout(() => {
+                
+                // 10秒后隐藏消息
+                hideTimeoutId = setTimeout(() => {
                     resultElement.style.display = 'none';
-                }, 3000);
+                    hideTimeoutId = null;
+                }, 10000);
+                
                 return currentLevel;
             }
             
