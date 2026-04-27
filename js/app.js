@@ -166,9 +166,7 @@ class App {
                         
                         // 立即设置新的iframe源
                         const iframe = document.getElementById('simulator-iframe');
-                        const iframeTitle = document.getElementById('iframe-title');
-                        if (iframe && iframeTitle) {
-                            iframeTitle.textContent = title;
+                        if (iframe) {
                             iframe.src = target;
                         }
                         
@@ -191,11 +189,8 @@ class App {
     openSimulator(target, title) {
         const container = document.getElementById('simulator-iframe-container');
         const iframe = document.getElementById('simulator-iframe');
-        const iframeTitle = document.getElementById('iframe-title');
 
-        if (container && iframe && iframeTitle) {
-            // 设置标题
-            iframeTitle.textContent = title;
+        if (container && iframe) {
             // 设置iframe源
             iframe.src = target;
             // 添加显示类以触发动画
