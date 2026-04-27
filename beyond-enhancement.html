@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超越强化模拟器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+        }
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        h3 {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+        .equipment-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .level-display {
+            font-size: 13px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .probability-table {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+        .probability-table th,
+        .probability-table td {
+            text-align: center;
+            padding: 5px;
+        }
+        .result-message {
+            margin-top: 8px;
+            padding: 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .failure-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cost-info {
+            margin-top: 8px;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 767px) {
+            .row {
+                flex-wrap: wrap;
+            }
+            .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+                margin-right: 4%;
+                margin-bottom: 10px;
+            }
+            .col-md-6:nth-child(2) {
+                margin-right: 0;
+            }
+            .equipment-card {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+            h3 {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+            .level-display {
+                font-size: 12px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                width: 100%;
+            }
+            .cost-info {
+                font-size: 12px;
+                padding: 8px;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">超越强化模拟器</h2>
+        
+        <!-- 累计消费显示 -->
+        <div class="text-center mb-3">
+            <p class="cost-info" style="display: inline-block;">本次累计消费突破券：<span id="total-cost">0</span> 张</p>
+        </div>
+        
+        <!-- 装备列表 -->
+        <div class="row">
+            <!-- 深渊神利维坦鱼竿 -->
+            <div class="col-md-6">
+                <div class="equipment-card">
+                    <h3>深渊神利维坦鱼竿</h3>
+                    <div class="level-display">当前等级: <span id="rod-level">+10</span></div>
+                    <div id="rod-cost" class="cost-info">升级到下一级需要: <span>1</span> 张突破券</div>
+                    <button id="enhance-rod" class="btn btn-primary mt-3">超越强化</button>
+                    <div id="rod-result" class="result-message" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- 深渊神利维坦卷线轮 -->
+            <div class="col-md-6">
+                <div class="equipment-card">
+                    <h3>深渊神利维坦卷线轮</h3>
+                    <div class="level-display">当前等级: <span id="reel-level">+10</span></div>
+                    <div id="reel-cost" class="cost-info">升级到下一级需要: <span>1</span> 张突破券</div>
+                    <button id="enhance-reel" class="btn btn-primary mt-3">超越强化</button>
+                    <div id="reel-result" class="result-message" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 概率表（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 13px;">超越强化概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-table" aria-expanded="false" aria-controls="probability-table" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="probability-table">
+                <table class="table table-bordered probability-table">
+                    <thead>
+                        <tr>
+                            <th>强化阶段</th>
+                            <th>成功率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>+11</td>
+                            <td>80.00%</td>
+                        </tr>
+                        <tr>
+                            <td>+12</td>
+                            <td>40.00%</td>
+                        </tr>
+                        <tr>
+                            <td>+13</td>
+                            <td>20.00%</td>
+                        </tr>
+                        <tr>
+                            <td>+14</td>
+                            <td>10.00%</td>
+                        </tr>
+                        <tr>
+                            <td>+15</td>
+                            <td>5.00%</td>
+                        </tr>
+                        <tr>
+                            <td>+16</td>
+                            <td>2.50%</td>
+                        </tr>
+                        <tr>
+                            <td>+17</td>
+                            <td>1.25%</td>
+                        </tr>
+                        <tr>
+                            <td>+18</td>
+                            <td>0.60%</td>
+                        </tr>
+                        <tr>
+                            <td>+19</td>
+                            <td>0.30%</td>
+                        </tr>
+                        <tr>
+                            <td>+20</td>
+                            <td>0.01%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
+    </div>
+    
+    <script>
+        // 强化概率表
+        const enhancementProbabilities = {
+            10: 0.8,    // +11
+            11: 0.4,    // +12
+            12: 0.2,    // +13
+            13: 0.1,    // +14
+            14: 0.05,   // +15
+            15: 0.025,  // +16
+            16: 0.0125, // +17
+            17: 0.006,  // +18
+            18: 0.003,  // +19
+            19: 0.0001  // +20
+        };
+        
+        // 装备等级
+        let rodLevel = 10;
+        let reelLevel = 10;
+        
+        // 累计消费突破券
+        let totalCost = 0;
+        
+        // 获取DOM元素
+        const rodLevelElement = document.getElementById('rod-level');
+        const reelLevelElement = document.getElementById('reel-level');
+        const rodCostElement = document.getElementById('rod-cost');
+        const reelCostElement = document.getElementById('reel-cost');
+        const totalCostElement = document.getElementById('total-cost');
+        const enhanceRodButton = document.getElementById('enhance-rod');
+        const enhanceReelButton = document.getElementById('enhance-reel');
+        const rodResultElement = document.getElementById('rod-result');
+        const reelResultElement = document.getElementById('reel-result');
+        
+        // 计算升级所需突破券数量
+        function calculateCost(level) {
+            if (level >= 20) return 0;
+            return level - 9; // +10到+11需要1张，+11到+12需要2张，以此类推
+        }
+        
+        // 更新装备等级显示
+        function updateLevelDisplay() {
+            // 更新等级显示
+            rodLevelElement.textContent = `+${rodLevel}`;
+            reelLevelElement.textContent = `+${reelLevel}`;
+            
+            // 更新突破券需求显示
+            const rodCost = calculateCost(rodLevel);
+            const reelCost = calculateCost(reelLevel);
+            
+            if (rodLevel >= 20) {
+                rodCostElement.innerHTML = '已达到最高等级！';
+            } else {
+                rodCostElement.innerHTML = `升级到下一级需要: <span>${rodCost}</span> 张突破券`;
+            }
+            
+            if (reelLevel >= 20) {
+                reelCostElement.innerHTML = '已达到最高等级！';
+            } else {
+                reelCostElement.innerHTML = `升级到下一级需要: <span>${reelCost}</span> 张突破券`;
+            }
+        }
+        
+        // 显示结果消息
+        function showResult(element, success, level) {
+            element.style.display = 'block';
+            if (success) {
+                element.className = 'result-message success-message';
+                element.textContent = `强化成功！当前等级：+${level}`;
+            } else {
+                element.className = 'result-message failure-message';
+                element.textContent = '强化失败！等级保持不变。';
+            }
+            
+            // 3秒后隐藏消息
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 强化装备
+        function enhanceEquipment(currentLevel, levelElement, resultElement) {
+            if (currentLevel >= 20) {
+                resultElement.style.display = 'block';
+                resultElement.className = 'result-message success-message';
+                resultElement.textContent = '已达到最高等级！';
+                setTimeout(() => {
+                    resultElement.style.display = 'none';
+                }, 3000);
+                return currentLevel;
+            }
+            
+            // 计算本次强化所需突破券数量
+            const cost = calculateCost(currentLevel);
+            // 增加累计消费
+            totalCost += cost;
+            // 更新累计消费显示
+            totalCostElement.textContent = totalCost;
+            
+            const probability = enhancementProbabilities[currentLevel];
+            const random = Math.random();
+            const success = random < probability;
+            
+            if (success) {
+                currentLevel += 1;
+                showResult(resultElement, true, currentLevel);
+            } else {
+                showResult(resultElement, false, currentLevel);
+            }
+            
+            return currentLevel;
+        }
+        
+        // 绑定事件
+        enhanceRodButton.addEventListener('click', () => {
+            rodLevel = enhanceEquipment(rodLevel, rodLevelElement, rodResultElement);
+            updateLevelDisplay();
+        });
+        
+        enhanceReelButton.addEventListener('click', () => {
+            reelLevel = enhanceEquipment(reelLevel, reelLevelElement, reelResultElement);
+            updateLevelDisplay();
+        });
+        
+        // 初始更新显示
+        updateLevelDisplay();
+    </script>
+</body>
+</html>

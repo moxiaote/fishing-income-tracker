@@ -357,3 +357,33 @@ h1 {
 .collapse-btn[aria-expanded="false"] .collapse-icon .line {
     transition: all 0.3s ease;
 }
+
+/* 模拟器样式 */
+.simulator-btn {
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.simulator-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 模拟器弹出框动画 */
+#simulator-iframe-container {
+    transition: all 0.3s ease;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+}
+
+#simulator-iframe-container.show {
+    opacity: 1;
+    max-height: 600px;
+}
+
+/* 说明文字样式 */
+.simulator-content p {
+    color: #6c757d;
+    font-size: 13px;
+}

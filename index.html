@@ -199,109 +199,167 @@
             </div>
         </div>
 
-        <!-- 数据管理 -->
-        <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span data-i18n="dataManagement">数据管理</span>
-                <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#data-management-section" aria-expanded="true" aria-controls="data-management-section">
-                    <span class="collapse-icon">
-                        <span class="line horizontal"></span>
-                        <span class="line vertical"></span>
-                        <span class="line diagonal"></span>
-                    </span>
-                </button>
-            </div>
-            <div class="collapse show" id="data-management-section">
-                <div class="card-body">
-                    <div class="mb-4">
-                        <h6 data-i18n="fileOperations">文件操作</h6>
-                        <div class="d-flex gap-2">
-                            <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
-                            <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
-                            <input type="file" id="file-input" style="display: none;" accept=".txt">
+        <!-- 数据管理和上头模拟器 -->
+        <div class="row mb-3">
+            <!-- 数据管理 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span data-i18n="dataManagement">数据管理</span>
+                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#data-management-section" aria-expanded="true" aria-controls="data-management-section">
+                            <span class="collapse-icon">
+                                <span class="line horizontal"></span>
+                                <span class="line vertical"></span>
+                                <span class="line diagonal"></span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="data-management-section">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h6 data-i18n="fileOperations">文件操作</h6>
+                                <div class="d-flex gap-2">
+                                    <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
+                                    <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
+                                    <input type="file" id="file-input" style="display: none;" accept=".txt">
+                                </div>
+                            </div>
+                            
+                            <div class="border-top border-secondary pt-4 mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6>
+                                        <span class="lang-zh">Gist 同步功能</span>
+                                        <span class="lang-zh-TW">Gist 同步功能</span>
+                                        <span class="lang-en">Gist Sync</span>
+                                        <span class="lang-ko">Gist 동기화 기능</span>
+                                        <span class="lang-vi">Chức năng đồng bộ Gist</span>
+                                        <span class="text-muted small">
+                                            <span class="lang-zh">(实验室)</span>
+                                            <span class="lang-zh-TW">(實驗室)</span>
+                                            <span class="lang-en">(Laboratory)</span>
+                                            <span class="lang-ko">(실험실)</span>
+                                            <span class="lang-vi">(Phòng thí nghiệm)</span>
+                                        </span>
+                                    </h6>
+                                    <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section">
+                                            <span class="collapse-icon">
+                                                <span class="line horizontal"></span>
+                                                <span class="line vertical"></span>
+                                                <span class="line diagonal"></span>
+                                            </span>
+                                        </button>
+                                </div>
+                                <div class="collapse" id="gist-sync-section">
+                                    <div class="d-flex gap-2 mb-3">
+                                        <button id="github-login" class="btn btn-outline-secondary">
+                                            <span class="lang-zh">GitHub登录</span>
+                                            <span class="lang-zh-TW">GitHub登錄</span>
+                                            <span class="lang-en">GitHub Login</span>
+                                            <span class="lang-ko">GitHub 로그인</span>
+                                            <span class="lang-vi">Đăng nhập GitHub</span>
+                                        </button>
+                                        <button id="load-from-gist" class="btn btn-outline-primary">
+                                            <span class="lang-zh">从Gist ID加载</span>
+                                            <span class="lang-zh-TW">從Gist ID加載</span>
+                                            <span class="lang-en">Load from Gist ID</span>
+                                            <span class="lang-ko">Gist ID에서 로드</span>
+                                            <span class="lang-vi">Tải từ Gist ID</span>
+                                        </button>
+                                        <button id="sync-to-cloud" class="btn btn-outline-primary">
+                                            <span class="lang-zh">上传备份</span>
+                                            <span class="lang-zh-TW">上傳備份</span>
+                                            <span class="lang-en">Upload Backup</span>
+                                            <span class="lang-ko">백업 업로드</span>
+                                            <span class="lang-vi">Tải lên sao lưu</span>
+                                        </button>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <label for="gist-id" class="form-label mb-0">
+                                            <span class="lang-zh">Gist ID</span>
+                                            <span class="lang-zh-TW">Gist ID</span>
+                                            <span class="lang-en">Gist ID</span>
+                                            <span class="lang-ko">Gist ID</span>
+                                            <span class="lang-vi">Gist ID</span>
+                                        </label>
+                                        <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
+                                        <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">
+                                            <span class="lang-zh">复制</span>
+                                            <span class="lang-zh-TW">複製</span>
+                                            <span class="lang-en">Copy</span>
+                                            <span class="lang-ko">복사</span>
+                                            <span class="lang-vi">Sao chép</span>
+                                        </button>
+                                    </div>
+                                    <div class="mt-2 text-sm text-muted">
+                                        <p>
+                                            <span class="lang-zh">此功能处于测试阶段，可能会遇到同步失败的情况。</span>
+                                            <span class="lang-zh-TW">此功能處於測試階段，可能會遇到同步失敗的情況。</span>
+                                            <span class="lang-en">This feature is in testing phase and may encounter sync failures.</span>
+                                            <span class="lang-ko">이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.</span>
+                                            <span class="lang-vi">Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.</span>
+                                        </p>
+                                        <p>
+                                            <span class="lang-zh">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</span>
+                                            <span class="lang-zh-TW">如遇網路失敗，請訪問 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示頁面</a> 獲取臨時許可權。</span>
+                                            <span class="lang-en">If network fails, please visit <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS proxy demo page</a> to get temporary access.</span>
+                                            <span class="lang-ko">네트워크가 실패하면 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS 프록시 데모 페이지</a>에 방문하여 임시 액세스를 얻으세요.</span>
+                                            <span class="lang-vi">Nếu mạng lỗi, hãy truy cập <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">trang demo proxy CORS</a> để lấy quyền truy cập tạm thời.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="border-top border-secondary pt-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6>
-                                <span class="lang-zh">Gist 同步功能</span>
-                                <span class="lang-zh-TW">Gist 同步功能</span>
-                                <span class="lang-en">Gist Sync</span>
-                                <span class="lang-ko">Gist 동기화 기능</span>
-                                <span class="lang-vi">Chức năng đồng bộ Gist</span>
-                                <span class="text-muted small">
-                                    <span class="lang-zh">(实验室)</span>
-                                    <span class="lang-zh-TW">(實驗室)</span>
-                                    <span class="lang-en">(Laboratory)</span>
-                                    <span class="lang-ko">(실험실)</span>
-                                    <span class="lang-vi">(Phòng thí nghiệm)</span>
-                                </span>
-                            </h6>
-                            <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section">
-                                    <span class="collapse-icon">
-                                        <span class="line horizontal"></span>
-                                        <span class="line vertical"></span>
-                                        <span class="line diagonal"></span>
-                                    </span>
-                                </button>
-                        </div>
-                        <div class="collapse" id="gist-sync-section">
-                            <div class="d-flex gap-2 mb-3">
-                                <button id="github-login" class="btn btn-outline-secondary">
-                                    <span class="lang-zh">GitHub登录</span>
-                                    <span class="lang-zh-TW">GitHub登錄</span>
-                                    <span class="lang-en">GitHub Login</span>
-                                    <span class="lang-ko">GitHub 로그인</span>
-                                    <span class="lang-vi">Đăng nhập GitHub</span>
-                                </button>
-                                <button id="load-from-gist" class="btn btn-outline-primary">
-                                    <span class="lang-zh">从Gist ID加载</span>
-                                    <span class="lang-zh-TW">從Gist ID加載</span>
-                                    <span class="lang-en">Load from Gist ID</span>
-                                    <span class="lang-ko">Gist ID에서 로드</span>
-                                    <span class="lang-vi">Tải từ Gist ID</span>
-                                </button>
-                                <button id="sync-to-cloud" class="btn btn-outline-primary">
-                                    <span class="lang-zh">上传备份</span>
-                                    <span class="lang-zh-TW">上傳備份</span>
-                                    <span class="lang-en">Upload Backup</span>
-                                    <span class="lang-ko">백업 업로드</span>
-                                    <span class="lang-vi">Tải lên sao lưu</span>
-                                </button>
+                </div>
+            </div>
+            
+            <!-- 上头模拟器 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>上头模拟器</span>
+                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#simulator-section" aria-expanded="true" aria-controls="simulator-section">
+                            <span class="collapse-icon">
+                                <span class="line horizontal"></span>
+                                <span class="line vertical"></span>
+                                <span class="line diagonal"></span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="simulator-section">
+                        <div class="card-body">
+                            <!-- 上头模拟器内容 -->
+                            <div class="simulator-content">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="beyond-enhancement.html">超越强化</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="evolve-gaia.html">进化盖亚</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="evolve-eight-star.html">进化八星</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="draw-medal-chest.html">抽勋章宝箱</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="enchant-medal.html">附魔勋章</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="remove-enchant.html">扣附魔</button>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <p>说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。</p>
                             </div>
-                            <div class="d-flex align-items-center gap-2">
-                                <label for="gist-id" class="form-label mb-0">
-                                    <span class="lang-zh">Gist ID</span>
-                                    <span class="lang-zh-TW">Gist ID</span>
-                                    <span class="lang-en">Gist ID</span>
-                                    <span class="lang-ko">Gist ID</span>
-                                    <span class="lang-vi">Gist ID</span>
-                                </label>
-                                <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
-                                <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">
-                                    <span class="lang-zh">复制</span>
-                                    <span class="lang-zh-TW">複製</span>
-                                    <span class="lang-en">Copy</span>
-                                    <span class="lang-ko">복사</span>
-                                    <span class="lang-vi">Sao chép</span>
-                                </button>
-                            </div>
-                            <div class="mt-2 text-sm text-muted">
-                                <p>
-                                    <span class="lang-zh">此功能处于测试阶段，可能会遇到同步失败的情况。</span>
-                                    <span class="lang-zh-TW">此功能處於測試階段，可能會遇到同步失敗的情況。</span>
-                                    <span class="lang-en">This feature is in testing phase and may encounter sync failures.</span>
-                                    <span class="lang-ko">이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.</span>
-                                    <span class="lang-vi">Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.</span>
-                                </p>
-                                <p>
-                                    <span class="lang-zh">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</span>
-                                    <span class="lang-zh-TW">如遇網路失敗，請訪問 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示頁面</a> 獲取臨時許可權。</span>
-                                    <span class="lang-en">If network fails, please visit <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS proxy demo page</a> to get temporary access.</span>
-                                    <span class="lang-ko">네트워크가 실패하면 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS 프록시 데모 페이지</a>에 방문하여 임시 액세스를 얻으세요.</span>
-                                    <span class="lang-vi">Nếu mạng lỗi, hãy truy cập <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">trang demo proxy CORS</a> để lấy quyền truy cập tạm thời.</span>
-                                </p>
+                            
+                            <!-- 嵌入内容区域 -->
+                            <div id="simulator-iframe-container" class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 id="iframe-title"></h6>
+                                </div>
+                                <iframe id="simulator-iframe" src="" width="100%" height="400" frameborder="0"></iframe>
                             </div>
                         </div>
                     </div>

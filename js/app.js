@@ -7,6 +7,7 @@ class App {
         this.fixedTotal = null;
         this.loadedRecords = 30; // 默认加载30条
         this.loadBatchSize = 30; // 每次加载30条
+        this.currentSimulator = null; // 当前打开的模拟器
         
         // 暴露app实例到全局，供其他模块访问
         window.app = this;
@@ -136,6 +137,88 @@ class App {
             });
         }
 
+        // 上头模拟器按钮事件
+        this.bindSimulatorEvents();
+
+    }
+
+    // 绑定上头模拟器事件
+    bindSimulatorEvents() {
+        // 获取所有模拟器按钮
+        const simulatorButtons = document.querySelectorAll('.simulator-btn');
+        if (simulatorButtons.length > 0) {
+            simulatorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.getAttribute('data-target');
+                    const title = button.textContent;
+                    
+                    // 检查是否是当前打开的模拟器
+                    if (this.currentSimulator === target) {
+                        // 如果是当前打开的模拟器，则关闭
+                        this.closeSimulator();
+                    } else {
+                        // 如果不是当前打开的模拟器，则关闭当前的并打开新的
+                        // 先移除显示类
+                        const container = document.getElementById('simulator-iframe-container');
+                        if (container) {
+                            container.classList.remove('show');
+                        }
+                        
+                        // 立即设置新的iframe源
+                        const iframe = document.getElementById('simulator-iframe');
+                        const iframeTitle = document.getElementById('iframe-title');
+                        if (iframe && iframeTitle) {
+                            iframeTitle.textContent = title;
+                            iframe.src = target;
+                        }
+                        
+                        // 延迟添加显示类，确保iframe源已设置
+                        setTimeout(() => {
+                            if (container) {
+                                container.classList.add('show');
+                            }
+                        }, 50);
+                        
+                        // 更新当前模拟器状态
+                        this.currentSimulator = target;
+                    }
+                });
+            });
+        }
+    }
+
+    // 打开模拟器
+    openSimulator(target, title) {
+        const container = document.getElementById('simulator-iframe-container');
+        const iframe = document.getElementById('simulator-iframe');
+        const iframeTitle = document.getElementById('iframe-title');
+
+        if (container && iframe && iframeTitle) {
+            // 设置标题
+            iframeTitle.textContent = title;
+            // 设置iframe源
+            iframe.src = target;
+            // 添加显示类以触发动画
+            container.classList.add('show');
+        }
+    }
+
+    // 关闭模拟器
+    closeSimulator() {
+        const container = document.getElementById('simulator-iframe-container');
+        const iframe = document.getElementById('simulator-iframe');
+
+        if (container && iframe) {
+            // 移除显示类以触发动画
+            container.classList.remove('show');
+            // 延迟清空iframe源，等待动画完成
+            setTimeout(() => {
+                // 清空iframe源
+                iframe.src = '';
+                // 重置当前模拟器状态
+                this.currentSimulator = null;
+            }, 300);
+        }
     }
 
     // 添加滚动监听
