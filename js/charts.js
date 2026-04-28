@@ -2,7 +2,6 @@
 class ChartManager {
     constructor() {
         this.trendChart = null;
-        this.incomeExpenseChart = null;
         this.resourcePieChart = null;
         
         // 颜色配置 - 与总量信息卡片颜色匹配
@@ -43,7 +42,6 @@ class ChartManager {
     // 初始化所有图表
     initCharts() {
         this.initTrendChart();
-        this.initIncomeExpenseChart();
     }
 
     // 初始化趋势图表
@@ -155,68 +153,6 @@ class ChartManager {
         });
     }
 
-    // 初始化收支对比图表
-    initIncomeExpenseChart() {
-        const ctx = document.getElementById('incomeExpenseChart');
-        if (!ctx) return;
-
-        this.incomeExpenseChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: [i18n.getText('diamond'), i18n.getText('breakthrough'), i18n.getText('rawstone'), i18n.getText('platinum')],
-                datasets: [
-                    {
-                        label: i18n.getText('income'),
-                        data: [0, 0, 0, 0],
-                        backgroundColor: this.colors.income,
-                    },
-                    {
-                        label: i18n.getText('expense'),
-                        data: [0, 0, 0, 0],
-                        backgroundColor: this.colors.expense,
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: (context) => {
-                                const value = context.parsed.y;
-                                const formatted = this.formatNumber(value);
-                                return `${context.dataset.label}: ${formatted.display} (${formatted.full})`;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: this.colors.grid
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: this.colors.grid
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // 更新所有图表
-    updateCharts(records) {
-        this.updateTrendChart(records);
-        this.updateIncomeExpenseChart(records);
-    }
-
     // 更新趋势图表
     updateTrendChart(records) {
         if (!this.trendChart) return;
@@ -263,33 +199,6 @@ class ChartManager {
         this.trendChart.data.datasets[2].data = trendData.rawstone;
         this.trendChart.data.datasets[3].data = trendData.platinum;
         this.trendChart.update();
-    }
-
-    // 更新收支对比图表
-    updateIncomeExpenseChart(records) {
-        if (!this.incomeExpenseChart) return;
-
-        // 计算收入和支出
-        const income = [0, 0, 0, 0];
-        const expense = [0, 0, 0, 0];
-
-        records.forEach(record => {
-            if (record.type === '收入') {
-                income[0] += record.diamond;
-                income[1] += record.breakthrough;
-                income[2] += record.rawstone;
-                income[3] += record.platinum;
-            } else {
-                expense[0] += record.diamond;
-                expense[1] += record.breakthrough;
-                expense[2] += record.rawstone;
-                expense[3] += record.platinum;
-            }
-        });
-
-        this.incomeExpenseChart.data.datasets[0].data = income;
-        this.incomeExpenseChart.data.datasets[1].data = expense;
-        this.incomeExpenseChart.update();
     }
 
     // 按日期分组
@@ -415,17 +324,6 @@ class ChartManager {
             
             // 重新计算并更新数据
             this.updateTrendChart(chartData);
-        }
-        
-        // 更新收支对比图表标签和数据
-        if (this.incomeExpenseChart) {
-            // 更新标签
-            this.incomeExpenseChart.data.labels = [i18n.getText('diamond'), i18n.getText('breakthrough'), i18n.getText('rawstone'), i18n.getText('platinum')];
-            this.incomeExpenseChart.data.datasets[0].label = i18n.getText('income');
-            this.incomeExpenseChart.data.datasets[1].label = i18n.getText('expense');
-            
-            // 重新计算并更新数据
-            this.updateIncomeExpenseChart(chartData);
         }
     }
 }

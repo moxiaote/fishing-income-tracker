@@ -267,7 +267,6 @@ class App {
                 if (typeof chartManager !== 'undefined') {
                     setTimeout(() => {
                         if (chartManager.trendChart) chartManager.trendChart.resize();
-                        if (chartManager.incomeExpenseChart) chartManager.incomeExpenseChart.resize();
                     }, 100);
                 }
             });
