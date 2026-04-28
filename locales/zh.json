@@ -49,5 +49,14 @@
     "syncNote1": "此功能处于测试阶段，可能会遇到同步失败的情况。",
     "syncNote2": "如遇网络失败，请访问 CORS代理演示页面 获取临时权限。",
     "autoGenerate": "登录GitHub 之后点击上传备份生成",
-    "total": "设置总额"
+    "total": "设置总额",
+    "simulator": "上头模拟器",
+    "beyondEnhance": "超越强化",
+    "evolveGaia": "进化八星",
+    "donation": "☕ 请我喝一杯咖啡",
+    "badgeBox": "抽勋章宝箱",
+    "enchantMedal": "附魔勋章",
+    "pearlGrowth": "珍珠成长/组合",
+    "simulatorNote": "说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。",
+    "donationNote": "您的支持是我最大的动力！您的慷慨让这个小工具变得更好！"
 }

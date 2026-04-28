@@ -150,7 +150,7 @@ class App {
             simulatorButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const target = button.getAttribute('data-target');
-                    const title = button.textContent;
+                    const i18nKey = button.getAttribute('data-i18n');
                     
                     // 检查是否是当前打开的模拟器
                     if (this.currentSimulator === target) {
@@ -165,7 +165,7 @@ class App {
                         }
                         
                         // 检查是否是打赏按钮
-                        if (title.includes('请我喝一杯咖啡') || title === '打赏') {
+                        if (i18nKey === 'donation') {
                             // 显示打赏图片，隐藏iframe
                             const iframe = document.getElementById('simulator-iframe');
                             if (iframe) {
@@ -178,7 +178,7 @@ class App {
                             // 更新说明文本
                             const descriptionText = document.querySelector('.simulator-content p');
                             if (descriptionText) {
-                                descriptionText.textContent = '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！';
+                                descriptionText.textContent = i18n.getText('donationNote') || '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！';
                             }
                         } else {
                             // 隐藏打赏图片，显示iframe
@@ -194,7 +194,7 @@ class App {
                             // 恢复说明文本
                             const descriptionText = document.querySelector('.simulator-content p');
                             if (descriptionText) {
-                                descriptionText.textContent = '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。';
+                                descriptionText.textContent = i18n.getText('simulatorNote') || '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。';
                             }
                         }
                         

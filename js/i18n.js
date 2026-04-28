@@ -120,7 +120,17 @@ class I18n {
                     copy: '复制',
                     syncNote1: '此功能处于测试阶段，可能会遇到同步失败的情况。',
                     syncNote2: '如遇网络失败，请访问 CORS代理演示页面 获取临时权限。',
-                    autoGenerate: '登录GitHub 之后点击上传备份生成'
+                    autoGenerate: '登录GitHub 之后点击上传备份生成',
+                    total: '设置总额',
+                    simulator: '上头模拟器',
+                    beyondEnhance: '超越强化',
+                    evolveGaia: '进化八星',
+                    donation: '☕ 请我喝一杯咖啡',
+                    badgeBox: '抽勋章宝箱',
+                    enchantMedal: '附魔勋章',
+                    pearlGrowth: '珍珠成长/组合',
+                    simulatorNote: '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。',
+                    donationNote: '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！'
                 },
                 'zh-TW': {
                     appTitle: '釣魚發燒友：財富積累日記',
@@ -172,7 +182,17 @@ class I18n {
                     copy: '複製',
                     syncNote1: '此功能處於測試階段，可能會遇到同步失敗的情況。',
                     syncNote2: '如遇網路失敗，請訪問 CORS代理演示頁面 獲取臨時許可權。',
-                    autoGenerate: '登錄GitHub 之後點擊上傳備份生成'
+                    autoGenerate: '登錄GitHub 之後點擊上傳備份生成',
+                    total: '設定總額',
+                    simulator: '上頭模擬器',
+                    beyondEnhance: '超越強化',
+                    evolveGaia: '進化八星',
+                    donation: '☕ 請我喝一杯咖啡',
+                    badgeBox: '抽勳章寶箱',
+                    enchantMedal: '附魔勳章',
+                    pearlGrowth: '珍珠成長/組合',
+                    simulatorNote: '說明：本項目僅供娛樂，實際遊戲中的概率可能會有所不同。',
+                    donationNote: '您的支持是我最大的動力！您的慷慨讓這個小工具變得更好！'
                 },
                 en: {
                     appTitle: 'Ace Fishing : Wild Catch',
@@ -224,7 +244,17 @@ class I18n {
                     copy: 'Copy',
                     syncNote1: 'This feature is in testing phase and may encounter sync failures.',
                     syncNote2: 'If network fails, please visit CORS proxy demo page to get temporary access.',
-                    autoGenerate: 'Generate after clicking Upload Backup'
+                    autoGenerate: 'Generate after clicking Upload Backup',
+                    total: 'Set Total',
+                    simulator: 'Simulator',
+                    beyondEnhance: 'Beyond Enhancement',
+                    evolveGaia: 'Gaia Evolution',
+                    donation: '☕ Buy Me A Coffee',
+                    badgeBox: 'Badge Box',
+                    enchantMedal: 'Enchant Medal',
+                    pearlGrowth: 'Pearl Growth/Combine',
+                    simulatorNote: 'Note: This project is for entertainment only. Actual game probabilities may vary.',
+                    donationNote: 'Your support is my biggest motivation! Your generosity makes this tool better!'
                 },
                 ko: {
                     appTitle: '낚시의 신',
@@ -276,7 +306,17 @@ class I18n {
                     copy: '복사',
                     syncNote1: '이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.',
                     syncNote2: '네트워크가 실패하면 CORS 프록시 데모 페이지에 방문하여 임시 액세스를 얻으세요.',
-                    autoGenerate: 'GitHub 로그인 후 백업 업로드 클릭하여 생성'
+                    autoGenerate: 'GitHub 로그인 후 백업 업로드 클릭하여 생성',
+                    total: '총액 설정',
+                    simulator: '시뮬레이터',
+                    beyondEnhance: '초월 강화',
+                    evolveGaia: '가이아 진화',
+                    donation: '☕ 커피 한 잔 사주세요',
+                    badgeBox: '배지 상자',
+                    enchantMedal: '인챈트 메달',
+                    pearlGrowth: '진주 성장/조합',
+                    simulatorNote: '참고: 이 프로젝트는 오락용으로만 사용됩니다. 실제 게임 확률은 다를 수 있습니다.',
+                    donationNote: '당신의 지원이 저에게 큰 힘이 됩니다！당신의 관대한 지원이 이 도구를 더 좋게 만듭니다！'
                 },
                 vi: {
                     appTitle: 'Người yêu câu cá: Nhật ký tích luỹ tài sản',
@@ -328,7 +368,17 @@ class I18n {
                     copy: 'Sao chép',
                     syncNote1: 'Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.',
                     syncNote2: 'Nếu mạng lỗi, hãy truy cập trang demo proxy CORS để lấy quyền truy cập tạm thời.',
-                    autoGenerate: 'Tạo sau khi nhấn Tải lên sao lưu'
+                    autoGenerate: 'Tạo sau khi nhấn Tải lên sao lưu',
+                    total: 'Thiết lập tổng số',
+                    simulator: 'Bộ mô phỏng',
+                    beyondEnhance: 'Tăng cường siêu việt',
+                    evolveGaia: 'Tiến hóa Gaia',
+                    donation: '☕ Mua cho tôi một ly cà phê',
+                    badgeBox: 'Hộp huy hiệu',
+                    enchantMedal: 'Phù phép huy hiệu',
+                    pearlGrowth: 'Phát triển/Kết hợp ngọc trai',
+                    simulatorNote: 'Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.',
+                    donationNote: 'Sự ủng hộ của bạn là động lực lớn nhất của tôi！Lòng hào phóng của bạn khiến công cụ này tốt hơn！'
                 }
             };
         }

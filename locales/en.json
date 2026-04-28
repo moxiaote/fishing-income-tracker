@@ -49,5 +49,14 @@
     "syncNote1": "This feature is in testing phase and may encounter sync failures.",
     "syncNote2": "If network fails, please visit CORS proxy demo page to get temporary access.",
     "autoGenerate": "Generate after clicking Upload Backup",
-    "total": "Set Total"
+    "total": "Set Total",
+    "simulator": "Simulator",
+    "beyondEnhance": "Beyond Enhancement",
+    "evolveGaia": "Gaia Evolution",
+    "donation": "☕ Buy Me a Coffee",
+    "badgeBox": "Badge Box",
+    "enchantMedal": "Enchant Medal",
+    "pearlGrowth": "Pearl Growth/Combine",
+    "simulatorNote": "Note: This project is for entertainment only. Actual game probabilities may vary.",
+    "donationNote": "Your support is my biggest motivation! Your generosity makes this tool better!"
 }

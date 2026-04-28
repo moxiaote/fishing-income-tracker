@@ -49,5 +49,14 @@
     "syncNote1": "此功能處於測試階段，可能會遇到同步失敗的情況。",
     "syncNote2": "如遇網路失敗，請訪問 CORS代理演示頁面 獲取臨時許可權。",
     "autoGenerate": "登錄GitHub 之後點擊上傳備份生成",
-    "total": "設定總額"
+    "total": "設定總額",
+    "simulator": "上頭模擬器",
+    "beyondEnhance": "超越強化",
+    "evolveGaia": "進化八星",
+    "donation": "☕ 請我喝一杯咖啡",
+    "badgeBox": "抽勳章寶箱",
+    "enchantMedal": "附魔勳章",
+    "pearlGrowth": "珍珠成長/組合",
+    "simulatorNote": "說明：本項目僅供娛樂，實際遊戲中的概率可能會有所不同。",
+    "donationNote": "您的支持是我最大的動力！您的慷慨讓這個小工具變得更好！"
 }

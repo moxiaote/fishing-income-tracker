@@ -49,5 +49,14 @@
     "syncNote1": "Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.",
     "syncNote2": "Nếu mạng lỗi, hãy truy cập trang demo proxy CORS để lấy quyền truy cập tạm thời.",
     "autoGenerate": "Tạo sau khi nhấn Tải lên sao lưu",
-    "total": "Thiết lập tổng số"
+    "total": "Thiết lập tổng số",
+    "simulator": "Bộ mô phỏng",
+    "beyondEnhance": "Tăng cường siêu việt",
+    "evolveGaia": "Tiến hóa Gaia",
+    "donation": "☕ Mua cho tôi một ly cà phê",
+    "badgeBox": "Hộp huy hiệu",
+    "enchantMedal": "Phù phép huy hiệu",
+    "pearlGrowth": "Phát triển/Kết hợp ngọc trai",
+    "simulatorNote": "Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.",
+    "donationNote": "Sự ủng hộ của bạn là động lực lớn nhất của tôi！Lòng hào phóng của bạn khiến công cụ này tốt hơn！"
 }
