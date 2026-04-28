@@ -975,88 +975,14 @@ window.onload = () => {
     initFloatButton();
 };
 
-// 悬浮按钮相关功能
+// 弹窗关闭处理
 function initFloatButton() {
-    const floatBtn = document.getElementById('add-record-float-btn');
-    const floatBtnContainer = document.querySelector('.float-btn-container');
     const modal = document.getElementById('add-record-modal');
-    const modalContent = document.getElementById('modal-content');
-    
-    // 拖拽悬浮按钮
-    let isDragging = false;
-    let offsetX, offsetY;
-    
-    floatBtn.addEventListener('mousedown', (e) => {
-        if (e.button === 0) {
-            isDragging = true;
-            offsetX = e.clientX - floatBtn.getBoundingClientRect().left;
-            offsetY = e.clientY - floatBtn.getBoundingClientRect().top;
-            floatBtn.style.cursor = 'grabbing';
-        }
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (isDragging) {
-            let newX = e.clientX - offsetX;
-            let newY = e.clientY - offsetY;
-            
-            // 限制在视窗内
-            const maxX = window.innerWidth - floatBtn.offsetWidth - 20;
-            const maxY = window.innerHeight - floatBtn.offsetHeight - 20;
-            newX = Math.max(20, Math.min(newX, maxX));
-            newY = Math.max(20, Math.min(newY, maxY));
-            
-            floatBtn.style.left = newX + 'px';
-            floatBtn.style.right = 'auto';
-            floatBtn.style.top = newY + 'px';
-            floatBtn.style.bottom = 'auto';
-            floatBtn.style.position = 'fixed';
-        }
-    });
-    
-    document.addEventListener('mouseup', () => {
-        isDragging = false;
-        floatBtn.style.cursor = 'move';
-    });
-    
-    // 点击遮罩层关闭弹窗
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            toggleAddRecordModal();
-        }
-    });
     
     // ESC键关闭弹窗
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
             toggleAddRecordModal();
-        }
-    });
-    
-    // 窗口大小变化时确保按钮可见
-    window.addEventListener('resize', () => {
-        const rect = floatBtn.getBoundingClientRect();
-        const btnWidth = floatBtn.offsetWidth;
-        const btnHeight = floatBtn.offsetHeight;
-        
-        // 如果按钮部分或完全超出右边界
-        if (rect.right > window.innerWidth) {
-            floatBtn.style.left = (window.innerWidth - btnWidth - 20) + 'px';
-        }
-        
-        // 如果按钮部分或完全超出下边界
-        if (rect.bottom > window.innerHeight) {
-            floatBtn.style.top = (window.innerHeight - btnHeight - 20) + 'px';
-        }
-        
-        // 如果按钮部分或完全超出左边界
-        if (rect.left < 0) {
-            floatBtn.style.left = '20px';
-        }
-        
-        // 如果按钮部分或完全超出上边界
-        if (rect.top < 0) {
-            floatBtn.style.top = '20px';
         }
     });
 }

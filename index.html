@@ -146,13 +146,6 @@
             </div>
         </div>
 
-        <!-- 悬浮添加记录按钮 -->
-        <div class="float-btn-container">
-            <button id="add-record-float-btn" class="float-btn" onclick="toggleAddRecordModal()">
-                <span>+</span>
-            </button>
-        </div>
-        
         <!-- 添加记录弹窗 -->
         <div id="add-record-modal" class="modal-overlay" style="display: none;">
             <div id="modal-content" class="modal-content">
@@ -274,7 +267,12 @@
                         <div class="card-body">
                             <div class="mb-4">
                                 <h6 data-i18n="fileOperations">文件操作</h6>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <button id="add-record-btn-main" class="btn btn-primary" onclick="toggleAddRecordModal()">
+                                        <span>+</span>
+                                        <span class="ms-1" data-i18n="addRecord">添加记录</span>
+                                    </button>
+                                    <div class="vr mx-2"></div>
                                     <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
                                     <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
                                     <input type="file" id="file-input" style="display: none;" accept=".txt">
