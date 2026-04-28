@@ -1,9 +1,22 @@
 /* 主样式文件 */
+html {
+    height: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
     font-size: 14px;
     padding-top: 30px; /* 减小为固定头部预留的空间 */
+    min-height: 100%;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* iOS滚动优化 */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
 }
 
 .container {
@@ -471,6 +484,9 @@ h1 {
     .float-btn {
         /* 确保按钮始终可见 */
         -webkit-sticky: position;
+        /* 触摸性能优化 */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 }
 
