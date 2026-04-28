@@ -1037,9 +1037,28 @@ function toggleAddRecordModal() {
         modal.style.display = 'flex';
         // 设置默认日期为今天
         document.getElementById('date').valueAsDate = new Date();
+        // 更新类型下拉框选项的翻译
+        updateTypeOptionsTranslation();
     } else {
         modal.style.display = 'none';
     }
+}
+
+// 更新类型下拉框选项的翻译
+function updateTypeOptionsTranslation() {
+    const select = document.getElementById('type');
+    if (!select) return;
+    
+    const options = select.querySelectorAll('option');
+    options.forEach(option => {
+        const key = option.getAttribute('data-i18n');
+        if (key) {
+            const translation = i18n.getText(key);
+            if (translation) {
+                option.textContent = translation;
+            }
+        }
+    });
 }
 
 // 排序函数（全局调用）
@@ -1058,5 +1077,7 @@ function goToPage(page) {
 function changeLanguage(lang) {
     console.log('切换语言:', lang);
     i18n.changeLanguage(lang);
+    // 更新类型下拉框选项的翻译
+    updateTypeOptionsTranslation();
     console.log('语言切换完成');
 }
