@@ -404,11 +404,9 @@ h1 {
 /* 悬浮按钮容器 */
 .float-btn-container {
     position: fixed;
-    right: 0;
+    right: 20px;
     bottom: 20px;
-    width: calc(100% - 20px);
-    max-width: 1200px;
-    padding-right: 20px;
+    padding-right: 0;
     pointer-events: none;
     z-index: 999;
     /* iOS Safari 修复：强制使用GPU渲染 */
@@ -416,13 +414,14 @@ h1 {
     transform: translateZ(0);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+    /* 确保容器在视口内 */
+    max-width: 100%;
+    max-height: 100%;
 }
 
 /* 悬浮按钮样式 */
 .float-btn {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
+    position: relative;
     width: 56px;
     height: 56px;
     background-color: rgba(100, 100, 100, 0.8);
