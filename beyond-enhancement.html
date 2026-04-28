@@ -115,7 +115,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">超越强化模拟器</h2>
+        <h2 class="text-center" style="cursor: pointer; text-decoration: underline; color: #007bff;" onclick="confirmReset()">超越强化模拟器</h2>
         
         <!-- 累计消费显示 -->
         <div class="text-center mb-3">
@@ -213,6 +213,41 @@
     </div>
     
     <script>
+        // 从 localStorage 加载数据
+        function loadData() {
+            const saved = localStorage.getItem('beyondEnhancementData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                rodLevel = data.rodLevel || 10;
+                reelLevel = data.reelLevel || 10;
+                totalCost = data.totalCost || 0;
+                totalCostElement.textContent = totalCost;
+                updateLevelDisplay();
+            }
+        }
+        
+        // 保存数据到 localStorage
+        function saveData() {
+            const data = {
+                rodLevel: rodLevel,
+                reelLevel: reelLevel,
+                totalCost: totalCost
+            };
+            localStorage.setItem('beyondEnhancementData', JSON.stringify(data));
+        }
+        
+        // 重置数据确认
+        function confirmReset() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销。')) {
+                rodLevel = 10;
+                reelLevel = 10;
+                totalCost = 0;
+                totalCostElement.textContent = '0';
+                updateLevelDisplay();
+                localStorage.removeItem('beyondEnhancementData');
+            }
+        }
+        
         // 强化概率表
         const enhancementProbabilities = {
             10: 0.8,    // +11
@@ -346,15 +381,20 @@
         enhanceRodButton.addEventListener('click', () => {
             rodLevel = enhanceEquipment(rodLevel, rodLevelElement, rodResultElement);
             updateLevelDisplay();
+            saveData();
         });
         
         enhanceReelButton.addEventListener('click', () => {
             reelLevel = enhanceEquipment(reelLevel, reelLevelElement, reelResultElement);
             updateLevelDisplay();
+            saveData();
         });
         
         // 初始更新显示
         updateLevelDisplay();
+        
+        // 页面加载时恢复数据
+        loadData();
     </script>
 </body>
 </html>

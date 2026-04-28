@@ -130,7 +130,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">抽勋章宝箱</h2>
+        <h2 class="text-center" style="cursor: pointer; text-decoration: underline; color: #007bff;" onclick="confirmReset()">抽勋章宝箱</h2>
         
         <!-- 累计消费显示 -->
         <div class="text-center mb-3">
@@ -291,6 +291,39 @@
     </div>
     
     <script>
+        // 从 localStorage 加载数据
+        function loadData() {
+            const saved = localStorage.getItem('badgeBoxData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                totalCost = data.totalCost || 0;
+                totalCostElement.textContent = totalCost;
+                // 恢复抽取结果
+                if (data.drawResults) {
+                    showDrawResults(data.drawResults);
+                }
+            }
+        }
+        
+        // 保存数据到 localStorage
+        function saveData(drawResults = null) {
+            const data = {
+                totalCost: totalCost,
+                drawResults: drawResults
+            };
+            localStorage.setItem('badgeBoxData', JSON.stringify(data));
+        }
+        
+        // 重置数据确认
+        function confirmReset() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销。')) {
+                totalCost = 0;
+                totalCostElement.textContent = '0';
+                drawResultsElement.innerHTML = '<p style="font-size: 13px; text-align: center; color: #6c757d;">点击上方按钮开始抽取</p>';
+                localStorage.removeItem('badgeBoxData');
+            }
+        }
+        
         // 勋章概率数据
         const badgeProbabilities = [
             // 最高级勋章类
@@ -438,7 +471,12 @@
             
             const results = drawBadges(count);
             showDrawResults(results);
+            // 保存数据
+            saveData(results);
         });
+        
+        // 页面加载时恢复数据
+        loadData();
     </script>
 </body>
 </html>

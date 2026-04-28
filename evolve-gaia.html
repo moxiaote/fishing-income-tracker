@@ -157,7 +157,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 class="text-center">进化八星模拟器</h2>
+        <h2 class="text-center" style="cursor: pointer; text-decoration: underline; color: #007bff;" onclick="confirmReset()">进化八星模拟器</h2>
         
         <!-- 累计消费显示 -->
         <div class="text-center mb-3">
@@ -280,6 +280,72 @@
         let totalOre = 0;
         let totalPlatinum = 0;
         let totalDiamond = 0;
+        
+        // 从 localStorage 加载数据
+        function loadData() {
+            const saved = localStorage.getItem('evolveGaiaData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                evolveCount = data.evolveCount || 0;
+                greenWater = data.greenWater || 0;
+                redWater = data.redWater || 0;
+                totalPowder = data.totalPowder || 0;
+                totalOre = data.totalOre || 0;
+                totalPlatinum = data.totalPlatinum || 0;
+                totalDiamond = data.totalDiamond || 0;
+                
+                // 更新显示
+                evolveCountElement.textContent = evolveCount;
+                greenWaterElement.value = greenWater;
+                redWaterElement.value = redWater;
+                totalPowderElement.textContent = totalPowder;
+                totalOreElement.textContent = totalOre;
+                totalPlatinumElement.textContent = totalPlatinum;
+                totalDiamondElement.textContent = totalDiamond;
+                
+                updateProbability();
+            }
+        }
+        
+        // 保存数据到 localStorage
+        function saveData() {
+            const data = {
+                evolveCount: evolveCount,
+                greenWater: greenWater,
+                redWater: redWater,
+                totalPowder: totalPowder,
+                totalOre: totalOre,
+                totalPlatinum: totalPlatinum,
+                totalDiamond: totalDiamond
+            };
+            localStorage.setItem('evolveGaiaData', JSON.stringify(data));
+        }
+        
+        // 重置数据确认
+        function confirmReset() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销。')) {
+                evolveCount = 0;
+                greenWater = 0;
+                redWater = 0;
+                totalPowder = 0;
+                totalOre = 0;
+                totalPlatinum = 0;
+                totalDiamond = 0;
+                
+                // 更新显示
+                evolveCountElement.textContent = evolveCount;
+                greenWaterElement.value = greenWater;
+                redWaterElement.value = redWater;
+                totalPowderElement.textContent = totalPowder;
+                totalOreElement.textContent = totalOre;
+                totalPlatinumElement.textContent = totalPlatinum;
+                totalDiamondElement.textContent = totalDiamond;
+                
+                updateProbability();
+                
+                localStorage.removeItem('evolveGaiaData');
+            }
+        }
         
         // 获取DOM元素
         const evolveCountElement = document.getElementById('evolve-count');
@@ -413,6 +479,7 @@
         // 绑定事件
         evolveButton.addEventListener('click', () => {
             evolve();
+            saveData();
         });
         
         // 监听输入框变化
@@ -423,6 +490,7 @@
             greenWater = Math.max(0, greenWater);
             // 调整以确保总概率加成不超过20%
             adjustWater('green', 0);
+            saveData();
         });
         
         redWaterElement.addEventListener('input', () => {
@@ -432,10 +500,14 @@
             redWater = Math.max(0, redWater);
             // 调整以确保总概率加成不超过20%
             adjustWater('red', 0);
+            saveData();
         });
         
         // 初始更新概率
         updateProbability();
+        
+        // 页面加载时恢复数据
+        loadData();
     </script>
 </body>
 </html>
