@@ -417,13 +417,7 @@
                 evolveResultElement.className = 'result-message success-message';
                 evolveResultElement.textContent = '进化成功！';
                 evolvedSuccessfully = true;
-                
-                // 立即清空红水和绿水的数量
-                greenWater = 0;
-                redWater = 0;
-                greenWaterElement.value = 0;
-                redWaterElement.value = 0;
-                updateProbability();
+                // 不立即清空进化水，保持显示
             } else {
                 evolveResultElement.className = 'result-message failure-message';
                 evolveResultElement.textContent = '进化失败！概率增加1%。';
@@ -438,12 +432,19 @@
         
         // 进化
         function evolve() {
-            // 如果上次进化成功，重置进化次数
+            // 如果上次进化成功，弹出提示并重置
             if (evolvedSuccessfully) {
+                alert('🎉 进化成功！请添加新的进化水，继续你的进化之旅吧！');
                 evolveCount = 0;
                 evolveCountElement.textContent = evolveCount;
+                greenWater = 0;
+                redWater = 0;
+                greenWaterElement.value = 0;
+                redWaterElement.value = 0;
                 updateProbability();
                 evolvedSuccessfully = false;
+                saveData();
+                return;
             }
             
             // 计算总概率（使用当前进化次数，还未增加）
