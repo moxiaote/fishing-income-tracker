@@ -146,54 +146,59 @@
             </div>
         </div>
 
-        <!-- 添加记录表单 -->
-        <div class="card mb-3">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span data-i18n="addRecord">添加记录</span>
-                <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#add-record-section" aria-expanded="true" aria-controls="add-record-section">
-                    <span class="collapse-icon">
-                        <span class="line horizontal"></span>
-                        <span class="line vertical"></span>
-                        <span class="line diagonal"></span>
-                    </span>
-                </button>
-            </div>
-            <div class="collapse show" id="add-record-section">
-                <div class="card-body">
-                    <form id="add-record-form" class="d-flex flex-wrap align-items-end gap-2">
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="date" class="form-label mb-0" data-i18n="date">日期</label>
+        <!-- 悬浮添加记录按钮 -->
+        <div class="float-btn-container">
+            <button id="add-record-float-btn" class="float-btn" onclick="toggleAddRecordModal()">
+                <span>+</span>
+            </button>
+        </div>
+        
+        <!-- 添加记录弹窗 -->
+        <div id="add-record-modal" class="modal-overlay" style="display: none;">
+            <div id="modal-content" class="modal-content">
+                <div class="modal-header">
+                    <span data-i18n="addRecord">添加记录</span>
+                    <button class="modal-close" onclick="toggleAddRecordModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-record-form" class="add-record-form">
+                        <div class="form-group">
+                            <label for="date" class="form-label" data-i18n="date">日期</label>
                             <input type="date" class="form-control" id="date">
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="type" class="form-label mb-0" data-i18n="type">类型</label>
+                        <div class="form-group">
+                            <label for="type" class="form-label" data-i18n="type">类型</label>
                             <select class="form-control" id="type">
                                 <option value="收入" data-i18n="income" selected>收入</option>
                                 <option value="支出" data-i18n="expense">支出</option>
                                 <option value="设置总额" data-i18n="total">设置总额</option>
                             </select>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="diamond" class="form-label mb-0" data-i18n="diamond">钻石</label>
-                            <input type="number" class="form-control" id="diamond" min="0" style="width: 70px;">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="diamond" class="form-label" data-i18n="diamond">钻石</label>
+                                <input type="number" class="form-control" id="diamond" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label for="breakthrough" class="form-label" data-i18n="breakthrough">突破券</label>
+                                <input type="number" class="form-control" id="breakthrough" min="0">
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="breakthrough" class="form-label mb-0" data-i18n="breakthrough">突破券</label>
-                            <input type="number" class="form-control" id="breakthrough" min="0" style="width: 70px;">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="rawstone" class="form-label" data-i18n="rawstone">原石</label>
+                                <input type="number" class="form-control" id="rawstone" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label for="platinum" class="form-label" data-i18n="platinum">白金</label>
+                                <input type="number" class="form-control" id="platinum" min="0">
+                            </div>
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="rawstone" class="form-label mb-0" data-i18n="rawstone">原石</label>
-                            <input type="number" class="form-control" id="rawstone" min="0" style="width: 70px;">
+                        <div class="form-group">
+                            <label for="remark" class="form-label" data-i18n="remark">备注</label>
+                            <input type="text" class="form-control" id="remark">
                         </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="platinum" class="form-label mb-0" data-i18n="platinum">白金</label>
-                            <input type="number" class="form-control" id="platinum" min="0" style="width: 70px;">
-                        </div>
-                        <div class="d-flex align-items-center gap-1">
-                            <label for="remark" class="form-label mb-0" data-i18n="remark">备注</label>
-                            <input type="text" class="form-control" id="remark" style="width: 120px;">
-                        </div>
-                        <button type="submit" class="btn btn-primary" data-i18n="addRecordBtn">添加记录</button>
+                        <button type="submit" class="btn btn-primary w-100" id="add-record-btn" data-i18n="addRecordBtn" disabled>添加记录</button>
                     </form>
                 </div>
             </div>
@@ -201,6 +206,57 @@
 
         <!-- 数据管理和上头模拟器 -->
         <div class="row mb-3">
+            <!-- 上头模拟器 -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>上头模拟器</span>
+                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#simulator-section" aria-expanded="true" aria-controls="simulator-section">
+                            <span class="collapse-icon">
+                                <span class="line horizontal"></span>
+                                <span class="line vertical"></span>
+                                <span class="line diagonal"></span>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="collapse show" id="simulator-section">
+                        <div class="card-body">
+                            <!-- 上头模拟器内容 -->
+                            <div class="simulator-content">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="beyond-enhancement.html">超越强化</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="evolve-gaia.html">进化八星</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-danger w-100 simulator-btn" data-target="evolve-eight-star.html">☕ 请我喝一杯咖啡</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="badge-box.html">抽勋章宝箱</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="enchant-medal.html">附魔勋章</button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button class="btn btn-outline-danger w-100" onclick="window.open('evolve-pearl.html', '_blank')">珍珠成长/组合</button>
+                                    </div>
+                                </div>
+                                <hr class="my-4">
+                                <p>说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。</p>
+                            </div>
+                            
+                            <!-- 嵌入内容区域 -->
+                            <div id="simulator-iframe-container" class="mt-4">
+                                <iframe id="simulator-iframe" src="" width="100%" height="400" frameborder="0"></iframe>
+                                <img id="donation-image" class="donation-image" src="images/ScreenShot_2026-04-28_012031_152.jpg" alt="打赏图片" style="width: 100%; max-width: 250px; display: none; margin: 0 auto;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- 数据管理 -->
             <div class="col-md-6">
                 <div class="card h-100">
@@ -307,57 +363,6 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 上头模拟器 -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>上头模拟器</span>
-                        <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#simulator-section" aria-expanded="true" aria-controls="simulator-section">
-                            <span class="collapse-icon">
-                                <span class="line horizontal"></span>
-                                <span class="line vertical"></span>
-                                <span class="line diagonal"></span>
-                            </span>
-                        </button>
-                    </div>
-                    <div class="collapse show" id="simulator-section">
-                        <div class="card-body">
-                            <!-- 上头模拟器内容 -->
-                            <div class="simulator-content">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="beyond-enhancement.html">超越强化</button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="evolve-gaia.html">进化八星</button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-danger w-100 simulator-btn" data-target="evolve-eight-star.html">打赏</button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="badge-box.html">抽勋章宝箱</button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="enchant-medal.html">附魔勋章</button>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-danger w-100" onclick="window.open('evolve-pearl.html', '_blank')">珍珠成长/组合</button>
-                                    </div>
-                                </div>
-                                <hr class="my-4">
-                                <p>说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。</p>
-                            </div>
-                            
-                            <!-- 嵌入内容区域 -->
-                            <div id="simulator-iframe-container" class="mt-4">
-                                <iframe id="simulator-iframe" src="" width="100%" height="400" frameborder="0"></iframe>
-                                <img id="donation-image" class="donation-image" src="images/ScreenShot_2026-04-28_012031_152.jpg" alt="打赏图片" style="width: 100%; max-width: 250px; display: none; margin: 0 auto;">
                             </div>
                         </div>
                     </div>
