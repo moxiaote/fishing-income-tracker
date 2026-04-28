@@ -398,6 +398,11 @@ h1 {
     padding-right: 20px;
     pointer-events: none;
     z-index: 999;
+    /* iOS Safari 修复：强制使用GPU渲染 */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 /* 悬浮按钮样式 */
@@ -420,6 +425,12 @@ h1 {
     z-index: 1000;
     transition: all 0.3s ease;
     pointer-events: auto;
+    /* iOS Safari 修复 */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
 }
 
 .float-btn::before {
@@ -444,6 +455,23 @@ h1 {
 
 .float-btn:active {
     transform: scale(0.95);
+}
+
+/* iOS Safari 额外修复 */
+@supports (-webkit-touch-callout: none) {
+    .float-btn-container {
+        position: fixed;
+        right: 0;
+        bottom: 20px;
+        width: 100%;
+        max-width: none;
+        padding-right: 20px;
+    }
+    
+    .float-btn {
+        /* 确保按钮始终可见 */
+        -webkit-sticky: position;
+    }
 }
 
 /* 弹窗遮罩层 */
