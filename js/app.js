@@ -300,7 +300,6 @@ class App {
         let record;
 
         if (type === '设置总额') {
-            // 计算当前总量
             let currentTotal = {
                 diamond: 0,
                 breakthrough: 0,
@@ -316,27 +315,72 @@ class App {
                 currentTotal.platinum += r.platinum * multiplier;
             });
 
-            // 计算差异
             const diffDiamond = inputDiamond - currentTotal.diamond;
             const diffBreakthrough = inputBreakthrough - currentTotal.breakthrough;
             const diffRawstone = inputRawstone - currentTotal.rawstone;
             const diffPlatinum = inputPlatinum - currentTotal.platinum;
 
-            // 确定记录类型（收入或支出）
-            const recordType = (diffDiamond >= 0 && diffBreakthrough >= 0 && diffRawstone >= 0 && diffPlatinum >= 0) ? '收入' : '支出';
+            const positiveRecords = [];
+            const negativeRecords = [];
 
-            // 创建记录，使用绝对值作为数量
-            record = {
-                date: date,
-                type: recordType,
-                diamond: Math.abs(diffDiamond),
-                breakthrough: Math.abs(diffBreakthrough),
-                rawstone: Math.abs(diffRawstone),
-                platinum: Math.abs(diffPlatinum),
-                remark: remark || `总额更新: ${inputDiamond}钻, ${inputBreakthrough}券, ${inputRawstone}石, ${inputPlatinum}金`
-            };
+            if (diffDiamond > 0) {
+                positiveRecords.push({ field: 'diamond', value: diffDiamond });
+            } else if (diffDiamond < 0) {
+                negativeRecords.push({ field: 'diamond', value: Math.abs(diffDiamond) });
+            }
+            if (diffBreakthrough > 0) {
+                positiveRecords.push({ field: 'breakthrough', value: diffBreakthrough });
+            } else if (diffBreakthrough < 0) {
+                negativeRecords.push({ field: 'breakthrough', value: Math.abs(diffBreakthrough) });
+            }
+            if (diffRawstone > 0) {
+                positiveRecords.push({ field: 'rawstone', value: diffRawstone });
+            } else if (diffRawstone < 0) {
+                negativeRecords.push({ field: 'rawstone', value: Math.abs(diffRawstone) });
+            }
+            if (diffPlatinum > 0) {
+                positiveRecords.push({ field: 'platinum', value: diffPlatinum });
+            } else if (diffPlatinum < 0) {
+                negativeRecords.push({ field: 'platinum', value: Math.abs(diffPlatinum) });
+            }
+
+            const remarkText = remark || `总额更新: ${inputDiamond}钻, ${inputBreakthrough}券, ${inputRawstone}石, ${inputPlatinum}金`;
+
+            if (positiveRecords.length > 0 && negativeRecords.length > 0) {
+                const incomeRecord = { date: date, type: '收入', diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0, remark: remarkText + ' [增加]' };
+                positiveRecords.forEach(p => incomeRecord[p.field] = p.value);
+
+                const expenseRecord = { date: date, type: '支出', diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0, remark: remarkText + ' [减少]' };
+                negativeRecords.forEach(n => expenseRecord[n.field] = n.value);
+
+                this.records.unshift(incomeRecord, expenseRecord);
+            } else if (positiveRecords.length > 0) {
+                record = { date: date, type: '收入', diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0, remark: remarkText };
+                positiveRecords.forEach(p => record[p.field] = p.value);
+                this.records.unshift(record);
+            } else if (negativeRecords.length > 0) {
+                record = { date: date, type: '支出', diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0, remark: remarkText };
+                negativeRecords.forEach(n => record[n.field] = n.value);
+                this.records.unshift(record);
+            } else {
+                return;
+            }
+
+            sorting.sortRecords(this.records);
+            await storageManager.saveRecords(this.records);
+            this.loadedRecords = 30;
+            this.displayRecords();
+            this.calculateTotal();
+            chartManager.updateCharts(this.records);
+            chartManager.updateStatCards(this.records);
+            document.getElementById('diamond').value = '0';
+            document.getElementById('breakthrough').value = '0';
+            document.getElementById('rawstone').value = '0';
+            document.getElementById('platinum').value = '0';
+            document.getElementById('remark').value = '';
+            alert(i18n.getText('recordAdded') || '记录添加成功！');
+            return;
         } else {
-            // 普通收入或支出记录
             record = {
                 date: date,
                 type: type,
@@ -348,7 +392,6 @@ class App {
             };
         }
 
-        // 将新记录添加到数组开头，使最新的记录显示在最上面
         this.records.unshift(record);
         
         // 重新排序
