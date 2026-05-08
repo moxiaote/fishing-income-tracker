@@ -64,19 +64,43 @@
     .stat-card {
         padding: 12px;
         margin-bottom: 10px;
+        box-sizing: border-box;
     }
     
     .stat-icon {
-        font-size: 1.5rem;
-        margin-right: 10px;
+        flex: 0 0 60px;
+        padding: 5px;
+    }
+    
+    .stat-icon img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .stat-value-container {
+        flex: 1;
+        padding-left: 10px;
+        padding-right: 5px;
+        max-width: calc(100% - 60px);
     }
     
     .stat-value {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        font-weight: bold;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+    
+    .stat-change {
+        font-size: 0.85rem;
     }
     
     .stat-label {
         font-size: 0.75rem;
+        padding-left: 5px;
     }
     
     /* 图表响应式 */
