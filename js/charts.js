@@ -243,13 +243,42 @@ class ChartManager {
         document.getElementById('stat-rawstone').textContent = totals.rawstone;
         document.getElementById('stat-platinum').textContent = totals.platinum;
 
-        // 计算相比昨天的增长量
-        const todayChange = this.calculateDailyChange(records, new Date().toISOString().split('T')[0]);
+        // 计算今天的变化量（使用本地时间，与app.js保持一致）
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const todayChange = this.calculateDailyChange(records, today);
 
         this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);
         this.updateChangeIndicator('stat-breakthrough-change', todayChange.breakthrough);
         this.updateChangeIndicator('stat-rawstone-change', todayChange.rawstone);
         this.updateChangeIndicator('stat-platinum-change', todayChange.platinum);
+
+        // 更新固定总量栏的变化显示
+        const fixedDiamondChange = document.getElementById('fixed-diamond-change');
+        const fixedBreakthroughChange = document.getElementById('fixed-breakthrough-change');
+        const fixedRawstoneChange = document.getElementById('fixed-rawstone-change');
+        const fixedPlatinumChange = document.getElementById('fixed-platinum-change');
+
+        if (fixedDiamondChange) {
+            const prefix = todayChange.diamond >= 0 ? '+' : '';
+            fixedDiamondChange.textContent = `${prefix}${todayChange.diamond}`;
+            fixedDiamondChange.className = todayChange.diamond >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+        }
+        if (fixedBreakthroughChange) {
+            const prefix = todayChange.breakthrough >= 0 ? '+' : '';
+            fixedBreakthroughChange.textContent = `${prefix}${todayChange.breakthrough}`;
+            fixedBreakthroughChange.className = todayChange.breakthrough >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+        }
+        if (fixedRawstoneChange) {
+            const prefix = todayChange.rawstone >= 0 ? '+' : '';
+            fixedRawstoneChange.textContent = `${prefix}${todayChange.rawstone}`;
+            fixedRawstoneChange.className = todayChange.rawstone >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+        }
+        if (fixedPlatinumChange) {
+            const prefix = todayChange.platinum >= 0 ? '+' : '';
+            fixedPlatinumChange.textContent = `${prefix}${todayChange.platinum}`;
+            fixedPlatinumChange.className = todayChange.platinum >= 0 ? 'fixed-total-change positive' : 'fixed-total-change negative';
+        }
     }
 
     // 计算指定日期的日变化量
