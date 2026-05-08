@@ -96,6 +96,69 @@
             </ul>
         </div>
 
+        <!-- 鼓励区域 - 两条游动的鱼儿 -->
+        <div class="cheer-section">
+            <!-- 背景装饰气泡 -->
+            <div class="background-bubbles">
+                <div class="bg-bubble bg-bubble-1"></div>
+                <div class="bg-bubble bg-bubble-2"></div>
+                <div class="bg-bubble bg-bubble-3"></div>
+                <div class="bg-bubble bg-bubble-4"></div>
+                <div class="bg-bubble bg-bubble-5"></div>
+                <div class="bg-bubble bg-bubble-6"></div>
+            </div>
+            
+            <div class="fish-container" onclick="showCheerMessage()">
+                <!-- 泡泡容器 -->
+                <div class="bubbles-container" id="bubbles-container"></div>
+                
+                <!-- 红色鱼 SVG -->
+                <svg class="fish fish-a" viewBox="0 0 100 60" width="60" height="36">
+                    <defs>
+                        <linearGradient id="fishRedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff8a8a"/>
+                            <stop offset="50%" stop-color="#ff6b6b"/>
+                            <stop offset="100%" stop-color="#ee5a5a"/>
+                        </linearGradient>
+                        <linearGradient id="fishGreenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6dd5ed"/>
+                            <stop offset="50%" stop-color="#4ecdc4"/>
+                            <stop offset="100%" stop-color="#44a08d"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- 鱼尾 -->
+                    <path class="fish-tail" d="M15,30 L0,10 L0,50 Z" fill="#ee5a5a"/>
+                    <!-- 鱼身 -->
+                    <ellipse cx="55" cy="30" rx="35" ry="20" fill="url(#fishRedGradient)"/>
+                    <!-- 背鳍 -->
+                    <path d="M45,12 Q50,2 60,12" fill="#ee5a5a"/>
+                    <!-- 腹鳍 -->
+                    <path d="M50,42 Q52,50 58,42" fill="#ff8a8a"/>
+                    <!-- 眼睛 -->
+                    <circle cx="75" cy="25" r="6" fill="white"/>
+                    <circle cx="77" cy="24" r="3" fill="#333"/>
+                    <!-- 嘴巴 -->
+                    <path d="M85,30 Q88,32 85,34" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                </svg>
+                <!-- 绿色鱼 SVG -->
+                <svg class="fish fish-b" viewBox="0 0 100 60" width="60" height="36">
+                    <!-- 鱼尾 -->
+                    <path class="fish-tail" d="M85,30 L100,10 L100,50 Z" fill="#44a08d"/>
+                    <!-- 鱼身 -->
+                    <ellipse cx="45" cy="30" rx="35" ry="20" fill="url(#fishGreenGradient)"/>
+                    <!-- 背鳍 -->
+                    <path d="M55,12 Q50,2 40,12" fill="#44a08d"/>
+                    <!-- 腹鳍 -->
+                    <path d="M50,42 Q48,50 42,42" fill="#6dd5ed"/>
+                    <!-- 眼睛 -->
+                    <circle cx="25" cy="25" r="6" fill="white"/>
+                    <circle cx="23" cy="24" r="3" fill="#333"/>
+                    <!-- 嘴巴 -->
+                    <path d="M15,30 Q12,32 15,34" stroke="#333" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </div>
+
         <!-- 总量信息 -->
         <div class="card mb-3" id="statsCard">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -464,6 +527,85 @@
     <script src="js/sorting.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/app.js"></script>
+    
+    <!-- 鼓励功能脚本 - 鱼儿吐泡泡 -->
+    <script>
+    function showCheerMessage() {
+        const bubblesContainer = document.getElementById('bubbles-container');
+        if (!bubblesContainer) return;
+        
+        // 获取鱼的位置
+        const fishA = document.querySelector('.fish-a');
+        const fishB = document.querySelector('.fish-b');
+        if (!fishA || !fishB) return;
+        
+        const speakingFish = Math.random() > 0.5 ? fishA : fishB;
+        const fishRect = speakingFish.getBoundingClientRect();
+        
+        // 计算泡泡起始位置（鱼嘴位置，使用绝对定位）
+        const fishX = speakingFish === fishA ? 
+            fishRect.right - 10 : 
+            fishRect.left + 10;
+        const fishY = fishRect.top + fishRect.height / 2;
+        
+        const messages = [
+            "超越强化失败没关系，下一次一定成功！",
+            "八星进化失败是常态，坚持就是胜利！",
+            "抽勋章没出货？继续抽，SSR在等你！",
+            "附魔勋章失败别灰心，好运就在下一次！",
+            "珍珠合成失败不可怕，积累经验最重要！",
+            "强化失败只是暂时的，成功就在前方！",
+            "八星进化路漫漫，坚持下去就是王者！",
+            "勋章池很深，但总有一天会出奇迹！",
+            "附魔失败是成长的必经之路！",
+            "珍珠合成需要耐心，完美珍珠在等你！",
+            "每一次失败都是成功的垫脚石！",
+            "钓鱼大师从不畏惧失败！",
+            "失败乃成功之母，加油！",
+            "今天的失败是明天的胜利！",
+            "坚持下去，你是最棒的！",
+            "资源会越来越多的，不要放弃！",
+            "相信自己，好运即将来临！",
+            "每一份付出都有回报！"
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * messages.length);
+        const message = messages[randomIndex];
+        
+        // 逐个字符创建泡泡
+        const chars = message.split('');
+        chars.forEach((char, index) => {
+            setTimeout(() => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                // 根据字符类型调整泡泡大小
+                const size = char.match(/[！。？、，]/) ? 20 : 24;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.left = `${fishX}px`;
+                bubble.style.top = `${fishY}px`;
+                bubble.textContent = char;
+                
+                bubblesContainer.appendChild(bubble);
+                
+                // 添加随机水平偏移
+                const randomOffset = (Math.random() - 0.5) * 60;
+                bubble.style.setProperty('--random-x', `${randomOffset}px`);
+                
+                // 触发动画
+                requestAnimationFrame(() => {
+                    bubble.classList.add('rise');
+                });
+                
+                // 4秒后移除泡泡
+                setTimeout(() => {
+                    bubble.remove();
+                }, 4000);
+            }, index * 250);
+        });
+    }
+    </script>
     
     <!-- 版权信息 -->
     <footer class="mt-2 py-2 bg-light">

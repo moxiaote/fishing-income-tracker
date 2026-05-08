@@ -143,6 +143,9 @@ class App {
         // 上头模拟器按钮事件
         this.bindSimulatorEvents();
 
+        // 鼓励功能按钮事件
+        this.bindCheerEvent();
+
     }
 
     // 绑定上头模拟器事件
@@ -829,6 +832,92 @@ class App {
         }
     }
     
+    // 绑定鼓励功能事件
+    bindCheerEvent() {
+        const cheerButton = document.getElementById('cheer-button');
+        if (cheerButton) {
+            console.log('绑定鼓励按钮事件');
+            cheerButton.addEventListener('click', () => {
+                console.log('点击鼓励按钮');
+                this.showCheerMessage();
+            });
+            cheerButton.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                console.log('触摸鼓励按钮');
+                this.showCheerMessage();
+            });
+        } else {
+            console.log('未找到鼓励按钮');
+        }
+    }
+
+    // 显示鼓励信息
+    showCheerMessage() {
+        const cheerMessageElement = document.getElementById('cheer-message');
+        const cheerIconElement = document.getElementById('cheer-icon');
+        
+        console.log('cheerMessageElement:', cheerMessageElement);
+        console.log('cheerIconElement:', cheerIconElement);
+        
+        if (!cheerMessageElement) {
+            console.log('未找到鼓励消息元素');
+            return;
+        }
+        
+        // 获取鼓励语列表（使用后备方案）
+        let cheerMessages = this.getI18nValue('cheerMessages');
+        console.log('从i18n获取的鼓励语:', cheerMessages);
+        
+        // 如果获取失败，使用硬编码的中文鼓励语作为后备
+        if (!cheerMessages || !Array.isArray(cheerMessages) || cheerMessages.length === 0) {
+            console.log('使用后备鼓励语');
+            cheerMessages = [
+                "坚持就是胜利！下一条大鱼就在眼前！🐟",
+                "每一次抛竿都是希望，加油！🎣",
+                "钻石会有的，突破券也会有的！✨",
+                "耐心等待，总会有收获的！🌊",
+                "今天的努力，明天的收获！🌟",
+                "钓鱼大师就是你！🎖️",
+                "坚持下去，你是最棒的！💯",
+                "慢慢来，资源会越来越多的！📈",
+                "相信自己，你可以的！💪",
+                "每一份付出都有回报！💰"
+            ];
+        }
+        
+        // 随机选择一条鼓励语
+        const randomIndex = Math.floor(Math.random() * cheerMessages.length);
+        const message = cheerMessages[randomIndex];
+        console.log('选中的鼓励语:', message);
+        
+        // 显示鼓励信息
+        cheerMessageElement.textContent = message;
+        cheerMessageElement.classList.remove('hide');
+        cheerMessageElement.classList.add('show');
+        
+        // 5秒后自动隐藏
+        setTimeout(() => {
+            cheerMessageElement.classList.remove('show');
+            cheerMessageElement.classList.add('hide');
+        }, 5000);
+    }
+
+    // 获取国际化值
+    getI18nValue(key) {
+        try {
+            const currentLang = i18n.currentLang || 'zh';
+            console.log('当前语言:', currentLang);
+            if (i18n && i18n.translations && i18n.translations[currentLang]) {
+                const value = i18n.translations[currentLang][key];
+                console.log('获取到的值:', value);
+                return value;
+            }
+        } catch (error) {
+            console.error('获取国际化值失败:', error);
+        }
+        return null;
+    }
+
     // 退出GitHub登录
     logoutGitHub() {
         // 清除访问令牌
