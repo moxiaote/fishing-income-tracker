@@ -68,6 +68,9 @@ class App {
             chartManager.updateCharts(this.records);
             chartManager.updateStatCards(this.records);
             
+            // 绑定统计卡片点击事件（支持触摸设备）
+            this.bindStatCardClickEvents();
+            
             console.log('初始化成功，使用' + (storageManager.useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
         } catch (error) {
             console.error('初始化失败:', error);
@@ -610,18 +613,26 @@ class App {
         const diamondElement = document.getElementById('stat-diamond');
         diamondElement.textContent = formattedDiamond.display;
         diamondElement.title = formattedDiamond.full;
+        diamondElement.dataset.fullValue = formattedDiamond.full;
+        diamondElement.dataset.displayValue = formattedDiamond.display;
         
         const breakthroughElement = document.getElementById('stat-breakthrough');
         breakthroughElement.textContent = formattedBreakthrough.display;
         breakthroughElement.title = formattedBreakthrough.full;
+        breakthroughElement.dataset.fullValue = formattedBreakthrough.full;
+        breakthroughElement.dataset.displayValue = formattedBreakthrough.display;
         
         const rawstoneElement = document.getElementById('stat-rawstone');
         rawstoneElement.textContent = formattedRawstone.display;
         rawstoneElement.title = formattedRawstone.full;
+        rawstoneElement.dataset.fullValue = formattedRawstone.full;
+        rawstoneElement.dataset.displayValue = formattedRawstone.display;
         
         const platinumElement = document.getElementById('stat-platinum');
         platinumElement.textContent = formattedPlatinum.display;
         platinumElement.title = formattedPlatinum.full;
+        platinumElement.dataset.fullValue = formattedPlatinum.full;
+        platinumElement.dataset.displayValue = formattedPlatinum.display;
 
         // 更新统计概览变化显示
         this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);
@@ -698,6 +709,42 @@ class App {
             element.className = 'stat-change negative';
         } else {
             element.className = 'stat-change';
+        }
+    }
+
+    // 绑定统计卡片点击事件（支持触摸设备）
+    bindStatCardClickEvents() {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(element => {
+            element.addEventListener('click', () => {
+                this.toggleFullValue(element);
+            });
+            element.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                this.toggleFullValue(element);
+            });
+        });
+    }
+
+    // 切换显示完整值/缩写值
+    toggleFullValue(element) {
+        const fullValue = element.dataset.fullValue;
+        const displayValue = element.dataset.displayValue;
+        
+        if (!fullValue || !displayValue) return;
+        
+        if (element.textContent === displayValue) {
+            element.textContent = fullValue;
+            element.classList.add('show-full');
+            setTimeout(() => {
+                if (element.textContent === fullValue) {
+                    element.textContent = displayValue;
+                    element.classList.remove('show-full');
+                }
+            }, 10000);
+        } else {
+            element.textContent = displayValue;
+            element.classList.remove('show-full');
         }
     }
 

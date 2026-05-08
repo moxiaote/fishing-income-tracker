@@ -247,18 +247,26 @@ class ChartManager {
         const statDiamond = document.getElementById('stat-diamond');
         statDiamond.textContent = formattedDiamond.display;
         statDiamond.title = formattedDiamond.full.toString();
+        statDiamond.dataset.fullValue = formattedDiamond.full.toString();
+        statDiamond.dataset.displayValue = formattedDiamond.display;
         
         const statBreakthrough = document.getElementById('stat-breakthrough');
         statBreakthrough.textContent = formattedBreakthrough.display;
         statBreakthrough.title = formattedBreakthrough.full.toString();
+        statBreakthrough.dataset.fullValue = formattedBreakthrough.full.toString();
+        statBreakthrough.dataset.displayValue = formattedBreakthrough.display;
         
         const statRawstone = document.getElementById('stat-rawstone');
         statRawstone.textContent = formattedRawstone.display;
         statRawstone.title = formattedRawstone.full.toString();
+        statRawstone.dataset.fullValue = formattedRawstone.full.toString();
+        statRawstone.dataset.displayValue = formattedRawstone.display;
         
         const statPlatinum = document.getElementById('stat-platinum');
         statPlatinum.textContent = formattedPlatinum.display;
         statPlatinum.title = formattedPlatinum.full.toString();
+        statPlatinum.dataset.fullValue = formattedPlatinum.full.toString();
+        statPlatinum.dataset.displayValue = formattedPlatinum.display;
 
         // 计算今天的变化量（使用本地时间，与app.js保持一致）
         const now = new Date();
