@@ -379,6 +379,7 @@ class App {
             document.getElementById('platinum').value = '0';
             document.getElementById('remark').value = '';
             alert(i18n.getText('recordAdded') || '记录添加成功！');
+            window.location.reload();
             return;
         } else {
             record = {
@@ -424,6 +425,7 @@ class App {
         document.getElementById('remark').value = '';
 
         alert(i18n.getText('recordAdded') || '记录添加成功！');
+        window.location.reload();
     }
 
     // 删除记录
