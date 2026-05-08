@@ -202,18 +202,13 @@ h1 {
     text-align: right;
     padding-left: 15px;
     padding-right: 5px;
-    max-width: calc(100% - 80px);
 }
 
 .stat-value {
     font-size: 20px;
     font-weight: bold;
     line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: block;
-    max-width: 100%;
+    cursor: help;
 }
 
 @media (max-width: 576px) {

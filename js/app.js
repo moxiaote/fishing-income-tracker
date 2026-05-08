@@ -540,19 +540,19 @@ class App {
         this.displayRecords();
     }
 
-    // 格式化大数字为缩写形式（如67K、1M）
+    // 格式化大数字为缩写形式（如67K、1M），四舍五入到整数
     formatNumber(num) {
         // 确保num是数字类型
         const numericValue = Number(num) || 0;
         
         if (numericValue >= 1000000) {
             return {
-                display: (numericValue / 1000000).toFixed(1) + 'M',
+                display: Math.round(numericValue / 1000000).toString() + 'M',
                 full: numericValue
             };
         } else if (numericValue >= 1000) {
             return {
-                display: (numericValue / 1000).toFixed(1) + 'K',
+                display: Math.round(numericValue / 1000).toString() + 'K',
                 full: numericValue
             };
         } else {

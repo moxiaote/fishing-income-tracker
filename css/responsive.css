@@ -81,17 +81,13 @@
         flex: 1;
         padding-left: 10px;
         padding-right: 5px;
-        max-width: calc(100% - 60px);
     }
     
     .stat-value {
         font-size: 1.1rem;
         font-weight: bold;
         line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
+        cursor: help;
     }
     
     .stat-change {

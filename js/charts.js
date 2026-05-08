@@ -16,19 +16,19 @@ class ChartManager {
         };
     }
     
-    // 格式化大数字为缩写形式（如67K、1M）
+    // 格式化大数字为缩写形式（如67K、1M），四舍五入到整数
     formatNumber(num) {
         // 确保num是数字类型
         const numericValue = Number(num) || 0;
         
         if (numericValue >= 1000000) {
             return {
-                display: (numericValue / 1000000).toFixed(1) + 'M',
+                display: Math.round(numericValue / 1000000).toString() + 'M',
                 full: numericValue
             };
         } else if (numericValue >= 1000) {
             return {
-                display: (numericValue / 1000).toFixed(1) + 'K',
+                display: Math.round(numericValue / 1000).toString() + 'K',
                 full: numericValue
             };
         } else {
@@ -237,11 +237,28 @@ class ChartManager {
     updateStatCards(records) {
         const totals = this.calculateTotals(records);
         
+        // 格式化数值显示
+        const formattedDiamond = this.formatNumber(totals.diamond);
+        const formattedBreakthrough = this.formatNumber(totals.breakthrough);
+        const formattedRawstone = this.formatNumber(totals.rawstone);
+        const formattedPlatinum = this.formatNumber(totals.platinum);
+        
         // 更新统计卡片显示
-        document.getElementById('stat-diamond').textContent = totals.diamond;
-        document.getElementById('stat-breakthrough').textContent = totals.breakthrough;
-        document.getElementById('stat-rawstone').textContent = totals.rawstone;
-        document.getElementById('stat-platinum').textContent = totals.platinum;
+        const statDiamond = document.getElementById('stat-diamond');
+        statDiamond.textContent = formattedDiamond.display;
+        statDiamond.title = formattedDiamond.full.toString();
+        
+        const statBreakthrough = document.getElementById('stat-breakthrough');
+        statBreakthrough.textContent = formattedBreakthrough.display;
+        statBreakthrough.title = formattedBreakthrough.full.toString();
+        
+        const statRawstone = document.getElementById('stat-rawstone');
+        statRawstone.textContent = formattedRawstone.display;
+        statRawstone.title = formattedRawstone.full.toString();
+        
+        const statPlatinum = document.getElementById('stat-platinum');
+        statPlatinum.textContent = formattedPlatinum.display;
+        statPlatinum.title = formattedPlatinum.full.toString();
 
         // 计算今天的变化量（使用本地时间，与app.js保持一致）
         const now = new Date();
