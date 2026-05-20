@@ -1013,6 +1013,7 @@
         };
 
         let currentSlot = null;
+        let resultHideTimer = null;
 
         function generateFixedValues(min, max, count = 9) {
             const values = [];
@@ -1631,6 +1632,11 @@
 
         function showResult(success, message, html = null) {
             const resultElement = document.getElementById('result-message');
+            if (resultHideTimer) {
+                clearTimeout(resultHideTimer);
+                resultHideTimer = null;
+            }
+
             resultElement.style.display = 'block';
             
             if (success) {
@@ -1649,8 +1655,9 @@
                 }
             }
             
-            setTimeout(() => {
+            resultHideTimer = setTimeout(() => {
                 resultElement.style.display = 'none';
+                resultHideTimer = null;
             }, 10000);
         }
 
