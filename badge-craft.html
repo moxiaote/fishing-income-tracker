@@ -407,12 +407,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: transparent;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             padding: 20px;
+            animation: slideUp 0.3s ease;
         }
 
         .badge-selector.show {
@@ -428,6 +429,8 @@
             max-height: 80vh;
             overflow-y: auto;
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: 1px solid #dc3545;
+            animation: slideUp 0.3s ease;
         }
 
         .selector-header {
