@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="钓鱼发烧友勋章制作模拟器，在线模拟勋章制作成功率与成本消耗">
+    <meta name="keywords" content="钓鱼发烧友,勋章制作,勋章合成,游戏工具">
+    <meta name="author" content="海盗毕业">
+    <meta name="robots" content="index, follow">
+    <title>勋章制作模拟器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin: 0;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 16px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .equipment-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .target-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .target-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .target-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .target-option.selected {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .target-option input {
+            margin: 0;
+        }
+
+        .target-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-block;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid #ddd;
+        }
+
+        .target-icon-kraken {
+            background-image: url('images/0.jpg');
+        }
+
+        .target-icon-leviathan {
+            background-image: url('images/1.jpg');
+        }
+
+        .target-name {
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .badge-slots-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: nowrap;
+        }
+
+        .badge-slot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+            min-width: 80px;
+        }
+
+        .slot-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .slot-label.required {
+            color: #dc3545;
+        }
+
+        .slot-requirement {
+            font-size: 9px;
+            color: #888;
+            margin-top: 2px;
+            white-space: nowrap;
+        }
+
+        .badge-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+
+        .badge-circle:hover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .badge-circle.has-badge {
+            border-style: solid;
+            border-color: #ffc107;
+            background-color: #fff3cd;
+        }
+
+        .badge-circle .plus-icon {
+            font-size: 24px;
+            color: #ccc;
+        }
+
+        .badge-circle .slot-stars {
+            position: absolute;
+            bottom: 2px;
+            font-size: 7px;
+        }
+
+        .slot-stars .star {
+            color: #ffc107;
+            text-shadow: 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        .slot-stars .star.empty {
+            color: #ccc;
+            text-shadow: none;
+        }
+
+        .badge-display {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            position: relative;
+        }
+
+        .badge-display.qinglong,
+        .badge-display.baihu,
+        .badge-display.zhuque,
+        .badge-display.xuanwu {
+            font-weight: bold;
+        }
+
+        .badge-stars-4 {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .badge-stars-5 {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .badge-stars-6 {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            border: 2px solid #fd7e14;
+            color: #856404;
+        }
+
+        .badge-display.kraken {
+            background-image: url('images/0.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid #6a6a8a;
+            overflow: hidden;
+        }
+
+        .badge-display.kraken span {
+            display: none;
+        }
+
+        .badge-display.leviathan {
+            background-image: url('images/1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid #8a6a3a;
+            overflow: hidden;
+        }
+
+        .badge-display.leviathan span {
+            display: none;
+        }
+
+        .badge-stars {
+            position: absolute;
+            bottom: 2px;
+            font-size: 7px;
+        }
+
+        .badge-stars .star {
+            color: #ffc107;
+            text-shadow: 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        .badge-stars .star.empty {
+            color: #ccc;
+            text-shadow: none;
+        }
+
+        .central-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .central-badge .badge-display {
+            width: 65px;
+            height: 65px;
+            font-size: 28px;
+        }
+
+        .central-badge .badge-stars {
+            font-size: 9px;
+            bottom: 3px;
+        }
+
+        .result-message {
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+            display: none;
+            font-size: 12px;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .failure-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .stats-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 12px;
+        }
+
+        .stats-row .label {
+            color: #666;
+        }
+
+        .stats-row .value {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .probability-display {
+            text-align: center;
+            padding: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            margin: 10px 0;
+        }
+
+        .probability-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .probability-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .btn {
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .badge-selector {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .badge-selector.show {
+            display: flex;
+        }
+
+        .selector-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .selector-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .selector-header h4 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 5px;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .badge-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            border: 2px solid transparent;
+        }
+
+        .badge-option:hover {
+            background-color: #e9ecef;
+        }
+
+        .badge-option.selected {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .badge-option.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .badge-option .badge-display {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .badge-option .badge-stars {
+            font-size: 7px;
+        }
+
+        .badge-option .badge-info {
+            flex: 1;
+        }
+
+        .badge-option .badge-name {
+            font-weight: bold;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .badge-option .badge-desc {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .attribute-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin: 2px;
+        }
+
+        .attr-mythic {
+            background-color: #f3e5f5;
+            color: #9c27b0;
+        }
+
+        .attr-ultimate {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .attr-legend {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .attr-hero {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .attr-rare {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .attr-advanced {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+
+        .attr-common {
+            background-color: #f5f5f5;
+            color: #666;
+        }
+
+        .inventory-section {
+            margin-top: 15px;
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .inventory-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .badge-grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .badge-grid-item:hover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .badge-grid-item .badge-display {
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .badge-grid-item .badge-stars {
+            font-size: 8px;
+            margin-top: 1px;
+            display: flex;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .craft-result-badge {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto;
+        }
+
+        .craft-result-badge .badge-display {
+            width: 60px;
+            height: 60px;
+            font-size: 26px;
+        }
+
+        .craft-result-badge .badge-stars {
+            font-size: 9px;
+        }
+
+        .result-attributes {
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .result-attr-item {
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .section-divider {
+            height: 1px;
+            background-color: #e9ecef;
+            margin: 15px 0;
+        }
+
+        .stats-row .probability-breakdown {
+            font-size: 10px;
+            color: #666;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .stat-item .label {
+            color: #666;
+        }
+
+        .stat-item .value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .badge-slots-container {
+                gap: 5px;
+            }
+
+            .badge-slot {
+                min-width: 70px;
+            }
+
+            .badge-circle {
+                width: 50px;
+                height: 50px;
+            }
+
+            .badge-display {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+
+            .central-badge {
+                width: 65px;
+                height: 65px;
+            }
+
+            .central-badge .badge-display {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+            }
+
+            .badge-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .slot-requirement {
+                font-size: 8px;
+            }
+
+            .stats-container {
+                gap: 10px;
+                padding: 6px;
+            }
+
+            .stat-item {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="max-width: 600px; margin: 0 auto;">
+        <h2 class="text-center" style="cursor: pointer; text-decoration: underline; color: #007bff;" onclick="confirmReset()">勋章制作模拟器</h2>
+
+        <!-- 统计信息 - 一行显示 -->
+        <div class="text-center mb-3">
+            <div class="stats-container" style="display: inline-block; padding: 8px;">
+                <span style="font-size: 12px;">
+                    累计制作: <span id="total-crafts" style="font-weight: bold;">0</span>次
+                    <span style="color: #28a745;">| 成功: <span id="success-count" style="font-weight: bold;">0</span></span>
+                    <span style="color: #dc3545;">| 失败: <span id="failure-count" style="font-weight: bold;">0</span></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- 目标选择 -->
+        <div class="equipment-card">
+            <h3 style="text-align: center; margin-bottom: 10px; color: #333;">选择制作目标</h3>
+            <div class="target-selector">
+                <div class="target-option selected" onclick="selectTarget('kraken')">
+                    <input type="radio" name="target" value="kraken" checked>
+                    <span class="target-icon target-icon-kraken"></span>
+                    <span class="target-name">克拉肯勋章</span>
+                </div>
+                <div class="target-option" onclick="selectTarget('leviathan')">
+                    <input type="radio" name="target" value="leviathan">
+                    <span class="target-icon target-icon-leviathan"></span>
+                    <span class="target-name">利维坦勋章</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 勋章插槽 -->
+        <div class="equipment-card">
+            <div class="badge-slots-container">
+                <!-- 材料勋章 -->
+                <div class="badge-slot" onclick="openBadgeSelector('material')">
+                    <div class="badge-circle" id="material-slot">
+                        <span class="plus-icon">+</span>
+                    </div>
+                    <span class="slot-label required">材料勋章</span>
+                    <span class="slot-requirement">5-6星四神兽</span>
+                </div>
+
+                <!-- 核心勋章（中心） -->
+                <div class="badge-slot" onclick="openBadgeSelector('core')">
+                    <div class="central-badge badge-circle" id="core-slot">
+                        <span class="plus-icon">+</span>
+                    </div>
+                    <span class="slot-label required">核心勋章</span>
+                    <span class="slot-requirement">必须6星四神兽</span>
+                </div>
+
+                <!-- 辅助勋章 -->
+                <div class="badge-slot" onclick="openBadgeSelector('assist')">
+                    <div class="badge-circle" id="assist-slot">
+                        <span class="plus-icon">+</span>
+                    </div>
+                    <span class="slot-label">辅助勋章</span>
+                    <span class="slot-requirement">至少5星四神兽</span>
+                </div>
+            </div>
+
+            <!-- 成功率显示 -->
+            <div class="probability-display">
+                <div class="probability-value" id="success-probability">0%</div>
+                <div class="probability-label">制作成功率</div>
+                <div class="probability-breakdown" id="probability-breakdown"></div>
+            </div>
+
+            <!-- 结果消息 -->
+            <div id="result-message" class="result-message"></div>
+
+            <!-- 制作按钮 -->
+            <div class="text-center mt-3">
+                <button id="craft-btn" class="btn btn-primary w-100" onclick="craftBadge()" disabled>
+                    制作勋章
+                </button>
+            </div>
+        </div>
+
+        <!-- 说明（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 14px; color: #333;">📜 制作规则</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="rules-content">
+                <div style="font-size: 12px; line-height: 1.8; color: #555;">
+                    <p><strong style="color: #ffc107;">核心勋章</strong>：必须6星四神兽，失败原封不动返还</p>
+                    <p><strong style="color: #007bff;">材料勋章</strong>：5-6星四神兽，6星+12.25%，5星+6.125%，失败降级返还</p>
+                    <p><strong style="color: #28a745;">辅助勋章</strong>：至少5星四神兽，6星+12.25%，5星+6.125%，失败不返还</p>
+                    <p style="margin-top: 10px; color: #666;">成功：消耗所有材料，生成3星目标勋章</p>
+                    <p style="color: #666;">失败：核心返还，6星材料→5星，5星材料→4星，辅助全部消耗</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分割线 -->
+        <div class="section-divider"></div>
+
+        <!-- 四神兽勋章库存 -->
+        <div class="inventory-section">
+            <div class="inventory-header">
+                <span class="inventory-title">🐲 四神兽勋章库存</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="getFourBeastBadges()">获取勋章</button>
+            </div>
+            <div class="equipment-card" style="padding: 10px;">
+                <div class="badge-grid" id="four-beast-grid"></div>
+            </div>
+        </div>
+
+        <!-- 制作结果库存 -->
+        <div class="inventory-section">
+            <div class="inventory-header">
+                <span class="inventory-title">🏆 制作结果库存</span>
+            </div>
+            <div class="equipment-card" style="padding: 10px;">
+                <div class="badge-grid" id="crafted-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 勋章选择器弹窗 -->
+    <div class="badge-selector" id="badge-selector">
+        <div class="selector-content">
+            <div class="selector-header">
+                <h4 id="selector-title">选择勋章</h4>
+                <button class="close-btn" onclick="closeBadgeSelector()">&times;</button>
+            </div>
+            <div id="badge-options"></div>
+        </div>
+    </div>
+
+    <script>
+        const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
+        const FOUR_BEAST_NAMES = { qinglong: '青龙勋章', baihu: '白虎勋章', zhuque: '朱雀勋章', xuanwu: '玄武勋章' };
+        const FOUR_BEAST_ICONS = { qinglong: '青', baihu: '白', zhuque: '雀', xuanwu: '玄' };
+
+        const TARGET_DATA = {
+            kraken: {
+                name: '克拉肯勋章',
+                icon: '🐙',
+                skillName: '深渊的侵蚀',
+                skillDesc: '汽水大鱼金币效率+25%',
+                damageRange: { min: 9718, max: 20718 },
+                attributes: [
+                    { name: '增加饰品全部属性', tier: 'mythic', valueRange: [102, 120] },
+                    { name: '大鱼加成', tier: 'mythic', valueRange: [20.62, 26.59] },
+                    { name: '拽钓伤害', tier: 'ultimate', valueRange: [102.75, 127.5] },
+                    { name: '力量技能追加伤害', tier: 'ultimate', valueRange: [206, 260] },
+                    { name: '增加线的效率', tier: 'ultimate', valueRange: [0.288, 0.36] }
+                ]
+            },
+            leviathan: {
+                name: '利维坦勋章',
+                icon: '🐉',
+                skillName: '破灭的波涛',
+                skillDesc: '完美抛竿30秒伤害+150%',
+                damageRange: { min: 39574, max: 63842 },
+                attributes: [
+                    { name: '破防', tier: 'ultimate', valueRange: [31, 50] },
+                    { name: '力量条上升', tier: 'ultimate', valueRange: [4.65, 7.7] },
+                    { name: '增加饰品全部属性', tier: 'ultimate', valueRange: [102, 140] },
+                    { name: '增加线的长度', tier: 'mythic', valueRange: [1033, 1684] },
+                    { name: '大鱼加成', tier: 'mythic', valueRange: [20.62, 33.59] }
+                ]
+            }
+        };
+
+        const attributeTiers = {
+            common: { name: '普通', color: '#bdbdbd', order: 0 },
+            advanced: { name: '高级', color: '#64b5f6', order: 1 },
+            rare: { name: '稀有', color: '#81c784', order: 2 },
+            hero: { name: '英雄', color: '#4fc3f7', order: 3 },
+            legend: { name: '传说', color: '#ff6b6b', order: 4 },
+            mythic: { name: '神话', color: '#ce93d8', order: 5 },
+            ultimate: { name: '终极', color: '#ffd700', order: 6 }
+        };
+
+        const ALL_ATTRIBUTES = [
+            { name: '增加饰品全部属性', tier: 'mythic', valueRange: [100, 150] },
+            { name: '大鱼加成', tier: 'mythic', valueRange: [20, 35] },
+            { name: '拽钓伤害', tier: 'ultimate', valueRange: [100, 130] },
+            { name: '破防', tier: 'ultimate', valueRange: [30, 55] },
+            { name: '力量条上升', tier: 'ultimate', valueRange: [4, 8] },
+            { name: '力量技能追加伤害', tier: 'ultimate', valueRange: [200, 270] },
+            { name: '增加线的效率', tier: 'ultimate', valueRange: [0.2, 0.4] },
+            { name: '增加线的长度', tier: 'mythic', valueRange: [1000, 1700] }
+        ];
+
+        let gameState = {
+            targetType: 'kraken',
+            coreBadge: null,
+            materialBadge: null,
+            assistBadge: null,
+            fourBeastBadges: [],
+            craftedBadges: [],
+            totalCrafts: 0,
+            successCount: 0,
+            failureCount: 0
+        };
+
+        let currentSlot = null;
+
+        function generateFixedValues(min, max, count = 9) {
+            const values = [];
+            const step = (max - min) / (count - 1);
+            for (let i = 0; i < count; i++) {
+                let value = min + step * i;
+                value = Math.round(value * 100) / 100;
+                values.push(value);
+            }
+            return values;
+        }
+
+        const KRAKEN_DAMAGE_VALUES = generateFixedValues(9718, 20718);
+        const LEVIATHAN_DAMAGE_VALUES = generateFixedValues(39574, 63842);
+
+        const VALUE_WEIGHTS = [15, 18, 16, 14, 12, 10, 8, 5, 2];
+
+        function getRandomValueFromFixed(values) {
+            const totalWeight = VALUE_WEIGHTS.reduce((a, b) => a + b, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let i = 0; i < values.length; i++) {
+                random -= VALUE_WEIGHTS[i];
+                if (random <= 0) {
+                    return values[i];
+                }
+            }
+            return values[values.length - 1];
+        }
+
+        function createFourBeastBadge(type, stars) {
+            const id = Date.now() + Math.random();
+            const attributes = [];
+            const attrCount = Math.min(stars, 5);
+            const shuffledAttrs = [...ALL_ATTRIBUTES].sort(() => Math.random() - 0.5);
+            
+            for (let i = 0; i < attrCount; i++) {
+                const baseAttr = shuffledAttrs[i];
+                const fixedValues = generateFixedValues(baseAttr.valueRange[0], baseAttr.valueRange[1]);
+                const value = getRandomValueFromFixed(fixedValues);
+                attributes.push({
+                    name: baseAttr.name,
+                    tier: baseAttr.tier,
+                    value: value
+                });
+            }
+            
+            return {
+                id,
+                type,
+                name: FOUR_BEAST_NAMES[type],
+                icon: FOUR_BEAST_ICONS[type],
+                stars,
+                attributes
+            };
+        }
+
+        function getFourBeastBadges() {
+            if (gameState.fourBeastBadges.length >= 10) {
+                alert('库存已满！最多10个四神兽勋章');
+                return;
+            }
+            
+            const count = Math.min(5, 10 - gameState.fourBeastBadges.length);
+            for (let i = 0; i < count; i++) {
+                const type = FOUR_BEAST_TYPES[Math.floor(Math.random() * FOUR_BEAST_TYPES.length)];
+                const stars = Math.floor(Math.random() * 3) + 4;
+                gameState.fourBeastBadges.push(createFourBeastBadge(type, stars));
+            }
+            
+            saveData();
+            displayFourBeastBadges();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('badgeCraftData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                gameState.fourBeastBadges = data.fourBeastBadges || [];
+                gameState.craftedBadges = data.craftedBadges || [];
+                gameState.totalCrafts = data.totalCrafts || 0;
+                gameState.successCount = data.successCount || 0;
+                gameState.failureCount = data.failureCount || 0;
+            }
+            updateStats();
+            displayFourBeastBadges();
+            displayCraftedBadges();
+        }
+
+        function saveData() {
+            localStorage.setItem('badgeCraftData', JSON.stringify({
+                fourBeastBadges: gameState.fourBeastBadges,
+                craftedBadges: gameState.craftedBadges,
+                totalCrafts: gameState.totalCrafts,
+                successCount: gameState.successCount,
+                failureCount: gameState.failureCount
+            }));
+        }
+
+        function confirmReset() {
+            if (confirm('确定要重置所有数据吗？此操作不可撤销。')) {
+                gameState.fourBeastBadges = [];
+                gameState.craftedBadges = [];
+                gameState.totalCrafts = 0;
+                gameState.successCount = 0;
+                gameState.failureCount = 0;
+                gameState.coreBadge = null;
+                gameState.materialBadge = null;
+                gameState.assistBadge = null;
+                
+                updateStats();
+                displayFourBeastBadges();
+                displayCraftedBadges();
+                renderBadgeInSlot('core', null);
+                renderBadgeInSlot('material', null);
+                renderBadgeInSlot('assist', null);
+                updateProbabilityDisplay();
+                
+                localStorage.removeItem('badgeCraftData');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('total-crafts').textContent = gameState.totalCrafts;
+            document.getElementById('success-count').textContent = gameState.successCount;
+            document.getElementById('failure-count').textContent = gameState.failureCount;
+        }
+
+        function selectTarget(type) {
+            gameState.targetType = type;
+            document.querySelectorAll('.target-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function calculateProbability() {
+            let probability = 0;
+            let breakdown = [];
+            
+            if (gameState.materialBadge) {
+                const bonus = gameState.materialBadge.stars === 6 ? 12.25 : 6.125;
+                probability += bonus;
+                breakdown.push(`材料+${bonus}%`);
+            }
+            
+            if (gameState.assistBadge) {
+                const bonus = gameState.assistBadge.stars === 6 ? 12.25 : 6.125;
+                probability += bonus;
+                breakdown.push(`辅助+${bonus}%`);
+            }
+            
+            return { probability, breakdown };
+        }
+
+        function updateProbabilityDisplay() {
+            const { probability, breakdown } = calculateProbability();
+            document.getElementById('success-probability').textContent = probability + '%';
+            document.getElementById('probability-breakdown').textContent = breakdown.join(' | ');
+            
+            const craftBtn = document.getElementById('craft-btn');
+            const canCraft = gameState.coreBadge && gameState.materialBadge && 
+                           gameState.coreBadge.stars === 6 && 
+                           gameState.materialBadge.stars >= 5 &&
+                           probability > 0;
+            craftBtn.disabled = !canCraft;
+        }
+
+        function renderBadgeInSlot(slotId, badge) {
+            const slot = document.getElementById(slotId + '-slot');
+            if (!badge) {
+                slot.innerHTML = '<span class="plus-icon">+</span>';
+                slot.classList.remove('has-badge');
+            } else {
+                const starsClass = badge.type ? `badge-stars-${badge.stars}` : '';
+                slot.innerHTML = `
+                    <div class="badge-display ${badge.type || badge.id} ${starsClass}">
+                        <span>${badge.icon}</span>
+                        <div class="badge-stars">
+                            ${'<span class="star">★</span>'.repeat(badge.stars)}
+                        </div>
+                    </div>
+                `;
+                slot.classList.add('has-badge');
+            }
+        }
+
+        function displayFourBeastBadges() {
+            const grid = document.getElementById('four-beast-grid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const item = document.createElement('div');
+                item.className = 'badge-grid-item';
+                
+                if (gameState.fourBeastBadges[i]) {
+                    const badge = gameState.fourBeastBadges[i];
+                    item.innerHTML = `
+                        <div class="badge-display ${badge.type} badge-stars-${badge.stars}">
+                            <span>${badge.icon}</span>
+                            <div class="badge-stars">
+                                ${'<span class="star">★</span>'.repeat(badge.stars)}
+                            </div>
+                        </div>
+                    `;
+                    item.onclick = () => handleInventoryClick(i, 'four-beast');
+                }
+                
+                grid.appendChild(item);
+            }
+        }
+
+        function displayCraftedBadges() {
+            const grid = document.getElementById('crafted-grid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 10; i++) {
+                const item = document.createElement('div');
+                item.className = 'badge-grid-item';
+                
+                if (gameState.craftedBadges[i]) {
+                    const badge = gameState.craftedBadges[i];
+                    item.innerHTML = `
+                        <div class="badge-display ${badge.id}">
+                            <span>${badge.icon}</span>
+                            <div class="badge-stars">
+                                ${'<span class="star">★</span>'.repeat(badge.stars)}
+                            </div>
+                        </div>
+                    `;
+                    item.onclick = () => showCraftedBadgeInfo(badge);
+                }
+                
+                grid.appendChild(item);
+            }
+        }
+
+        function showCraftedBadgeInfo(badge) {
+            const targetData = TARGET_DATA[badge.id];
+            const attrHtml = badge.attributes.map(attr => 
+                `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
+            ).join('');
+            
+            let skillHtml = '';
+            if (badge.hasSkill) {
+                skillHtml = `
+                    <div style="color:#fd7e14;font-weight:bold;margin-top:8px;">${targetData.skillName}</div>
+                    <div style="font-size:11px;color:#666;margin-top:4px;">${targetData.skillDesc}</div>
+                `;
+            }
+            
+            const popup = document.createElement('div');
+            popup.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
+            popup.innerHTML = `
+                <div style="background-color:white;border-radius:8px;padding:20px;max-width:360px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                        <h4 style="margin:0; color:#333;">${badge.name} (${badge.stars}星)</h4>
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <div class="craft-result-badge" style="display:inline-block;vertical-align:middle;">
+                            <div class="badge-display ${badge.id}" style="width:60px;height:60px;font-size:24px;">
+                                <span>${badge.icon}</span>
+                                <div class="badge-stars" style="font-size:12px;bottom:4px;">
+                                    ${'<span class="star">★</span>'.repeat(badge.stars)}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-left:20px;">
+                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">伤害: ${badge.damage}</div>
+                            ${skillHtml}
+                        </div>
+                    </div>
+                    <div style="font-size:12px;">
+                        ${attrHtml}
+                    </div>
+                </div>
+            `;
+            popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
+            document.body.appendChild(popup);
+        }
+
+        function handleInventoryClick(index, type) {
+            if (type === 'four-beast') {
+                if (currentSlot) {
+                    const badge = gameState.fourBeastBadges[index];
+                    if (!badge) return;
+                    
+                    const canUse = checkBadgeRequirements(badge, currentSlot);
+                    if (!canUse) return;
+                    
+                    if (currentSlot === 'core') {
+                        if (gameState.coreBadge) {
+                            gameState.fourBeastBadges.push(gameState.coreBadge);
+                        }
+                        gameState.coreBadge = badge;
+                        renderBadgeInSlot('core', badge);
+                    } else if (currentSlot === 'material') {
+                        if (gameState.materialBadge) {
+                            gameState.fourBeastBadges.push(gameState.materialBadge);
+                        }
+                        gameState.materialBadge = badge;
+                        renderBadgeInSlot('material', badge);
+                    } else if (currentSlot === 'assist') {
+                        if (gameState.assistBadge) {
+                            gameState.fourBeastBadges.push(gameState.assistBadge);
+                        }
+                        gameState.assistBadge = badge;
+                        renderBadgeInSlot('assist', badge);
+                    }
+                    
+                    gameState.fourBeastBadges.splice(index, 1);
+                    saveData();
+                    displayFourBeastBadges();
+                    updateProbabilityDisplay();
+                    closeBadgeSelector();
+                }
+            }
+        }
+
+        function checkBadgeRequirements(badge, slotType) {
+            if (slotType === 'core' && badge.stars !== 6) {
+                alert('核心勋章必须是6星！');
+                return false;
+            }
+            if (slotType === 'material' && badge.stars < 5) {
+                alert('材料勋章至少需要5星！');
+                return false;
+            }
+            if (slotType === 'assist' && badge.stars < 5) {
+                alert('辅助勋章至少需要5星！');
+                return false;
+            }
+            return true;
+        }
+
+        function openBadgeSelector(slotType) {
+            currentSlot = slotType;
+            const titles = {
+                core: '选择核心勋章（必须6星）',
+                material: '选择材料勋章（5-6星）',
+                assist: '选择辅助勋章（至少5星）'
+            };
+            
+            document.getElementById('selector-title').textContent = titles[slotType];
+            renderBadgeOptions(slotType);
+            document.getElementById('badge-selector').classList.add('show');
+        }
+
+        function closeBadgeSelector() {
+            document.getElementById('badge-selector').classList.remove('show');
+            currentSlot = null;
+        }
+
+        function renderBadgeOptions(slotType) {
+            const container = document.getElementById('badge-options');
+            container.innerHTML = '';
+            
+            const availableBadges = gameState.fourBeastBadges.filter(badge => {
+                if (slotType === 'core') return badge.stars === 6;
+                if (slotType === 'material') return badge.stars >= 5;
+                if (slotType === 'assist') return badge.stars >= 5;
+                return true;
+            });
+            
+            if (availableBadges.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#888;padding:20px;">没有符合条件的勋章，请先获取勋章！</div>';
+                return;
+            }
+            
+            availableBadges.forEach(badge => {
+                const option = document.createElement('div');
+                option.className = 'badge-option';
+                option.onclick = () => handleInventoryClick(gameState.fourBeastBadges.indexOf(badge), 'four-beast');
+                
+                option.innerHTML = `
+                    <div class="badge-display ${badge.type} badge-stars-${badge.stars}">
+                        <span>${badge.icon}</span>
+                        <div class="badge-stars">
+                            ${'<span class="star">★</span>'.repeat(badge.stars)}
+                        </div>
+                    </div>
+                    <div class="badge-info">
+                        <div class="badge-name">${badge.name} (${badge.stars}星)</div>
+                    </div>
+                `;
+                
+                container.appendChild(option);
+            });
+        }
+
+        function showResult(success, message, html = null) {
+            const resultElement = document.getElementById('result-message');
+            resultElement.style.display = 'block';
+            
+            if (success) {
+                resultElement.className = 'result-message success-message';
+                if (html) {
+                    resultElement.innerHTML = html;
+                } else {
+                    resultElement.textContent = message;
+                }
+            } else {
+                resultElement.className = 'result-message failure-message';
+                if (html) {
+                    resultElement.innerHTML = html;
+                } else {
+                    resultElement.textContent = message;
+                }
+            }
+            
+            setTimeout(() => {
+                resultElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function craftBadge() {
+            if (!gameState.coreBadge || !gameState.materialBadge) {
+                return;
+            }
+            
+            if (gameState.coreBadge.stars !== 6 || gameState.materialBadge.stars < 5) {
+                return;
+            }
+            
+            const { probability } = calculateProbability();
+            const roll = Math.random() * 100;
+            const success = roll < probability;
+            
+            gameState.totalCrafts++;
+            
+            if (success) {
+                gameState.successCount++;
+                
+                const targetData = TARGET_DATA[gameState.targetType];
+                const damageValues = gameState.targetType === 'kraken' ? KRAKEN_DAMAGE_VALUES : LEVIATHAN_DAMAGE_VALUES;
+                
+                const finalAttributes = [];
+                const targetAttrCount = 3;
+                
+                for (let i = 0; i < targetAttrCount && i < targetData.attributes.length; i++) {
+                    const attrDef = targetData.attributes[i];
+                    const fixedValues = generateFixedValues(attrDef.valueRange[0], attrDef.valueRange[1]);
+                    const value = getRandomValueFromFixed(fixedValues);
+                    
+                    let tier;
+                    if (gameState.targetType === 'kraken') {
+                        if (i < 2) {
+                            tier = 'mythic';
+                        } else {
+                            tier = 'ultimate';
+                        }
+                    } else {
+                        const valueIndex = fixedValues.indexOf(value);
+                        tier = valueIndex < 4 ? 'mythic' : 'ultimate';
+                    }
+                    
+                    finalAttributes.push({
+                        name: attrDef.name,
+                        tier: tier,
+                        value: value
+                    });
+                }
+                
+                const craftedBadge = {
+                    id: gameState.targetType,
+                    name: targetData.name,
+                    icon: targetData.icon,
+                    damage: getRandomValueFromFixed(damageValues),
+                    stars: 3,
+                    attributes: finalAttributes,
+                    hasSkill: false
+                };
+                
+                if (gameState.craftedBadges.length < 10) {
+                    gameState.craftedBadges.push(craftedBadge);
+                }
+                
+                gameState.coreBadge = null;
+                gameState.materialBadge = null;
+                gameState.assistBadge = null;
+                
+                renderBadgeInSlot('core', null);
+                renderBadgeInSlot('material', null);
+                renderBadgeInSlot('assist', null);
+                
+                const attrHtml = finalAttributes.map(attr => 
+                    `<div class="result-attr-item">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
+                ).join('');
+                
+                showResult(true, null, `
+                    <div style="text-align: center;">
+                        <div style="font-size: 18px; margin-bottom: 8px;">🎉 制作成功！</div>
+                        <div class="craft-result-badge">
+                            <div class="badge-display ${craftedBadge.id}">
+                                <span>${craftedBadge.icon}</span>
+                                <div class="badge-stars">
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${craftedBadge.name} (3星)</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #fd7e14; margin-top: 8px;">⚔️ 伤害: ${craftedBadge.damage}</div>
+                        <div class="result-attributes" style="margin-top: 10px;">
+                            ${attrHtml}
+                        </div>
+                    </div>
+                `);
+                
+            } else {
+                gameState.failureCount++;
+                
+                let messageHtml = '<div style="text-align: center;">';
+                messageHtml += '<div style="font-size: 16px; margin-bottom: 10px;">💔 制作失败</div>';
+                messageHtml += '<div style="font-size: 12px; line-height: 1.8;">';
+                
+                if (gameState.coreBadge) {
+                    messageHtml += `<div style="color: #28a745;">✓ 核心勋章原封不动返还：${gameState.coreBadge.name}</div>`;
+                    gameState.fourBeastBadges.push(gameState.coreBadge);
+                    gameState.coreBadge = null;
+                    renderBadgeInSlot('core', null);
+                }
+                
+                if (gameState.materialBadge) {
+                    const newStars = gameState.materialBadge.stars - 1;
+                    if (newStars >= 1) {
+                        gameState.materialBadge.stars = newStars;
+                        messageHtml += `<div style="color: #fd7e14;">⚠ 材料勋章降级为${newStars}星：${gameState.materialBadge.name}</div>`;
+                        gameState.fourBeastBadges.push(gameState.materialBadge);
+                    } else {
+                        messageHtml += `<div style="color: #dc3545;">✗ 材料勋章碎裂消失：${gameState.materialBadge.name}</div>`;
+                    }
+                    gameState.materialBadge = null;
+                    renderBadgeInSlot('material', null);
+                }
+                
+                if (gameState.assistBadge) {
+                    messageHtml += `<div style="color: #dc3545;">✗ 辅助勋章消失：${gameState.assistBadge.name}</div>`;
+                    gameState.assistBadge = null;
+                    renderBadgeInSlot('assist', null);
+                }
+                
+                messageHtml += '</div></div>';
+                
+                showResult(false, null, messageHtml);
+            }
+            
+            saveData();
+            updateStats();
+            updateProbabilityDisplay();
+            displayFourBeastBadges();
+            displayCraftedBadges();
+        }
+
+        document.getElementById('badge-selector').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBadgeSelector();
+            }
+        });
+
+        loadData();
+        updateProbabilityDisplay();
+    </script>
+</body>
+</html>
