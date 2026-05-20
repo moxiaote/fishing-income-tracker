@@ -1122,9 +1122,10 @@
             }
 
             const nextStars = mainBadge.stars + 1;
-            const nextAttributes = mainBadge.attributes.slice(0, nextAttributes.length);
+            const nextAttributes = [...mainBadge.attributes];
 
-            while (nextAttributes.length < TARGET_DATA[mainBadge.id].attributes.length) {
+            const maxAttrCount = nextStars === 3 ? 3 : (nextStars === 4 ? 5 : TARGET_DATA[mainBadge.id].attributes.length);
+            while (nextAttributes.length < maxAttrCount) {
                 nextAttributes.push(generateTargetAttribute(mainBadge.id, nextAttributes.length));
             }
 
