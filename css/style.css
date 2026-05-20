@@ -407,16 +407,19 @@ h1 {
 /* 鱼儿游动动画 */
 .fish-a {
     animation: swimA 8s ease-in-out infinite;
-    animation-fill-mode: forwards;
+    animation-fill-mode: both;
 }
 
 .fish-b {
-    right: 5%;
-    top: 55%;
-    transform: translateY(-50%);
     animation: swimB 10s ease-in-out infinite;
     animation-delay: 2s;
-    animation-fill-mode: forwards;
+    animation-fill-mode: both;
+    opacity: 0;
+}
+
+.fish-b.animate-now {
+    opacity: 1;
+    animation-delay: 0s;
 }
 
 @keyframes swimA {

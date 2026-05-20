@@ -108,7 +108,7 @@
                 <div class="bg-bubble bg-bubble-6"></div>
             </div>
             
-            <div class="fish-container" onclick="showCheerMessage()">
+            <div class="fish-container" id="fish-container">
                 <!-- 泡泡容器 -->
                 <div class="bubbles-container" id="bubbles-container"></div>
                 
@@ -530,7 +530,34 @@
     
     <!-- 鼓励功能脚本 - 鱼儿吐泡泡 -->
     <script>
-    function showCheerMessage() {
+    // 页面加载完成后延迟显示绿色鱼，避免iPhone上的方框闪现问题
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            var fishB = document.querySelector('.fish-b');
+            if (fishB) {
+                fishB.classList.add('animate-now');
+            }
+        }, 500);
+        
+        // 为鱼儿添加点击事件
+        const fishA = document.querySelector('.fish-a');
+        const fishB = document.querySelector('.fish-b');
+        
+        if (fishA) {
+            fishA.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showCheerMessage(fishA);
+            });
+        }
+        if (fishB) {
+            fishB.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showCheerMessage(fishB);
+            });
+        }
+    });
+    
+    function showCheerMessage(speakingFish) {
         const bubblesContainer = document.getElementById('bubbles-container');
         if (!bubblesContainer) return;
         
@@ -539,7 +566,6 @@
         const fishB = document.querySelector('.fish-b');
         if (!fishA || !fishB) return;
         
-        const speakingFish = Math.random() > 0.5 ? fishA : fishB;
         const fishRect = speakingFish.getBoundingClientRect();
         
         // 计算泡泡起始位置（鱼嘴位置，使用绝对定位）
