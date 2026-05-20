@@ -1688,6 +1688,17 @@
                 return;
             }
             
+            const craftBtn = document.getElementById('craft-btn');
+            const originalText = craftBtn.innerHTML;
+            craftBtn.disabled = true;
+            craftBtn.innerHTML = '制作中<span class="dots"></span>';
+            const dots = craftBtn.querySelector('.dots');
+            let dotCount = 0;
+            const dotInterval = setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                dots.textContent = '.'.repeat(dotCount);
+            }, 300);
+            
             const roll = Math.random() * 100;
             const success = roll < probability;
             
@@ -1695,108 +1706,114 @@
             gameState.totalPlatinumCost += CRAFT_PLATINUM_COST;
             gameState.totalDiamondCost += CRAFT_DIAMOND_COST;
             
-            if (success) {
-                gameState.successCount++;
+            setTimeout(() => {
+                clearInterval(dotInterval);
+                craftBtn.innerHTML = originalText;
+                craftBtn.disabled = false;
                 
-                const targetData = TARGET_DATA[gameState.targetType];
-                
-                const finalAttributes = [];
-                const targetAttrCount = 4;
-                
-                for (let i = 0; i < targetAttrCount && i < targetData.attributes.length; i++) {
-                    finalAttributes.push(generateTargetAttribute(gameState.targetType, i));
-                }
-                
-                const craftedBadge = {
-                    id: gameState.targetType,
-                    name: targetData.name,
-                    icon: targetData.icon,
-                    damage: getRandomValueFromFixed(targetData.damageValues, targetData.damageWeights),
-                    stars: 3,
-                    attributes: finalAttributes,
-                    hasSkill: false,
-                    weightedVersion: true
-                };
-                
-                if (gameState.craftedBadges.length < 10) {
-                    gameState.craftedBadges.push(craftedBadge);
-                }
-                
-                gameState.coreBadge = null;
-                gameState.materialBadge = null;
-                gameState.assistBadge = null;
-                
-                renderBadgeInSlot('core', null);
-                renderBadgeInSlot('material', null);
-                renderBadgeInSlot('assist', null);
-                
-                const attrHtml = finalAttributes.map(attr => 
-                    `<div class="result-attr-item">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
-                ).join('');
-                
-                showResult(true, null, `
-                    <div style="text-align: center;">
-                        <div style="font-size: 18px; margin-bottom: 8px;">🎉 制作成功！</div>
-                        <div class="craft-result-badge">
-                            <div class="badge-display crafted-badge-display ${craftedBadge.id} badge-stars-${craftedBadge.stars}">
-                                <span>${getCraftedBadgeMark(craftedBadge)}</span>
-                                <div class="badge-stars">
-                                    <span class="star">★</span>
-                                    <span class="star">★</span>
-                                    <span class="star">★</span>
+                if (success) {
+                    gameState.successCount++;
+
+                    const targetData = TARGET_DATA[gameState.targetType];
+
+                    const finalAttributes = [];
+                    const targetAttrCount = 4;
+
+                    for (let i = 0; i < targetAttrCount && i < targetData.attributes.length; i++) {
+                        finalAttributes.push(generateTargetAttribute(gameState.targetType, i));
+                    }
+
+                    const craftedBadge = {
+                        id: gameState.targetType,
+                        name: targetData.name,
+                        icon: targetData.icon,
+                        damage: getRandomValueFromFixed(targetData.damageValues, targetData.damageWeights),
+                        stars: 3,
+                        attributes: finalAttributes,
+                        hasSkill: false,
+                        weightedVersion: true
+                    };
+
+                    if (gameState.craftedBadges.length < 10) {
+                        gameState.craftedBadges.push(craftedBadge);
+                    }
+
+                    gameState.coreBadge = null;
+                    gameState.materialBadge = null;
+                    gameState.assistBadge = null;
+
+                    renderBadgeInSlot('core', null);
+                    renderBadgeInSlot('material', null);
+                    renderBadgeInSlot('assist', null);
+
+                    const attrHtml = finalAttributes.map(attr => 
+                        `<div class="result-attr-item">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
+                    ).join('');
+
+                    showResult(true, null, `
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; margin-bottom: 8px;">🎉 制作成功！</div>
+                            <div class="craft-result-badge">
+                                <div class="badge-display crafted-badge-display ${craftedBadge.id} badge-stars-${craftedBadge.stars}">
+                                    <span>${getCraftedBadgeMark(craftedBadge)}</span>
+                                    <div class="badge-stars">
+                                        <span class="star">★</span>
+                                        <span class="star">★</span>
+                                        <span class="star">★</span>
+                                    </div>
                                 </div>
                             </div>
+                            <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${craftedBadge.name} (3星)</div>
+                            <div class="result-attributes" style="margin-top: 10px;">
+                                ${attrHtml}
+                            </div>
                         </div>
-                        <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${craftedBadge.name} (3星)</div>
-                        <div class="result-attributes" style="margin-top: 10px;">
-                            ${attrHtml}
-                        </div>
-                    </div>
-                `);
-                
-            } else {
-                gameState.failureCount++;
-                
-                let messageHtml = '<div style="text-align: center;">';
-                messageHtml += '<div style="font-size: 16px; margin-bottom: 10px;">💔 制作失败</div>';
-                messageHtml += '<div style="font-size: 12px; line-height: 1.8;">';
-                
-                if (gameState.coreBadge) {
-                    messageHtml += `<div style="color: #28a745;">✓ 核心勋章原封不动返还：${gameState.coreBadge.name}</div>`;
-                    gameState.fourBeastBadges.push(gameState.coreBadge);
-                    gameState.coreBadge = null;
-                    renderBadgeInSlot('core', null);
-                }
-                
-                if (gameState.materialBadge) {
-                    const newStars = gameState.materialBadge.stars - 1;
-                    if (newStars >= 1) {
-                        gameState.materialBadge.stars = newStars;
-                        messageHtml += `<div style="color: #fd7e14;">⚠ 材料勋章降级为${newStars}星：${gameState.materialBadge.name}</div>`;
-                        gameState.fourBeastBadges.push(gameState.materialBadge);
-                    } else {
-                        messageHtml += `<div style="color: #dc3545;">✗ 材料勋章碎裂消失：${gameState.materialBadge.name}</div>`;
+                    `);
+
+                } else {
+                    gameState.failureCount++;
+
+                    let messageHtml = '<div style="text-align: center;">';
+                    messageHtml += '<div style="font-size: 16px; margin-bottom: 10px;">💔 制作失败</div>';
+                    messageHtml += '<div style="font-size: 12px; line-height: 1.8;">';
+
+                    if (gameState.coreBadge) {
+                        messageHtml += `<div style="color: #28a745;">✓ 核心勋章原封不动返还：${gameState.coreBadge.name}</div>`;
+                        gameState.fourBeastBadges.push(gameState.coreBadge);
+                        gameState.coreBadge = null;
+                        renderBadgeInSlot('core', null);
                     }
-                    gameState.materialBadge = null;
-                    renderBadgeInSlot('material', null);
+
+                    if (gameState.materialBadge) {
+                        const newStars = gameState.materialBadge.stars - 1;
+                        if (newStars >= 1) {
+                            gameState.materialBadge.stars = newStars;
+                            messageHtml += `<div style="color: #fd7e14;">⚠ 材料勋章降级为${newStars}星：${gameState.materialBadge.name}</div>`;
+                            gameState.fourBeastBadges.push(gameState.materialBadge);
+                        } else {
+                            messageHtml += `<div style="color: #dc3545;">✗ 材料勋章碎裂消失：${gameState.materialBadge.name}</div>`;
+                        }
+                        gameState.materialBadge = null;
+                        renderBadgeInSlot('material', null);
+                    }
+
+                    if (gameState.assistBadge) {
+                        messageHtml += `<div style="color: #dc3545;">✗ 辅助勋章消失：${gameState.assistBadge.name}</div>`;
+                        gameState.assistBadge = null;
+                        renderBadgeInSlot('assist', null);
+                    }
+
+                    messageHtml += '</div></div>';
+
+                    showResult(false, null, messageHtml);
                 }
                 
-                if (gameState.assistBadge) {
-                    messageHtml += `<div style="color: #dc3545;">✗ 辅助勋章消失：${gameState.assistBadge.name}</div>`;
-                    gameState.assistBadge = null;
-                    renderBadgeInSlot('assist', null);
-                }
-                
-                messageHtml += '</div></div>';
-                
-                showResult(false, null, messageHtml);
-            }
-            
-            saveData();
-            updateStats();
-            updateProbabilityDisplay();
-            displayFourBeastBadges();
-            displayCraftedBadges();
+                saveData();
+                updateStats();
+                updateProbabilityDisplay();
+                displayFourBeastBadges();
+                displayCraftedBadges();
+            }, 2000);
         }
 
         document.getElementById('badge-selector').addEventListener('click', function(e) {
