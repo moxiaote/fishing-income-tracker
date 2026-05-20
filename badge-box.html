@@ -154,6 +154,7 @@
                 </select>
             </div>
             <button id="draw-button" class="btn btn-primary">抽取勋章</button>
+            <div id="draw-message" class="result-message" style="display: none; margin-top: 10px;"></div>
         </div>
         
         <!-- 抽取结果 -->
@@ -363,11 +364,35 @@
         // 累计消费钻石
         let totalCost = 0;
         
+        let hideTimeoutId = null;
+        
+        function showResult(element, success, message = null) {
+            if (hideTimeoutId) {
+                clearTimeout(hideTimeoutId);
+                hideTimeoutId = null;
+            }
+            
+            element.style.display = 'block';
+            if (success) {
+                element.className = 'result-message success-message';
+                element.textContent = message || '成功！';
+            } else {
+                element.className = 'result-message failure-message';
+                element.textContent = message || '失败！';
+            }
+            
+            hideTimeoutId = setTimeout(() => {
+                element.style.display = 'none';
+                hideTimeoutId = null;
+            }, 10000);
+        }
+        
         // 获取DOM元素
         const totalCostElement = document.getElementById('total-cost');
         const drawCountElement = document.getElementById('draw-count');
         const drawButton = document.getElementById('draw-button');
         const drawResultsElement = document.getElementById('draw-results');
+        const drawMessageElement = document.getElementById('draw-message');
         
         // 单次抽取勋章
         function drawBadge() {
@@ -475,6 +500,17 @@
             
             const results = drawBadges(count);
             showDrawResults(results);
+            
+            // 统计是否有最高级勋章
+            const trueTopTierBadges = ['凤凰勋章', '獬豸勋章', '青龙勋章x3', '白虎勋章x3', '朱雀勋章x3', '玄武勋章x3'];
+            const hasTopTier = results.some(badge => trueTopTierBadges.includes(badge.name));
+            
+            if (hasTopTier) {
+                showResult(drawMessageElement, true, '恭喜！抽到了最高级勋章！');
+            } else {
+                showResult(drawMessageElement, true, `抽取完成！共抽取 ${count} 次`);
+            }
+            
             // 保存数据
             saveData(results);
         });

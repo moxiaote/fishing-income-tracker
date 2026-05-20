@@ -409,27 +409,24 @@
         }
         
         // 显示结果消息
-        function showResult(success) {
-            // 清除之前的定时器，避免多个定时器导致提示被提前隐藏
+        function showResult(element, success, message = null) {
             if (hideTimeoutId) {
                 clearTimeout(hideTimeoutId);
                 hideTimeoutId = null;
             }
             
-            evolveResultElement.style.display = 'block';
+            element.style.display = 'block';
             if (success) {
-                evolveResultElement.className = 'result-message success-message';
-                evolveResultElement.textContent = '进化成功！';
+                element.className = 'result-message success-message';
+                element.textContent = message || '成功！';
                 evolvedSuccessfully = true;
-                // 不立即清空进化水，保持显示
             } else {
-                evolveResultElement.className = 'result-message failure-message';
-                evolveResultElement.textContent = '进化失败！概率增加1%。';
+                element.className = 'result-message failure-message';
+                element.textContent = message || '失败！';
             }
             
-            // 10秒后隐藏消息
             hideTimeoutId = setTimeout(() => {
-                evolveResultElement.style.display = 'none';
+                element.style.display = 'none';
                 hideTimeoutId = null;
             }, 10000);
         }
@@ -474,10 +471,10 @@
             evolveCountElement.textContent = evolveCount;
             
             if (success) {
-                showResult(true);
+                showResult(evolveResultElement, true, '进化成功！');
             } else {
                 updateProbability();
-                showResult(false);
+                showResult(evolveResultElement, false, '进化失败！概率增加1%。');
             }
         }
         
