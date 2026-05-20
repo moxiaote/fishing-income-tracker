@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="钓鱼发烧友勋章制作模拟器，在线模拟勋章制作成功率与成本消耗">
     <meta name="keywords" content="钓鱼发烧友,勋章制作,勋章合成,游戏工具">
     <meta name="author" content="海盗毕业">
@@ -962,6 +962,21 @@
     </div>
 
     <script>
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
         const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
         const FOUR_BEAST_NAMES = { qinglong: '青龙勋章', baihu: '白虎勋章', zhuque: '朱雀勋章', xuanwu: '玄武勋章' };
         const FOUR_BEAST_ICONS = { qinglong: '青', baihu: '白', zhuque: '雀', xuanwu: '玄' };
