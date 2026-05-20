@@ -520,8 +520,8 @@
         }
 
         .attr-mythic {
-            background-color: #f3e5f5;
-            color: #9c27b0;
+            background-color: #fff3e0;
+            color: #d97706;
         }
 
         .attr-ultimate {
@@ -924,6 +924,19 @@
                 </div>
             </div>
         </div>
+
+        <!-- 概率表（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 14px; color: #333;">词条概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-content" aria-expanded="false" aria-controls="probability-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="probability-content">
+                <div id="probability-table"></div>
+            </div>
+        </div>
     </div>
 
     <!-- 勋章选择器弹窗 -->
@@ -991,6 +1004,53 @@
             mythic: { name: '神话', color: '#ce93d8', order: 5 },
             ultimate: { name: '终极', color: '#ffd700', order: 6 }
         };
+
+        function getMainAttrTierDisplay(badgeId, mainAttr, targetData) {
+            if (badgeId === 'leviathan') {
+                const values = targetData.damageValues;
+                const median = (values[Math.floor(values.length/2 - 1)] + values[Math.ceil(values.length/2 - 1)]) / 2;
+                const displayTier = mainAttr.value <= median ? 'mythic' : 'ultimate';
+                return `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
+            } else if (badgeId === 'kraken') {
+                return `<span class="attribute-badge attr-${mainAttr.tier}">${attributeTiers[mainAttr.tier].name}</span>`;
+            }
+            return '';
+        }
+
+        function generateProbabilityTable() {
+            const container = document.getElementById('probability-table');
+            if (!container) return;
+            
+            let html = '';
+            
+            for (const type of ['kraken', 'leviathan']) {
+                const data = TARGET_DATA[type];
+                html += `<div style="margin-bottom:15px;"><h4 style="font-size:13px;color:#333;margin-bottom:8px;">${data.icon} ${data.name}</h4>`;
+                
+                for (const attr of data.attributes) {
+                    const totalWeight = attr.weights.reduce((a,b) => a+b, 0);
+                    let tierDisplay;
+                    if (type === 'leviathan' || (type === 'kraken' && attr.name === '伤害')) {
+                        tierDisplay = '<span class="attribute-badge attr-ultimate">神话~终极</span>';
+                    } else {
+                        const tierName = attributeTiers[attr.tier] ? attributeTiers[attr.tier].name : '未知';
+                        tierDisplay = `<span class="attribute-badge attr-${attr.tier}">${tierName}</span>`;
+                    }
+                    html += `<div style="margin-bottom:8px;font-size:11px;"><strong style="color:#8a2be2;">${attr.name}</strong> (${tierDisplay})`;
+                    html += `<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;">`;
+                    
+                    for (let i = 0; i < attr.values.length; i++) {
+                        const prob = ((attr.weights[i] / totalWeight) * 100).toFixed(2);
+                        html += `<span style="background:#f0f0f0;padding:2px 4px;border-radius:3px;">${attr.values[i]} <span style="color:#666;">(${prob}%)</span></span>`;
+                    }
+                    
+                    html += `</div></div>`;
+                }
+                html += `</div>`;
+            }
+            
+            container.innerHTML = html;
+        }
 
         const ALL_ATTRIBUTES = [
             { name: '增加饰品全部属性', tier: 'mythic', valueRange: [100, 150] },
@@ -1470,9 +1530,27 @@
             const targetData = TARGET_DATA[badge.id];
             const mainAttr = badge.attributes[0];
             const otherAttrs = badge.attributes.slice(1);
-            const attrHtml = otherAttrs.map(attr => 
-                `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
-            ).join('');
+            const attrHtml = otherAttrs.map(attr => {
+                let tierDisplay = '';
+                if (badge.id === 'leviathan') {
+                    const attrDef = targetData.attributes.find(a => a.name === attr.name);
+                    if (attrDef && attrDef.values && attrDef.values.length > 0) {
+                        const values = attrDef.values;
+                        const median = (values[Math.floor(values.length/2 - 1)] + values[Math.ceil(values.length/2 - 1)]) / 2;
+                        const displayTier = attr.value <= median ? 'mythic' : 'ultimate';
+                        tierDisplay = `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
+                    }
+                } else if (badge.id === 'kraken') {
+                    let displayTier = attr.tier;
+                    if (['增加饰品全部属性', '大鱼加成'].includes(attr.name)) {
+                        displayTier = 'mythic';
+                    } else if (['拽钓伤害', '力量技能追加伤害', '增加线的效率'].includes(attr.name)) {
+                        displayTier = 'ultimate';
+                    }
+                    tierDisplay = `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
+                }
+                return `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${attr.value} ${tierDisplay}</div>`;
+            }).join('');
             const combineStatus = getCraftedCombineStatus(index);
             const nextStars = badge.stars + 1;
             const combineButtonHtml = badge.stars < 5 ? `
@@ -1516,7 +1594,7 @@
                             </div>
                         </div>
                         <div style="margin-left:20px;">
-                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">${mainAttr.name}: ${mainAttr.value}</div>
+                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">${mainAttr.name}: ${mainAttr.value} ${getMainAttrTierDisplay(badge.id, mainAttr, targetData)}</div>
                             ${skillHtml}
                         </div>
                     </div>
@@ -1746,9 +1824,27 @@
                     renderBadgeInSlot('material', null);
                     renderBadgeInSlot('assist', null);
 
-                    const attrHtml = finalAttributes.map(attr => 
-                        `<div class="result-attr-item">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
-                    ).join('');
+                    const attrHtml = finalAttributes.map(attr => {
+                        let tierDisplay = '';
+                        if (gameState.targetType === 'leviathan') {
+                            const attrDef = targetData.attributes.find(a => a.name === attr.name);
+                            if (attrDef && attrDef.values && attrDef.values.length > 0) {
+                                const values = attrDef.values;
+                                const median = (values[Math.floor(values.length/2 - 1)] + values[Math.ceil(values.length/2 - 1)]) / 2;
+                                const displayTier = attr.value <= median ? 'mythic' : 'ultimate';
+                                tierDisplay = `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
+                            }
+                        } else if (gameState.targetType === 'kraken') {
+                            let displayTier = attr.tier;
+                            if (['增加饰品全部属性', '大鱼加成'].includes(attr.name)) {
+                                displayTier = 'mythic';
+                            } else if (['拽钓伤害', '力量技能追加伤害', '增加线的效率'].includes(attr.name)) {
+                                displayTier = 'ultimate';
+                            }
+                            tierDisplay = `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
+                        }
+                        return `<div class="result-attr-item">${attr.name} ${attr.value} ${tierDisplay}</div>`;
+                    }).join('');
 
                     showResult(true, null, `
                         <div style="text-align: center;">
@@ -1824,6 +1920,7 @@
 
         loadData();
         updateProbabilityDisplay();
+        generateProbabilityTable();
     </script>
 </body>
 </html>
