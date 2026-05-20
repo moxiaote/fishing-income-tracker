@@ -639,6 +639,13 @@
             touch-action: manipulation;
         }
 
+        .badge-delete-btn::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+        }
+
         .badge-delete-btn:hover {
             background-color: rgba(220, 53, 69, 0.9);
             color: white;
@@ -756,13 +763,14 @@
             }
 
             .badge-delete-btn {
-                top: 1px;
-                right: 1px;
-                width: 24px;
-                height: 24px;
-                font-size: 16px;
-                line-height: 24px;
-                background-color: rgba(255, 255, 255, 0.92);
+                top: 2px;
+                right: 2px;
+                width: 18px;
+                height: 18px;
+                font-size: 13px;
+                line-height: 18px;
+                background-color: rgba(255, 255, 255, 0.82);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.12);
             }
 
             .badge-delete-btn:hover {
@@ -896,7 +904,7 @@
             <div class="inventory-header">
                 <span class="inventory-title">🐲 四神兽勋章库存</span>
                 <div class="inventory-actions">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="getFourBeastBadges()">获取勋章</button>
+                    <button class="btn btn-sm btn-primary" onclick="getFourBeastBadges()">获取勋章</button>
                 </div>
             </div>
             <div class="equipment-card" style="padding: 10px;">
@@ -930,6 +938,8 @@
         const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
         const FOUR_BEAST_NAMES = { qinglong: '青龙勋章', baihu: '白虎勋章', zhuque: '朱雀勋章', xuanwu: '玄武勋章' };
         const FOUR_BEAST_ICONS = { qinglong: '青', baihu: '白', zhuque: '雀', xuanwu: '玄' };
+        const FOUR_BEAST_MIN_STARS = 5;
+        const FOUR_BEAST_MAX_STARS = 6;
         const MAX_CRAFT_BONUS = 12.25;
 
         const TARGET_DATA = {
@@ -1179,6 +1189,10 @@
             };
         }
 
+        function getRandomFourBeastStars() {
+            return Math.floor(Math.random() * (FOUR_BEAST_MAX_STARS - FOUR_BEAST_MIN_STARS + 1)) + FOUR_BEAST_MIN_STARS;
+        }
+
         function getFourBeastBadges() {
             if (gameState.fourBeastBadges.length >= 10) {
                 alert('库存已满！最多10个四神兽勋章');
@@ -1188,7 +1202,7 @@
             const count = Math.min(5, 10 - gameState.fourBeastBadges.length);
             for (let i = 0; i < count; i++) {
                 const type = FOUR_BEAST_TYPES[Math.floor(Math.random() * FOUR_BEAST_TYPES.length)];
-                const stars = Math.floor(Math.random() * 3) + 4;
+                const stars = getRandomFourBeastStars();
                 gameState.fourBeastBadges.push(createFourBeastBadge(type, stars));
             }
             
