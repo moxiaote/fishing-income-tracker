@@ -805,6 +805,8 @@
                     累计制作: <span id="total-crafts" style="font-weight: bold;">0</span>次
                     <span style="color: #28a745;">| 成功: <span id="success-count" style="font-weight: bold;">0</span></span>
                     <span style="color: #dc3545;">| 失败: <span id="failure-count" style="font-weight: bold;">0</span></span>
+                    <span style="color: #6c757d;">| 白金: <span id="total-platinum-cost" style="font-weight: bold;">0</span></span>
+                    <span style="color: #007bff;">| 钻石: <span id="total-diamond-cost" style="font-weight: bold;">0</span></span>
                 </span>
             </div>
         </div>
@@ -888,7 +890,7 @@
                     <p><strong style="color: #ffc107;">核心勋章</strong>：必须6星四神兽，失败原封不动返还</p>
                     <p><strong style="color: #007bff;">材料勋章</strong>：5-6星四神兽，6星+12.25%，5星+6.125%，失败降级返还</p>
                     <p><strong style="color: #28a745;">辅助勋章</strong>：至少5星四神兽，6星+12.25%，5星+6.125%，失败不返还</p>
-                    <p style="color: #666;">材料与辅助的加成上限为12.25%，超过上限的勋章无法放入</p>
+                    <p style="color: #666;">材料与辅助的加成必须达到12.25%才能制作，超过上限的勋章无法放入</p>
                     <p style="margin-top: 10px; color: #666;">成功：消耗所有材料，生成3星目标勋章</p>
                     <p style="color: #666;">成品合成：选择1个主勋章保留现有属性，3个同名3星→1个4星并随机解锁第4条属性，2个同名4星→1个5星并随机解锁第5条属性</p>
                     <p style="color: #666;">失败：核心返还，6星材料→5星，5星材料→4星，辅助全部消耗</p>
@@ -941,6 +943,8 @@
         const FOUR_BEAST_MIN_STARS = 5;
         const FOUR_BEAST_MAX_STARS = 6;
         const MAX_CRAFT_BONUS = 12.25;
+        const CRAFT_PLATINUM_COST = 4000;
+        const CRAFT_DIAMOND_COST = 50;
 
         const TARGET_DATA = {
             kraken: {
@@ -1003,7 +1007,9 @@
             craftedBadges: [],
             totalCrafts: 0,
             successCount: 0,
-            failureCount: 0
+            failureCount: 0,
+            totalPlatinumCost: 0,
+            totalDiamondCost: 0
         };
 
         let currentSlot = null;
@@ -1219,6 +1225,8 @@
                 gameState.totalCrafts = data.totalCrafts || 0;
                 gameState.successCount = data.successCount || 0;
                 gameState.failureCount = data.failureCount || 0;
+                gameState.totalPlatinumCost = data.totalPlatinumCost || 0;
+                gameState.totalDiamondCost = data.totalDiamondCost || 0;
             }
             updateStats();
             displayFourBeastBadges();
@@ -1231,7 +1239,9 @@
                 craftedBadges: gameState.craftedBadges,
                 totalCrafts: gameState.totalCrafts,
                 successCount: gameState.successCount,
-                failureCount: gameState.failureCount
+                failureCount: gameState.failureCount,
+                totalPlatinumCost: gameState.totalPlatinumCost,
+                totalDiamondCost: gameState.totalDiamondCost
             }));
         }
 
@@ -1242,6 +1252,8 @@
                 gameState.totalCrafts = 0;
                 gameState.successCount = 0;
                 gameState.failureCount = 0;
+                gameState.totalPlatinumCost = 0;
+                gameState.totalDiamondCost = 0;
                 gameState.coreBadge = null;
                 gameState.materialBadge = null;
                 gameState.assistBadge = null;
@@ -1262,6 +1274,8 @@
             document.getElementById('total-crafts').textContent = gameState.totalCrafts;
             document.getElementById('success-count').textContent = gameState.successCount;
             document.getElementById('failure-count').textContent = gameState.failureCount;
+            document.getElementById('total-platinum-cost').textContent = gameState.totalPlatinumCost;
+            document.getElementById('total-diamond-cost').textContent = gameState.totalDiamondCost;
         }
 
         function selectTarget(type) {
@@ -1327,7 +1341,7 @@
             const canCraft = gameState.coreBadge && gameState.materialBadge && 
                            gameState.coreBadge.stars === 6 && 
                            gameState.materialBadge.stars >= 5 &&
-                           probability > 0;
+                           probability === MAX_CRAFT_BONUS;
             craftBtn.disabled = !canCraft;
         }
 
@@ -1648,12 +1662,19 @@
             if (gameState.coreBadge.stars !== 6 || gameState.materialBadge.stars < 5) {
                 return;
             }
-            
+
             const { probability } = calculateProbability();
+            if (probability !== MAX_CRAFT_BONUS) {
+                alert(`制作成功率必须达到${MAX_CRAFT_BONUS}%才能制作。`);
+                return;
+            }
+            
             const roll = Math.random() * 100;
             const success = roll < probability;
             
             gameState.totalCrafts++;
+            gameState.totalPlatinumCost += CRAFT_PLATINUM_COST;
+            gameState.totalDiamondCost += CRAFT_DIAMOND_COST;
             
             if (success) {
                 gameState.successCount++;
