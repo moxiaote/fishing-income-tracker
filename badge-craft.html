@@ -239,6 +239,37 @@
             display: none;
         }
 
+        .badge-display.crafted-badge-display {
+            background-image: none !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px solid #adb5bd;
+            color: #333;
+            overflow: visible;
+            font-weight: bold;
+        }
+
+        .badge-display.crafted-badge-display.badge-stars-3 {
+            background: linear-gradient(135deg, #e9ecef 0%, #ced4da 100%);
+            border-color: #adb5bd;
+            color: #343a40;
+        }
+
+        .badge-display.crafted-badge-display.badge-stars-4 {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .badge-display.crafted-badge-display.badge-stars-5 {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .badge-display.crafted-badge-display span {
+            display: inline !important;
+        }
+
         .badge-stars {
             position: absolute;
             bottom: 2px;
@@ -532,12 +563,19 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 8px;
+            gap: 8px;
         }
 
         .inventory-title {
             font-size: 13px;
             font-weight: bold;
             color: #333;
+        }
+
+        .inventory-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
 
         .badge-grid {
@@ -556,6 +594,7 @@
             border: 2px dashed #ddd;
             border-radius: 8px;
             transition: all 0.2s ease;
+            position: relative;
         }
 
         .badge-grid-item:hover {
@@ -576,6 +615,40 @@
             display: flex;
             justify-content: center;
             flex-shrink: 0;
+        }
+
+        .badge-delete-btn {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #888;
+            font-size: 14px;
+            line-height: 18px;
+            padding: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.14);
+            z-index: 2;
+            touch-action: manipulation;
+        }
+
+        .badge-delete-btn:hover {
+            background-color: rgba(220, 53, 69, 0.9);
+            color: white;
+            transform: scale(1.08);
+        }
+
+        .badge-delete-btn:active {
+            background-color: rgba(220, 53, 69, 0.9);
+            color: white;
+            transform: scale(0.96);
         }
 
         .craft-result-badge {
@@ -680,6 +753,22 @@
 
             .badge-grid {
                 grid-template-columns: repeat(5, 1fr);
+            }
+
+            .badge-delete-btn {
+                top: 1px;
+                right: 1px;
+                width: 24px;
+                height: 24px;
+                font-size: 16px;
+                line-height: 24px;
+                background-color: rgba(255, 255, 255, 0.92);
+            }
+
+            .badge-delete-btn:hover {
+                background-color: rgba(255, 255, 255, 0.92);
+                color: #888;
+                transform: none;
             }
 
             .slot-requirement {
@@ -791,7 +880,9 @@
                     <p><strong style="color: #ffc107;">核心勋章</strong>：必须6星四神兽，失败原封不动返还</p>
                     <p><strong style="color: #007bff;">材料勋章</strong>：5-6星四神兽，6星+12.25%，5星+6.125%，失败降级返还</p>
                     <p><strong style="color: #28a745;">辅助勋章</strong>：至少5星四神兽，6星+12.25%，5星+6.125%，失败不返还</p>
+                    <p style="color: #666;">材料与辅助的加成上限为12.25%，超过上限的勋章无法放入</p>
                     <p style="margin-top: 10px; color: #666;">成功：消耗所有材料，生成3星目标勋章</p>
+                    <p style="color: #666;">成品合成：选择1个主勋章保留现有属性，3个同名3星→1个4星并随机解锁第4条属性，2个同名4星→1个5星并随机解锁第5条属性</p>
                     <p style="color: #666;">失败：核心返还，6星材料→5星，5星材料→4星，辅助全部消耗</p>
                 </div>
             </div>
@@ -804,7 +895,9 @@
         <div class="inventory-section">
             <div class="inventory-header">
                 <span class="inventory-title">🐲 四神兽勋章库存</span>
-                <button class="btn btn-sm btn-outline-secondary" onclick="getFourBeastBadges()">获取勋章</button>
+                <div class="inventory-actions">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="getFourBeastBadges()">获取勋章</button>
+                </div>
             </div>
             <div class="equipment-card" style="padding: 10px;">
                 <div class="badge-grid" id="four-beast-grid"></div>
@@ -837,6 +930,7 @@
         const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
         const FOUR_BEAST_NAMES = { qinglong: '青龙勋章', baihu: '白虎勋章', zhuque: '朱雀勋章', xuanwu: '玄武勋章' };
         const FOUR_BEAST_ICONS = { qinglong: '青', baihu: '白', zhuque: '雀', xuanwu: '玄' };
+        const MAX_CRAFT_BONUS = 12.25;
 
         const TARGET_DATA = {
             kraken: {
@@ -931,6 +1025,131 @@
                 }
             }
             return values[values.length - 1];
+        }
+
+        function generateTargetAttribute(targetType, attrIndex) {
+            const targetData = TARGET_DATA[targetType];
+            const attrDef = targetData.attributes[attrIndex];
+            const fixedValues = generateFixedValues(attrDef.valueRange[0], attrDef.valueRange[1]);
+            const value = getRandomValueFromFixed(fixedValues);
+            let tier = attrDef.tier;
+
+            if (targetType === 'kraken') {
+                if (attrIndex < 2) {
+                    tier = 'mythic';
+                } else if (attrIndex === 2) {
+                    tier = 'ultimate';
+                }
+            } else if (targetType === 'leviathan') {
+                const valueIndex = fixedValues.indexOf(value);
+                tier = valueIndex < 4 ? 'mythic' : 'ultimate';
+            }
+
+            return {
+                name: attrDef.name,
+                tier,
+                value
+            };
+        }
+
+        function getCraftedCombineRequirement(stars) {
+            if (stars === 3) return 3;
+            if (stars === 4) return 2;
+            return null;
+        }
+
+        function getCraftedBadgeMark(badge) {
+            return badge.icon;
+        }
+
+        function getCraftedCombineStatus(mainIndex) {
+            const mainBadge = gameState.craftedBadges[mainIndex];
+            if (!mainBadge) {
+                return { canCombine: false, message: '勋章不存在' };
+            }
+
+            const requiredCount = getCraftedCombineRequirement(mainBadge.stars);
+            if (!requiredCount) {
+                return { canCombine: false, message: '已达到最高星级' };
+            }
+
+            const materialIndexes = gameState.craftedBadges
+                .map((badge, index) => ({ badge, index }))
+                .filter(item => item.index !== mainIndex && item.badge && item.badge.id === mainBadge.id && item.badge.stars === mainBadge.stars)
+                .map(item => item.index);
+            const requiredMaterials = requiredCount - 1;
+
+            if (materialIndexes.length < requiredMaterials) {
+                return {
+                    canCombine: false,
+                    requiredCount,
+                    requiredMaterials,
+                    materialCount: materialIndexes.length,
+                    message: `还需要${requiredMaterials - materialIndexes.length}个同名${mainBadge.stars}星材料`
+                };
+            }
+
+            return {
+                canCombine: true,
+                requiredCount,
+                requiredMaterials,
+                materialIndexes: materialIndexes.slice(0, requiredMaterials),
+                message: `消耗${requiredMaterials}个同名${mainBadge.stars}星材料，合成${mainBadge.stars + 1}星`
+            };
+        }
+
+        function combineCraftedBadgeFromPopup(mainIndex) {
+            const mainBadge = gameState.craftedBadges[mainIndex];
+            const combineStatus = getCraftedCombineStatus(mainIndex);
+
+            if (!mainBadge || !combineStatus.canCombine) {
+                alert(combineStatus.message || '当前勋章暂不能合成');
+                return;
+            }
+
+            if (!confirm(`确定以当前${mainBadge.stars}星${mainBadge.name}为主勋章，${combineStatus.message}吗？`)) {
+                return;
+            }
+
+            const nextStars = mainBadge.stars + 1;
+            const nextAttributes = mainBadge.attributes.slice(0, nextStars - 1);
+
+            while (nextAttributes.length < nextStars && nextAttributes.length < TARGET_DATA[mainBadge.id].attributes.length) {
+                nextAttributes.push(generateTargetAttribute(mainBadge.id, nextAttributes.length));
+            }
+
+            const upgradedBadge = {
+                ...mainBadge,
+                stars: nextStars,
+                attributes: nextAttributes
+            };
+            const indexesToConsume = [mainIndex, ...combineStatus.materialIndexes];
+
+            indexesToConsume.sort((a, b) => b - a).forEach(index => {
+                gameState.craftedBadges.splice(index, 1);
+            });
+            gameState.craftedBadges.push(upgradedBadge);
+
+            const popup = document.getElementById('crafted-badge-popup');
+            if (popup) popup.remove();
+
+            saveData();
+            displayCraftedBadges();
+            showResult(true, null, `
+                <div style="text-align: center;">
+                    <div style="font-size: 18px; margin-bottom: 8px;">合成成功！</div>
+                    <div class="craft-result-badge">
+                        <div class="badge-display crafted-badge-display ${upgradedBadge.id} badge-stars-${upgradedBadge.stars}">
+                            <span>${getCraftedBadgeMark(upgradedBadge)}</span>
+                            <div class="badge-stars">
+                                ${'<span class="star">★</span>'.repeat(upgradedBadge.stars)}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${upgradedBadge.name} (${upgradedBadge.stars}星)</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 6px;">主勋章属性已保留，并解锁第${upgradedBadge.stars}条属性</div>
+                </div>
+            `);
         }
 
         function createFourBeastBadge(type, stars) {
@@ -1058,6 +1277,33 @@
             return { probability, breakdown };
         }
 
+        function getCraftBonus(badge) {
+            if (!badge) return 0;
+            return badge.stars === 6 ? 12.25 : 6.125;
+        }
+
+        function calculatePotentialCraftBonus(slotType, badge) {
+            const materialBonus = slotType === 'material' ? getCraftBonus(badge) : getCraftBonus(gameState.materialBadge);
+            const assistBonus = slotType === 'assist' ? getCraftBonus(badge) : getCraftBonus(gameState.assistBadge);
+            return materialBonus + assistBonus;
+        }
+
+        function canUseCraftBonusBadge(badge, slotType, showAlert = false) {
+            if (slotType !== 'material' && slotType !== 'assist') {
+                return true;
+            }
+
+            const potentialBonus = calculatePotentialCraftBonus(slotType, badge);
+            if (potentialBonus <= MAX_CRAFT_BONUS) {
+                return true;
+            }
+
+            if (showAlert) {
+                alert(`材料和辅助勋章的成功率加成最高只能到${MAX_CRAFT_BONUS}%，当前选择会达到${potentialBonus}%，不能添加。`);
+            }
+            return false;
+        }
+
         function updateProbabilityDisplay() {
             const { probability, breakdown } = calculateProbability();
             document.getElementById('success-probability').textContent = probability + '%';
@@ -1101,6 +1347,7 @@
                 if (gameState.fourBeastBadges[i]) {
                     const badge = gameState.fourBeastBadges[i];
                     item.innerHTML = `
+                        <button class="badge-delete-btn" title="删除勋章" aria-label="删除勋章">&times;</button>
                         <div class="badge-display ${badge.type} badge-stars-${badge.stars}">
                             <span>${badge.icon}</span>
                             <div class="badge-stars">
@@ -1108,6 +1355,10 @@
                             </div>
                         </div>
                     `;
+                    item.querySelector('.badge-delete-btn').onclick = (e) => {
+                        e.stopPropagation();
+                        deleteFourBeastBadge(i);
+                    };
                     item.onclick = () => handleInventoryClick(i, 'four-beast');
                 }
                 
@@ -1126,25 +1377,74 @@
                 if (gameState.craftedBadges[i]) {
                     const badge = gameState.craftedBadges[i];
                     item.innerHTML = `
-                        <div class="badge-display ${badge.id}">
-                            <span>${badge.icon}</span>
+                        <button class="badge-delete-btn" title="删除勋章" aria-label="删除勋章">&times;</button>
+                        <div class="badge-display crafted-badge-display ${badge.id} badge-stars-${badge.stars}">
+                            <span>${getCraftedBadgeMark(badge)}</span>
                             <div class="badge-stars">
                                 ${'<span class="star">★</span>'.repeat(badge.stars)}
                             </div>
                         </div>
                     `;
-                    item.onclick = () => showCraftedBadgeInfo(badge);
+                    item.querySelector('.badge-delete-btn').onclick = (e) => {
+                        e.stopPropagation();
+                        deleteCraftedBadge(i);
+                    };
+                    item.onclick = () => showCraftedBadgeInfo(i);
                 }
                 
                 grid.appendChild(item);
             }
         }
 
-        function showCraftedBadgeInfo(badge) {
+        function deleteFourBeastBadge(index) {
+            const badge = gameState.fourBeastBadges[index];
+            if (!badge) return;
+
+            if (!confirm(`确定要删除${badge.name}（${badge.stars}星）吗？`)) {
+                return;
+            }
+
+            gameState.fourBeastBadges.splice(index, 1);
+            saveData();
+            displayFourBeastBadges();
+            updateProbabilityDisplay();
+        }
+
+        function deleteCraftedBadge(index) {
+            const badge = gameState.craftedBadges[index];
+            if (!badge) return;
+
+            if (!confirm(`确定要删除${badge.name}（${badge.stars}星）吗？`)) {
+                return;
+            }
+
+            gameState.craftedBadges.splice(index, 1);
+            saveData();
+            displayCraftedBadges();
+        }
+
+        function showCraftedBadgeInfo(index) {
+            const badge = gameState.craftedBadges[index];
+            if (!badge) return;
+
             const targetData = TARGET_DATA[badge.id];
             const attrHtml = badge.attributes.map(attr => 
                 `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
             ).join('');
+            const combineStatus = getCraftedCombineStatus(index);
+            const nextStars = badge.stars + 1;
+            const combineButtonHtml = badge.stars < 5 ? `
+                <div style="margin-top:15px;padding-top:12px;border-top:1px solid #e9ecef;">
+                    <button class="btn ${combineStatus.canCombine ? 'btn-primary' : 'btn-secondary'} w-100" ${combineStatus.canCombine ? `onclick="combineCraftedBadgeFromPopup(${index})"` : 'disabled'}>
+                        合成到${nextStars}星
+                    </button>
+                    <div style="font-size:11px;color:#666;margin-top:6px;text-align:center;">${combineStatus.message}</div>
+                </div>
+            ` : `
+                <div style="margin-top:15px;padding-top:12px;border-top:1px solid #e9ecef;font-size:12px;color:#666;text-align:center;">
+                    已达到最高星级
+                </div>
+            `;
             
             let skillHtml = '';
             if (badge.hasSkill) {
@@ -1155,6 +1455,7 @@
             }
             
             const popup = document.createElement('div');
+            popup.id = 'crafted-badge-popup';
             popup.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
             popup.innerHTML = `
                 <div style="background-color:white;border-radius:8px;padding:20px;max-width:360px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
@@ -1164,21 +1465,24 @@
                     </div>
                     <div style="margin-bottom:15px;">
                         <div class="craft-result-badge" style="display:inline-block;vertical-align:middle;">
-                            <div class="badge-display ${badge.id}" style="width:60px;height:60px;font-size:24px;">
-                                <span>${badge.icon}</span>
+                            <div class="badge-display crafted-badge-display ${badge.id} badge-stars-${badge.stars}" style="width:60px;height:60px;font-size:24px;">
+                                <span>${getCraftedBadgeMark(badge)}</span>
                                 <div class="badge-stars" style="font-size:12px;bottom:4px;">
                                     ${'<span class="star">★</span>'.repeat(badge.stars)}
                                 </div>
                             </div>
                         </div>
                         <div style="margin-left:20px;">
-                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">伤害: ${badge.damage}</div>
+                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">
+							    ${badge.id === 'leviathan' ? '神秘伤害' : '伤害'}: ${badge.damage}
+							</div>
                             ${skillHtml}
                         </div>
                     </div>
                     <div style="font-size:12px;">
                         ${attrHtml}
                     </div>
+                    ${combineButtonHtml}
                 </div>
             `;
             popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
@@ -1236,6 +1540,9 @@
                 alert('辅助勋章至少需要5星！');
                 return false;
             }
+            if (!canUseCraftBonusBadge(badge, slotType, true)) {
+                return false;
+            }
             return true;
         }
 
@@ -1263,8 +1570,8 @@
             
             const availableBadges = gameState.fourBeastBadges.filter(badge => {
                 if (slotType === 'core') return badge.stars === 6;
-                if (slotType === 'material') return badge.stars >= 5;
-                if (slotType === 'assist') return badge.stars >= 5;
+                if (slotType === 'material') return badge.stars >= 5 && canUseCraftBonusBadge(badge, slotType);
+                if (slotType === 'assist') return badge.stars >= 5 && canUseCraftBonusBadge(badge, slotType);
                 return true;
             });
             
@@ -1316,7 +1623,7 @@
             
             setTimeout(() => {
                 resultElement.style.display = 'none';
-            }, 5000);
+            }, 10000);
         }
 
         function craftBadge() {
@@ -1344,27 +1651,7 @@
                 const targetAttrCount = 3;
                 
                 for (let i = 0; i < targetAttrCount && i < targetData.attributes.length; i++) {
-                    const attrDef = targetData.attributes[i];
-                    const fixedValues = generateFixedValues(attrDef.valueRange[0], attrDef.valueRange[1]);
-                    const value = getRandomValueFromFixed(fixedValues);
-                    
-                    let tier;
-                    if (gameState.targetType === 'kraken') {
-                        if (i < 2) {
-                            tier = 'mythic';
-                        } else {
-                            tier = 'ultimate';
-                        }
-                    } else {
-                        const valueIndex = fixedValues.indexOf(value);
-                        tier = valueIndex < 4 ? 'mythic' : 'ultimate';
-                    }
-                    
-                    finalAttributes.push({
-                        name: attrDef.name,
-                        tier: tier,
-                        value: value
-                    });
+                    finalAttributes.push(generateTargetAttribute(gameState.targetType, i));
                 }
                 
                 const craftedBadge = {
@@ -1397,8 +1684,8 @@
                     <div style="text-align: center;">
                         <div style="font-size: 18px; margin-bottom: 8px;">🎉 制作成功！</div>
                         <div class="craft-result-badge">
-                            <div class="badge-display ${craftedBadge.id}">
-                                <span>${craftedBadge.icon}</span>
+                            <div class="badge-display crafted-badge-display ${craftedBadge.id} badge-stars-${craftedBadge.stars}">
+                                <span>${getCraftedBadgeMark(craftedBadge)}</span>
                                 <div class="badge-stars">
                                     <span class="star">★</span>
                                     <span class="star">★</span>
@@ -1407,7 +1694,9 @@
                             </div>
                         </div>
                         <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${craftedBadge.name} (3星)</div>
-                        <div style="font-size: 16px; font-weight: bold; color: #fd7e14; margin-top: 8px;">⚔️ 伤害: ${craftedBadge.damage}</div>
+                        <div style="font-size: 16px; font-weight: bold; color: #fd7e14; margin-top: 8px;">
+						    ${craftedBadge.id === 'leviathan' ? '神秘伤害' : '伤害'}: ${craftedBadge.damage}
+						</div>
                         <div class="result-attributes" style="margin-top: 10px;">
                             ${attrHtml}
                         </div>
