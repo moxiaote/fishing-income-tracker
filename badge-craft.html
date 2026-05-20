@@ -907,6 +907,7 @@
                 <span class="inventory-title">🐲 四神兽勋章库存</span>
                 <div class="inventory-actions">
                     <button class="btn btn-sm btn-primary" onclick="getFourBeastBadges()">获取勋章</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAll4StarBadges()">删除4星勋章</button>
                 </div>
             </div>
             <div class="equipment-card" style="padding: 10px;">
@@ -952,13 +953,15 @@
                 icon: '🐙',
                 skillName: '深渊的侵蚀',
                 skillDesc: '汽水大鱼金币效率+25%',
-                damageRange: { min: 9718, max: 20718 },
+                damageValues: [9718, 10218, 10718, 11218, 11718, 12218, 12718, 13218, 13718, 14218, 14868, 15518, 16168, 16818, 17468, 18118, 18768, 19418, 20068, 20718],
+                damageWeights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50],
                 attributes: [
-                    { name: '增加饰品全部属性', tier: 'mythic', valueRange: [102, 120] },
-                    { name: '大鱼加成', tier: 'mythic', valueRange: [20.62, 26.59] },
-                    { name: '拽钓伤害', tier: 'ultimate', valueRange: [102.75, 127.5] },
-                    { name: '力量技能追加伤害', tier: 'ultimate', valueRange: [206, 260] },
-                    { name: '增加线的效率', tier: 'ultimate', valueRange: [0.288, 0.36] }
+                    { name: '伤害', tier: 'ultimate', values: [9718, 10218, 10718, 11218, 11718, 12218, 12718, 13218, 13718, 14218, 14868, 15518, 16168, 16818, 17468, 18118, 18768, 19418, 20068, 20718], weights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50] },
+                    { name: '增加饰品全部属性', tier: 'mythic', values: [102, 104, 106, 108, 110, 112, 114, 116, 118, 120], weights: [100, 169, 287, 487, 825, 1398, 1748, 1840, 1748, 1398] },
+                    { name: '大鱼加成', tier: 'mythic', values: [20.62, 21.28, 21.95, 22.61, 23.27, 23.94, 24.60, 25.26, 25.93, 26.59], weights: [100, 169, 287, 487, 825, 1398, 1748, 1840, 1748, 1398] },
+                    { name: '拽钓伤害', tier: 'ultimate', values: [102.75, 105.50, 108.25, 111, 113.75, 116.50, 119.25, 122, 124.75, 127.50], weights: [3242, 3080, 2464, 813, 268, 89, 29, 10, 3, 1] },
+                    { name: '力量技能追加伤害', tier: 'ultimate', values: [206, 212, 218, 224, 230, 236, 242, 248, 254, 260], weights: [3242, 3080, 2464, 813, 268, 89, 29, 10, 3, 1] },
+                    { name: '增加线的效率', tier: 'ultimate', values: [0.29, 0.30, 0.30, 0.31, 0.32, 0.33, 0.34, 0.34, 0.35, 0.36], weights: [3242, 3080, 2464, 813, 268, 89, 29, 10, 3, 1] }
                 ]
             },
             leviathan: {
@@ -966,13 +969,15 @@
                 icon: '🐉',
                 skillName: '破灭的波涛',
                 skillDesc: '完美抛竿30秒伤害+150%',
-                damageRange: { min: 39574, max: 63842 },
+                damageValues: [39574, 40826, 42078, 43330, 44582, 45834, 47086, 48338, 49590, 50842, 52142, 53442, 54742, 56042, 57342, 58642, 59942, 61242, 62542, 63842],
+                damageWeights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50],
                 attributes: [
-                    { name: '破防', tier: 'ultimate', valueRange: [31, 50] },
-                    { name: '力量条上升', tier: 'ultimate', valueRange: [4.65, 7.7] },
-                    { name: '增加饰品全部属性', tier: 'ultimate', valueRange: [102, 140] },
-                    { name: '增加线的长度', tier: 'mythic', valueRange: [1033, 1684] },
-                    { name: '大鱼加成', tier: 'mythic', valueRange: [20.62, 33.59] }
+                    { name: '神秘伤害', tier: 'mythic', values: [39574, 40826, 42078, 43330, 44582, 45834, 47086, 48338, 49590, 50842, 52142, 53442, 54742, 56042, 57342, 58642, 59942, 61242, 62542, 63842], weights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50] },
+                    { name: '防御穿透', tier: 'ultimate', values: [3100, 3200, 3300, 3400, 3500, 3600, 3700, 3800, 3900, 4000, 4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000], weights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50] },
+                    { name: '力量条上升', tier: 'ultimate', values: [4.65, 4.80, 4.95, 5.10, 5.25, 5.40, 5.55, 5.70, 5.85, 6.00, 6.17, 6.34, 6.51, 6.68, 6.85, 7.02, 7.19, 7.36, 7.53, 7.70], weights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50] },
+                    { name: '增加饰品全部属性', tier: 'ultimate', values: [102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140], weights: [2006, 1906, 1715, 1458, 1166, 700, 420, 252, 151, 91, 54, 33, 20, 12, 7, 4, 3, 2, 1, 1] },
+                    { name: '增加线的长度', tier: 'mythic', values: [1033, 1067, 1100, 1133, 1167, 1200, 1233, 1267, 1300, 1334, 1369, 1404, 1439, 1474, 1509, 1544, 1579, 1614, 1649, 1684], weights: [474, 608, 760, 894, 994, 1046, 994, 894, 760, 608, 474, 369, 287, 224, 174, 136, 106, 82, 64, 50] },
+                    { name: '大鱼加成', tier: 'mythic', values: [20.62, 21.28, 21.95, 22.61, 23.27, 23.94, 24.60, 25.26, 25.93, 26.59, 27.29, 27.99, 28.69, 29.39, 30.09, 30.79, 31.49, 32.19, 32.89, 33.59], weights: [2006, 1906, 1715, 1458, 1166, 700, 420, 252, 151, 91, 54, 33, 20, 12, 7, 4, 3, 2, 1, 1] }
                 ]
             }
         };
@@ -1015,7 +1020,7 @@
         let currentSlot = null;
         let resultHideTimer = null;
 
-        function generateFixedValues(min, max, count = 9) {
+        function generateFixedValues(min, max, count = 20) {
             const values = [];
             const step = (max - min) / (count - 1);
             for (let i = 0; i < count; i++) {
@@ -1026,17 +1031,17 @@
             return values;
         }
 
-        const KRAKEN_DAMAGE_VALUES = generateFixedValues(9718, 20718);
-        const LEVIATHAN_DAMAGE_VALUES = generateFixedValues(39574, 63842);
+        
 
-        const VALUE_WEIGHTS = [15, 18, 16, 14, 12, 10, 8, 5, 2];
-
-        function getRandomValueFromFixed(values) {
-            const totalWeight = VALUE_WEIGHTS.reduce((a, b) => a + b, 0);
+        function getRandomValueFromFixed(values, weights) {
+            if (!weights || weights.length === 0) {
+                weights = [15, 18, 16, 14, 12, 10, 8, 5, 2];
+            }
+            const totalWeight = weights.reduce((a, b) => a + b, 0);
             let random = Math.random() * totalWeight;
             
-            for (let i = 0; i < values.length; i++) {
-                random -= VALUE_WEIGHTS[i];
+            for (let i = 0; i < Math.min(values.length, weights.length); i++) {
+                random -= weights[i];
                 if (random <= 0) {
                     return values[i];
                 }
@@ -1047,24 +1052,12 @@
         function generateTargetAttribute(targetType, attrIndex) {
             const targetData = TARGET_DATA[targetType];
             const attrDef = targetData.attributes[attrIndex];
-            const fixedValues = generateFixedValues(attrDef.valueRange[0], attrDef.valueRange[1]);
-            const value = getRandomValueFromFixed(fixedValues);
-            let tier = attrDef.tier;
-
-            if (targetType === 'kraken') {
-                if (attrIndex < 2) {
-                    tier = 'mythic';
-                } else if (attrIndex === 2) {
-                    tier = 'ultimate';
-                }
-            } else if (targetType === 'leviathan') {
-                const valueIndex = fixedValues.indexOf(value);
-                tier = valueIndex < 4 ? 'mythic' : 'ultimate';
-            }
-
+            
+            const value = getRandomValueFromFixed(attrDef.values, attrDef.weights);
+            
             return {
                 name: attrDef.name,
-                tier,
+                tier: attrDef.tier,
                 value
             };
         }
@@ -1452,6 +1445,23 @@
             displayCraftedBadges();
         }
 
+        function deleteAll4StarBadges() {
+            const fourStarCount = gameState.fourBeastBadges.filter(badge => badge.stars === 4).length;
+            if (fourStarCount === 0) {
+                alert('当前没有4星勋章');
+                return;
+            }
+
+            if (!confirm(`确定要删除所有${fourStarCount}个4星勋章吗？`)) {
+                return;
+            }
+
+            gameState.fourBeastBadges = gameState.fourBeastBadges.filter(badge => badge.stars !== 4);
+            saveData();
+            displayFourBeastBadges();
+            updateProbabilityDisplay();
+        }
+
         function showCraftedBadgeInfo(index) {
             const badge = gameState.craftedBadges[index];
             if (!badge) return;
@@ -1483,13 +1493,14 @@
                 `;
             }
             
+            const weightedMark = badge.weightedVersion ? '<span style="color:#22c55e;font-size:14px;margin-left:4px;">●</span>' : '';
             const popup = document.createElement('div');
             popup.id = 'crafted-badge-popup';
             popup.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
             popup.innerHTML = `
                 <div style="background-color:white;border-radius:8px;padding:20px;max-width:360px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.2);">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-                        <h4 style="margin:0; color:#333;">${badge.name} (${badge.stars}星)</h4>
+                        <h4 style="margin:0; color:#333;">${badge.name} (${badge.stars}星)${weightedMark}</h4>
                         <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
                     </div>
                     <div style="margin-bottom:15px;">
@@ -1687,7 +1698,6 @@
                 gameState.successCount++;
                 
                 const targetData = TARGET_DATA[gameState.targetType];
-                const damageValues = gameState.targetType === 'kraken' ? KRAKEN_DAMAGE_VALUES : LEVIATHAN_DAMAGE_VALUES;
                 
                 const finalAttributes = [];
                 const targetAttrCount = 3;
@@ -1700,10 +1710,11 @@
                     id: gameState.targetType,
                     name: targetData.name,
                     icon: targetData.icon,
-                    damage: getRandomValueFromFixed(damageValues),
+                    damage: getRandomValueFromFixed(targetData.damageValues, targetData.damageWeights),
                     stars: 3,
                     attributes: finalAttributes,
-                    hasSkill: false
+                    hasSkill: false,
+                    weightedVersion: true
                 };
                 
                 if (gameState.craftedBadges.length < 10) {
