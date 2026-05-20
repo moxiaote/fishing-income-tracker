@@ -907,7 +907,7 @@
                 <span class="inventory-title">🐲 四神兽勋章库存</span>
                 <div class="inventory-actions">
                     <button class="btn btn-sm btn-primary" onclick="getFourBeastBadges()">获取勋章</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteAll4StarBadges()">删除4星勋章</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteAll4StarBadges()">删除4/5星勋章</button>
                 </div>
             </div>
             <div class="equipment-card" style="padding: 10px;">
@@ -1122,9 +1122,9 @@
             }
 
             const nextStars = mainBadge.stars + 1;
-            const nextAttributes = mainBadge.attributes.slice(0, nextStars - 1);
+            const nextAttributes = mainBadge.attributes.slice(0, nextAttributes.length);
 
-            while (nextAttributes.length < nextStars && nextAttributes.length < TARGET_DATA[mainBadge.id].attributes.length) {
+            while (nextAttributes.length < TARGET_DATA[mainBadge.id].attributes.length) {
                 nextAttributes.push(generateTargetAttribute(mainBadge.id, nextAttributes.length));
             }
 
@@ -1446,17 +1446,17 @@
         }
 
         function deleteAll4StarBadges() {
-            const fourStarCount = gameState.fourBeastBadges.filter(badge => badge.stars === 4).length;
-            if (fourStarCount === 0) {
-                alert('当前没有4星勋章');
+            const targetCount = gameState.fourBeastBadges.filter(badge => badge.stars === 4 || badge.stars === 5).length;
+            if (targetCount === 0) {
+                alert('当前没有4星或5星勋章');
                 return;
             }
 
-            if (!confirm(`确定要删除所有${fourStarCount}个4星勋章吗？`)) {
+            if (!confirm(`确定要删除所有${targetCount}个4/5星勋章吗？`)) {
                 return;
             }
 
-            gameState.fourBeastBadges = gameState.fourBeastBadges.filter(badge => badge.stars !== 4);
+            gameState.fourBeastBadges = gameState.fourBeastBadges.filter(badge => badge.stars !== 4 && badge.stars !== 5);
             saveData();
             displayFourBeastBadges();
             updateProbabilityDisplay();
@@ -1467,7 +1467,9 @@
             if (!badge) return;
 
             const targetData = TARGET_DATA[badge.id];
-            const attrHtml = badge.attributes.map(attr => 
+            const mainAttr = badge.attributes[0];
+            const otherAttrs = badge.attributes.slice(1);
+            const attrHtml = otherAttrs.map(attr => 
                 `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${attr.value} <span class="attribute-badge attr-${attr.tier}">${attributeTiers[attr.tier].name}</span></div>`
             ).join('');
             const combineStatus = getCraftedCombineStatus(index);
@@ -1493,7 +1495,7 @@
                 `;
             }
             
-            const weightedMark = badge.weightedVersion ? '<span style="color:#22c55e;font-size:14px;margin-left:4px;">●</span>' : '';
+            const weightedMark = badge.weightedVersion ? '<span style="color:#22c55e;font-size:14px;margin-left:4px;">●●</span>' : '';
             const popup = document.createElement('div');
             popup.id = 'crafted-badge-popup';
             popup.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;';
@@ -1513,9 +1515,7 @@
                             </div>
                         </div>
                         <div style="margin-left:20px;">
-                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">
-							    ${badge.id === 'leviathan' ? '神秘伤害' : '伤害'}: ${badge.damage}
-							</div>
+                            <div style="font-size:18px;font-weight:bold;color:#fd7e14;">${mainAttr.name}: ${mainAttr.value}</div>
                             ${skillHtml}
                         </div>
                     </div>
@@ -1700,7 +1700,7 @@
                 const targetData = TARGET_DATA[gameState.targetType];
                 
                 const finalAttributes = [];
-                const targetAttrCount = 3;
+                const targetAttrCount = 4;
                 
                 for (let i = 0; i < targetAttrCount && i < targetData.attributes.length; i++) {
                     finalAttributes.push(generateTargetAttribute(gameState.targetType, i));
@@ -1747,9 +1747,6 @@
                             </div>
                         </div>
                         <div style="color: #28a745; font-weight: bold; margin-top: 8px;">${craftedBadge.name} (3星)</div>
-                        <div style="font-size: 16px; font-weight: bold; color: #fd7e14; margin-top: 8px;">
-						    ${craftedBadge.id === 'leviathan' ? '神秘伤害' : '伤害'}: ${craftedBadge.damage}
-						</div>
                         <div class="result-attributes" style="margin-top: 10px;">
                             ${attrHtml}
                         </div>
