@@ -877,30 +877,6 @@
             </div>
         </div>
 
-        <!-- 说明（默认折叠） -->
-        <div class="equipment-card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <h3 class="mb-0" style="font-size: 14px; color: #333;">📜 制作规则</h3>
-                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
-                    展开/收起
-                </button>
-            </div>
-            <div class="collapse" id="rules-content">
-                <div style="font-size: 12px; line-height: 1.8; color: #555;">
-                    <p><strong style="color: #ffc107;">核心勋章</strong>：必须6星四神兽，失败原封不动返还</p>
-                    <p><strong style="color: #007bff;">材料勋章</strong>：5-6星四神兽，6星+12.25%，5星+6.125%，失败降级返还</p>
-                    <p><strong style="color: #28a745;">辅助勋章</strong>：至少5星四神兽，6星+12.25%，5星+6.125%，失败不返还</p>
-                    <p style="color: #666;">材料与辅助的加成必须达到12.25%才能制作，超过上限的勋章无法放入</p>
-                    <p style="margin-top: 10px; color: #666;">成功：消耗所有材料，生成3星目标勋章</p>
-                    <p style="color: #666;">成品合成：选择1个主勋章保留现有属性，3个同名3星→1个4星并随机解锁第4条属性，2个同名4星→1个5星并随机解锁第5条属性</p>
-                    <p style="color: #666;">失败：核心返还，6星材料→5星，5星材料→4星，辅助全部消耗</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 分割线 -->
-        <div class="section-divider"></div>
-
         <!-- 四神兽勋章库存 -->
         <div class="inventory-section">
             <div class="inventory-header">
@@ -922,6 +898,30 @@
             </div>
             <div class="equipment-card" style="padding: 10px;">
                 <div class="badge-grid" id="crafted-grid"></div>
+            </div>
+        </div>
+
+        <!-- 分割线 -->
+        <div class="section-divider"></div>
+
+        <!-- 说明（默认折叠） -->
+        <div class="equipment-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="mb-0" style="font-size: 14px; color: #333;">制作规则</h3>
+                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
+                    展开/收起
+                </button>
+            </div>
+            <div class="collapse" id="rules-content">
+                <div style="font-size: 12px; line-height: 1.8; color: #555;">
+                    <p><strong style="color: #ffc107;">核心勋章</strong>：必须6星四神兽，失败原封不动返还</p>
+                    <p><strong style="color: #007bff;">材料勋章</strong>：5-6星四神兽，6星+12.25%，5星+6.125%，失败降级返还</p>
+                    <p><strong style="color: #28a745;">辅助勋章</strong>：至少5星四神兽，6星+12.25%，5星+6.125%，失败不返还</p>
+                    <p style="color: #666;">材料与辅助的加成必须达到12.25%才能制作，超过上限的勋章无法放入</p>
+                    <p style="margin-top: 10px; color: #666;">成功：消耗所有材料，生成3星目标勋章</p>
+                    <p style="color: #666;">成品合成：选择1个主勋章保留现有属性，3个同名3星→1个4星并随机解锁第4条属性，2个同名4星→1个5星并随机解锁第5条属性</p>
+                    <p style="color: #666;">失败：核心返还，6星材料→5星，5星材料→4星，辅助全部消耗</p>
+                </div>
             </div>
         </div>
     </div>
