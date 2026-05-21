@@ -2157,6 +2157,15 @@
         loadData();
         updateProbabilityDisplay();
         generateProbabilityTable();
+
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                displayFourBeastBadges();
+                displayCraftedBadges();
+            }, 200);
+        });
     </script>
 
     <div id="result-modal-overlay" class="result-modal-overlay" onclick="closeResultModal()">
