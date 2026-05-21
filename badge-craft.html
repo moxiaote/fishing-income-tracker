@@ -266,6 +266,12 @@
             color: #0c5460;
         }
 
+        .badge-display.crafted-badge-display.badge-stars-6 {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+            border-color: #fd7e14;
+            color: #856404;
+        }
+
         .badge-display.crafted-badge-display span {
             display: inline !important;
         }
@@ -329,6 +335,157 @@
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .result-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .result-modal-overlay.show {
+            display: flex;
+        }
+
+        .result-modal {
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 360px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .result-modal.success {
+            border-top: 4px solid #28a745;
+        }
+
+        .result-modal.failure {
+            border-top: 4px solid #dc3545;
+        }
+
+        .result-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f1f3f4;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .result-modal-close:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .result-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .result-modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .result-modal.success .result-modal-title {
+            color: #28a745;
+        }
+
+        .result-modal.failure .result-modal-title {
+            color: #dc3545;
+        }
+
+        .result-modal-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .result-modal-content {
+            text-align: center;
+        }
+
+        .result-modal-content .craft-result-badge {
+            margin: 16px 0;
+        }
+
+        .result-modal-content .result-attributes {
+            margin-top: 16px;
+        }
+
+        .result-modal-btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .result-modal.success .result-modal-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .result-modal.failure .result-modal-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+
+        .result-modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-modal.success .result-modal-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #19c594 100%);
+        }
+
+        .result-modal.failure .result-modal-btn:hover {
+            background: linear-gradient(135deg, #c82333 0%, #e5690c 100%);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .stats-card {
@@ -983,11 +1140,14 @@
         const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
         const FOUR_BEAST_NAMES = { qinglong: '青龙勋章', baihu: '白虎勋章', zhuque: '朱雀勋章', xuanwu: '玄武勋章' };
         const FOUR_BEAST_ICONS = { qinglong: '青', baihu: '白', zhuque: '雀', xuanwu: '玄' };
-        const FOUR_BEAST_MIN_STARS = 5;
+        const FOUR_BEAST_MIN_STARS = 6;
         const FOUR_BEAST_MAX_STARS = 6;
         const MAX_CRAFT_BONUS = 12.25;
         const CRAFT_PLATINUM_COST = 4000;
         const CRAFT_DIAMOND_COST = 50;
+        const BASE_SUCCESS_RATE = 12.25;
+        const FAILURE_BONUS_PER_STREAK = 3;
+        const MAX_SUCCESS_RATE = 40;
 
         const TARGET_DATA = {
             kraken: {
@@ -1103,7 +1263,8 @@
             successCount: 0,
             failureCount: 0,
             totalPlatinumCost: 0,
-            totalDiamondCost: 0
+            totalDiamondCost: 0,
+            consecutiveFailures: 0
         };
 
         let currentSlot = null;
@@ -1311,6 +1472,7 @@
                 gameState.failureCount = data.failureCount || 0;
                 gameState.totalPlatinumCost = data.totalPlatinumCost || 0;
                 gameState.totalDiamondCost = data.totalDiamondCost || 0;
+                gameState.consecutiveFailures = data.consecutiveFailures || 0;
             }
             updateStats();
             displayFourBeastBadges();
@@ -1325,7 +1487,8 @@
                 successCount: gameState.successCount,
                 failureCount: gameState.failureCount,
                 totalPlatinumCost: gameState.totalPlatinumCost,
-                totalDiamondCost: gameState.totalDiamondCost
+                totalDiamondCost: gameState.totalDiamondCost,
+                consecutiveFailures: gameState.consecutiveFailures
             }));
         }
 
@@ -1338,6 +1501,7 @@
                 gameState.failureCount = 0;
                 gameState.totalPlatinumCost = 0;
                 gameState.totalDiamondCost = 0;
+                gameState.consecutiveFailures = 0;
                 gameState.coreBadge = null;
                 gameState.materialBadge = null;
                 gameState.assistBadge = null;
@@ -1416,9 +1580,28 @@
             return false;
         }
 
+        function getCurrentSuccessRate() {
+            const { probability } = calculateProbability();
+            if (probability < MAX_CRAFT_BONUS) {
+                return 0;
+            }
+            let rate = BASE_SUCCESS_RATE + (gameState.consecutiveFailures * FAILURE_BONUS_PER_STREAK);
+            return Math.min(rate, MAX_SUCCESS_RATE);
+        }
+
+        function getDisplaySuccessRate() {
+            const { probability } = calculateProbability();
+            if (probability < MAX_CRAFT_BONUS) {
+                return 0;
+            }
+            return BASE_SUCCESS_RATE;
+        }
+
         function updateProbabilityDisplay() {
             const { probability, breakdown } = calculateProbability();
-            document.getElementById('success-probability').textContent = probability + '%';
+            const displayRate = getDisplaySuccessRate();
+            let rateDisplay = displayRate.toFixed(2) + '%';
+            document.getElementById('success-probability').textContent = rateDisplay;
             document.getElementById('probability-breakdown').textContent = breakdown.join(' | ');
             
             const craftBtn = document.getElementById('craft-btn');
@@ -1749,35 +1932,40 @@
             });
         }
 
+        function closeResultModal() {
+            const overlay = document.getElementById('result-modal-overlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+            }
+        }
+
         function showResult(success, message, html = null) {
-            const resultElement = document.getElementById('result-message');
-            if (resultHideTimer) {
-                clearTimeout(resultHideTimer);
-                resultHideTimer = null;
+            const overlay = document.getElementById('result-modal-overlay');
+            const modal = document.getElementById('result-modal');
+            const icon = document.getElementById('result-modal-icon');
+            const title = document.getElementById('result-modal-title');
+            const content = document.getElementById('result-modal-content');
+            const btn = document.getElementById('result-modal-btn');
+
+            if (success) {
+                modal.className = 'result-modal success';
+                icon.textContent = '🎉';
+                title.textContent = '制作成功';
+                btn.textContent = '太棒了';
+            } else {
+                modal.className = 'result-modal failure';
+                icon.textContent = '💔';
+                title.textContent = '制作失败';
+                btn.textContent = '再接再厉';
             }
 
-            resultElement.style.display = 'block';
-            
-            if (success) {
-                resultElement.className = 'result-message success-message';
-                if (html) {
-                    resultElement.innerHTML = html;
-                } else {
-                    resultElement.textContent = message;
-                }
+            if (html) {
+                content.innerHTML = html;
             } else {
-                resultElement.className = 'result-message failure-message';
-                if (html) {
-                    resultElement.innerHTML = html;
-                } else {
-                    resultElement.textContent = message;
-                }
+                content.innerHTML = `<div style="font-size: 14px; color: #555;">${message || ''}</div>`;
             }
-            
-            resultHideTimer = setTimeout(() => {
-                resultElement.style.display = 'none';
-                resultHideTimer = null;
-            }, 10000);
+
+            overlay.classList.add('show');
         }
 
         function craftBadge() {
@@ -1806,12 +1994,29 @@
                 dots.textContent = '.'.repeat(dotCount);
             }, 300);
             
+            const currentSuccessRate = getCurrentSuccessRate();
             const roll = Math.random() * 100;
-            const success = roll < probability;
+            const success = roll < currentSuccessRate;
             
             gameState.totalCrafts++;
             gameState.totalPlatinumCost += CRAFT_PLATINUM_COST;
             gameState.totalDiamondCost += CRAFT_DIAMOND_COST;
+            
+            setTimeout(() => {
+                if (success) {
+                    const successAudio = document.getElementById('success-audio');
+                    if (successAudio) {
+                        successAudio.currentTime = 0;
+                        successAudio.play().catch(() => {});
+                    }
+                } else {
+                    const failureAudio = document.getElementById('failure-audio');
+                    if (failureAudio) {
+                        failureAudio.currentTime = 0;
+                        failureAudio.play().catch(() => {});
+                    }
+                }
+            }, 500);
             
             setTimeout(() => {
                 clearInterval(dotInterval);
@@ -1820,6 +2025,7 @@
                 
                 if (success) {
                     gameState.successCount++;
+                    gameState.consecutiveFailures = 0;
 
                     const targetData = TARGET_DATA[gameState.targetType];
 
@@ -1897,6 +2103,7 @@
 
                 } else {
                     gameState.failureCount++;
+                    gameState.consecutiveFailures++;
 
                     let messageHtml = '<div style="text-align: center;">';
                     messageHtml += '<div style="font-size: 16px; margin-bottom: 10px;">💔 制作失败</div>';
@@ -1938,7 +2145,7 @@
                 updateProbabilityDisplay();
                 displayFourBeastBadges();
                 displayCraftedBadges();
-            }, 2000);
+            }, 4500);
         }
 
         document.getElementById('badge-selector').addEventListener('click', function(e) {
@@ -1951,5 +2158,22 @@
         updateProbabilityDisplay();
         generateProbabilityTable();
     </script>
+
+    <div id="result-modal-overlay" class="result-modal-overlay" onclick="closeResultModal()">
+        <div class="result-modal" id="result-modal" onclick="event.stopPropagation()">
+            <button class="result-modal-close" onclick="closeResultModal()">×</button>
+            <div class="result-modal-header">
+                <div class="result-modal-icon" id="result-modal-icon">🎉</div>
+                <div class="result-modal-title" id="result-modal-title">制作成功</div>
+            </div>
+            <div class="result-modal-content" id="result-modal-content">
+            </div>
+            <button class="result-modal-btn" id="result-modal-btn" onclick="closeResultModal()">确定</button>
+        </div>
+    </div>
+
+    <audio id="success-audio" src="audio/success.mp3" preload="auto"></audio>
+    <audio id="failure-audio" src="audio/failure.mp3" preload="auto"></audio>
+
 </body>
 </html>
