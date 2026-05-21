@@ -532,6 +532,12 @@
             margin-top: 4px;
         }
 
+        .hidden-probability {
+            font-size: 9px;
+            color: #999;
+            margin-top: 4px;
+        }
+
         .btn {
             font-size: 13px;
             padding: 8px 16px;
@@ -1034,6 +1040,7 @@
             <div class="probability-display">
                 <div class="probability-value" id="success-probability">0%</div>
                 <div class="probability-label">制作成功率</div>
+                <div class="hidden-probability" id="hidden-probability"></div>
                 <div class="probability-breakdown" id="probability-breakdown"></div>
             </div>
 
@@ -1600,8 +1607,18 @@
         function updateProbabilityDisplay() {
             const { probability, breakdown } = calculateProbability();
             const displayRate = getDisplaySuccessRate();
+            const actualRate = getCurrentSuccessRate();
             let rateDisplay = displayRate.toFixed(2) + '%';
             document.getElementById('success-probability').textContent = rateDisplay;
+            
+            const hiddenProbabilityEl = document.getElementById('hidden-probability');
+            if (actualRate > displayRate && probability >= MAX_CRAFT_BONUS) {
+                const bonusAmount = actualRate - displayRate;
+                hiddenProbabilityEl.textContent = `(连续失败${gameState.consecutiveFailures}次，实际${actualRate.toFixed(2)}%)`;
+            } else {
+                hiddenProbabilityEl.textContent = '';
+            }
+            
             document.getElementById('probability-breakdown').textContent = breakdown.join(' | ');
             
             const craftBtn = document.getElementById('craft-btn');
