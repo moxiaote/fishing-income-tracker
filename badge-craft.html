@@ -1011,7 +1011,7 @@
         <div class="equipment-card">
             <div class="badge-slots-container">
                 <!-- 材料勋章 -->
-                <div class="badge-slot" onclick="openBadgeSelector('material')">
+                <div class="badge-slot" onclick="handleSlotClick('material')">
                     <div class="badge-circle" id="material-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1020,7 +1020,7 @@
                 </div>
 
                 <!-- 核心勋章（中心） -->
-                <div class="badge-slot" onclick="openBadgeSelector('core')">
+                <div class="badge-slot" onclick="handleSlotClick('core')">
                     <div class="central-badge badge-circle" id="core-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1029,7 +1029,7 @@
                 </div>
 
                 <!-- 辅助勋章 -->
-                <div class="badge-slot" onclick="openBadgeSelector('assist')">
+                <div class="badge-slot" onclick="handleSlotClick('assist')">
                     <div class="badge-circle" id="assist-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1478,6 +1478,15 @@
                 gameState.failureCount = data.failureCount || 0;
                 gameState.totalPlatinumCost = data.totalPlatinumCost || 0;
                 gameState.totalDiamondCost = data.totalDiamondCost || 0;
+                if (data.coreBadge) {
+                    gameState.fourBeastBadges.push(data.coreBadge);
+                }
+                if (data.materialBadge) {
+                    gameState.fourBeastBadges.push(data.materialBadge);
+                }
+                if (data.assistBadge) {
+                    gameState.fourBeastBadges.push(data.assistBadge);
+                }
             }
             updateStats();
             displayFourBeastBadges();
@@ -1492,7 +1501,10 @@
                 successCount: gameState.successCount,
                 failureCount: gameState.failureCount,
                 totalPlatinumCost: gameState.totalPlatinumCost,
-                totalDiamondCost: gameState.totalDiamondCost
+                totalDiamondCost: gameState.totalDiamondCost,
+                coreBadge: gameState.coreBadge,
+                materialBadge: gameState.materialBadge,
+                assistBadge: gameState.assistBadge
             }));
         }
 
@@ -1869,6 +1881,33 @@
                 return false;
             }
             return true;
+        }
+
+        function handleSlotClick(slotType) {
+            if (slotType === 'material' && gameState.materialBadge) {
+                gameState.fourBeastBadges.push(gameState.materialBadge);
+                gameState.materialBadge = null;
+                renderBadgeInSlot('material', null);
+                saveData();
+                displayFourBeastBadges();
+                updateProbabilityDisplay();
+            } else if (slotType === 'core' && gameState.coreBadge) {
+                gameState.fourBeastBadges.push(gameState.coreBadge);
+                gameState.coreBadge = null;
+                renderBadgeInSlot('core', null);
+                saveData();
+                displayFourBeastBadges();
+                updateProbabilityDisplay();
+            } else if (slotType === 'assist' && gameState.assistBadge) {
+                gameState.fourBeastBadges.push(gameState.assistBadge);
+                gameState.assistBadge = null;
+                renderBadgeInSlot('assist', null);
+                saveData();
+                displayFourBeastBadges();
+                updateProbabilityDisplay();
+            } else {
+                openBadgeSelector(slotType);
+            }
         }
 
         function openBadgeSelector(slotType) {
