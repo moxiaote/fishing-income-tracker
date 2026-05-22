@@ -343,13 +343,14 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: transparent;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
             padding: 20px;
             animation: fadeIn 0.2s ease;
+            pointer-events: none;
         }
 
         .result-modal-overlay.show {
@@ -367,6 +368,7 @@
             animation: scaleIn 0.3s ease;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             position: relative;
+            pointer-events: auto;
         }
 
         .result-modal.success {
@@ -1153,8 +1155,6 @@
         const CRAFT_PLATINUM_COST = 4000;
         const CRAFT_DIAMOND_COST = 50;
         const BASE_SUCCESS_RATE = 12.25;
-        const FAILURE_BONUS_PER_STREAK = 3;
-        const MAX_SUCCESS_RATE = 40;
 
         const TARGET_DATA = {
             kraken: {
@@ -1270,8 +1270,7 @@
             successCount: 0,
             failureCount: 0,
             totalPlatinumCost: 0,
-            totalDiamondCost: 0,
-            consecutiveFailures: 0
+            totalDiamondCost: 0
         };
 
         let currentSlot = null;
@@ -1479,7 +1478,6 @@
                 gameState.failureCount = data.failureCount || 0;
                 gameState.totalPlatinumCost = data.totalPlatinumCost || 0;
                 gameState.totalDiamondCost = data.totalDiamondCost || 0;
-                gameState.consecutiveFailures = data.consecutiveFailures || 0;
             }
             updateStats();
             displayFourBeastBadges();
@@ -1494,8 +1492,7 @@
                 successCount: gameState.successCount,
                 failureCount: gameState.failureCount,
                 totalPlatinumCost: gameState.totalPlatinumCost,
-                totalDiamondCost: gameState.totalDiamondCost,
-                consecutiveFailures: gameState.consecutiveFailures
+                totalDiamondCost: gameState.totalDiamondCost
             }));
         }
 
@@ -1508,7 +1505,6 @@
                 gameState.failureCount = 0;
                 gameState.totalPlatinumCost = 0;
                 gameState.totalDiamondCost = 0;
-                gameState.consecutiveFailures = 0;
                 gameState.coreBadge = null;
                 gameState.materialBadge = null;
                 gameState.assistBadge = null;
@@ -1592,33 +1588,14 @@
             if (probability < MAX_CRAFT_BONUS) {
                 return 0;
             }
-            let rate = BASE_SUCCESS_RATE + (gameState.consecutiveFailures * FAILURE_BONUS_PER_STREAK);
-            return Math.min(rate, MAX_SUCCESS_RATE);
-        }
-
-        function getDisplaySuccessRate() {
-            const { probability } = calculateProbability();
-            if (probability < MAX_CRAFT_BONUS) {
-                return 0;
-            }
             return BASE_SUCCESS_RATE;
         }
 
         function updateProbabilityDisplay() {
             const { probability, breakdown } = calculateProbability();
-            const displayRate = getDisplaySuccessRate();
-            const actualRate = getCurrentSuccessRate();
-            let rateDisplay = displayRate.toFixed(2) + '%';
+            const rate = getCurrentSuccessRate();
+            let rateDisplay = rate.toFixed(2) + '%';
             document.getElementById('success-probability').textContent = rateDisplay;
-            
-            const hiddenProbabilityEl = document.getElementById('hidden-probability');
-            if (actualRate > displayRate && probability >= MAX_CRAFT_BONUS) {
-                const bonusAmount = actualRate - displayRate;
-                hiddenProbabilityEl.textContent = `(连续失败${gameState.consecutiveFailures}次，实际${actualRate.toFixed(2)}%)`;
-            } else {
-                hiddenProbabilityEl.textContent = '';
-            }
-            
             document.getElementById('probability-breakdown').textContent = breakdown.join(' | ');
             
             const craftBtn = document.getElementById('craft-btn');
@@ -2042,7 +2019,6 @@
                 
                 if (success) {
                     gameState.successCount++;
-                    gameState.consecutiveFailures = 0;
 
                     const targetData = TARGET_DATA[gameState.targetType];
 
@@ -2120,7 +2096,6 @@
 
                 } else {
                     gameState.failureCount++;
-                    gameState.consecutiveFailures++;
 
                     let messageHtml = '<div style="text-align: center;">';
                     messageHtml += '<div style="font-size: 16px; margin-bottom: 10px;">💔 制作失败</div>';
