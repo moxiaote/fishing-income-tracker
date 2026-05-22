@@ -64,36 +64,35 @@
         </div>
     </div>
 
-    <div class="container mt-2">
-        <div class="position-relative">
-            <!-- 语言选择器 -->
-            <div class="position-absolute top-0 end-0">
-                <div class="language-selector">
-                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="currentLanguage">CN</span>
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">CN - 中文简体</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh-TW')">TW - 中文繁體</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">EN - English</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('ko')">KR - 한국어</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="changeLanguage('vi')">VN - Việt Nam</a></li>
-                    </ul>
-                </div>
+    <div class="container">
+        <!-- 语言选择器和使用提示放在同一行 -->
+        <div class="bg-light border-bottom border-gray-200 p-0 d-flex justify-content-between align-items-center m-0">
+            <div class="d-flex justify-content-between align-items-center px-3 py-2 cursor-pointer flex-grow-1" data-bs-toggle="collapse" data-bs-target="#usage-tips-section" aria-expanded="false" aria-controls="usage-tips-section" style="cursor: pointer;">
+                <strong data-i18n="appTitle" style="font-size: 14px; font-weight: 500; color: #333;">钓鱼发烧友：财富积累日记</strong>
+                <span data-i18n="usageTips" style="font-size: 12px; color: #666;">使用提示</span>
             </div>
-            
-            <h1 class="text-center" data-i18n="appTitle">钓鱼收入统计系统</h1>
+            <div class="language-selector px-3 py-2 border-left border-gray-200">
+                <button class="btn btn-sm dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border: none; background: transparent; padding: 2px 8px;">
+                    <span id="currentLanguage">CN</span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                    <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">CN - 中文简体</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh-TW')">TW - 中文繁體</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">EN - English</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="changeLanguage('ko')">KR - 한국어</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="changeLanguage('vi')">VN - Việt Nam</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <!-- 提示信息 -->
-        <div class="alert alert-info">
-            <strong data-i18n="usageTips">使用提示：</strong>
-            <ul class="mb-0">
-                <li data-i18n="tip1">添加记录后，数据会自动保存到浏览器中</li>
-                <li data-i18n="tip2">点击"保存到文件"按钮可将数据备份到本地文件</li>
-                <li data-i18n="tip3">点击"从文件加载"按钮可恢复之前备份的数据</li>
-                <li data-i18n="tip4">定期备份数据，以防浏览器数据丢失</li>
-            </ul>
+        <div class="collapse" id="usage-tips-section">
+            <div class="bg-gray-50 border-bottom border-gray-200 p-3 pb-2">
+                <ul class="mb-0" style="font-size: 13px; color: #555;">
+                    <li data-i18n="tip1">添加记录后，数据会自动保存到浏览器中</li>
+                    <li data-i18n="tip2">点击"保存到文件"按钮可将数据备份到本地文件</li>
+                    <li data-i18n="tip3">点击"从文件加载"按钮可恢复之前备份的数据</li>
+                    <li data-i18n="tip4">定期备份数据，以防浏览器数据丢失</li>
+                </ul>
+            </div>
         </div>
 
         <!-- 鼓励区域 - 两条游动的鱼儿 -->
@@ -163,7 +162,7 @@
         <div class="card mb-3" id="statsCard">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span data-i18n="totalInfo">总量信息</span>
-                <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#total-info-section" aria-expanded="true" aria-controls="total-info-section">
+                <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#total-info-section" aria-expanded="false" aria-controls="total-info-section">
                     <span class="collapse-icon">
                         <span class="line horizontal"></span>
                         <span class="line vertical"></span>
@@ -171,7 +170,7 @@
                     </span>
                 </button>
             </div>
-            <div class="collapse show" id="total-info-section">
+            <div class="collapse" id="total-info-section">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 col-sm-6 col-6">
@@ -278,6 +277,24 @@
             </div>
         </div>
 
+        <!-- 支付弹窗 -->
+        <div id="payment-modal-overlay" class="payment-modal-overlay" onclick="closePaymentModal()">
+            <div class="payment-modal" onclick="event.stopPropagation()">
+                <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
+                <div class="payment-modal-header">
+                    <div class="payment-modal-title">感谢支持</div>
+                </div>
+                <div class="payment-modal-content">
+                    <img src="images/ScreenShot_2026-04-28_012031_152.jpg" alt="收款码" class="payment-qrcode">
+                    <p class="payment-hint">请扫码支付，支付完成后点击下方按钮重置数据</p>
+                </div>
+                <div class="payment-modal-actions">
+                    <button class="payment-modal-btn payment-modal-btn-close" onclick="closePaymentModal()">稍后再说</button>
+                    <button class="payment-modal-btn payment-modal-btn-confirm" onclick="confirmResetAll()">已支付，重置数据</button>
+                </div>
+            </div>
+        </div>
+
         <!-- 数据管理和上头模拟器 -->
         <div class="row mb-3">
             <!-- 上头模拟器 -->
@@ -297,35 +314,80 @@
                         <div class="card-body">
                             <!-- 上头模拟器内容 -->
                             <div class="simulator-content">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="row g-2">
+                                    <div class="col-4">
                                         <button class="btn btn-outline-primary w-100 simulator-btn" data-target="beyond-enhancement.html" data-i18n="beyondEnhance">超越强化</button>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-4">
                                         <button class="btn btn-outline-primary w-100 simulator-btn" data-target="evolve-gaia.html" data-i18n="evolveGaia">进化八星</button>
                                     </div>
-                                    <div class="col-md-4">
-										<button class="btn btn-outline-danger w-100" onclick="window.open('badge-craft.html', '_blank')" data-i18n="badgeCraft">勋章制作</button>
+                                    <div class="col-4">
+                                        <button class="btn btn-outline-danger w-100" onclick="window.open('evolve-pearl.html', '_blank')" data-i18n="pearlGrowth">珍珠组合</button>
                                     </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="badge-box.html" data-i18n="badgeBox">抽勋章宝箱</button>
-                                    </div>
-                                    <div class="col-md-4">
+                                    <div class="col-4">
                                         <button class="btn btn-outline-primary w-100 simulator-btn" data-target="enchant-medal.html" data-i18n="enchantMedal">附魔勋章</button>
                                     </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-outline-danger w-100" onclick="window.open('evolve-pearl.html', '_blank')" data-i18n="pearlGrowth">珍珠成长/组合</button>
+                                    <div class="col-4">
+										<button class="btn btn-outline-danger w-100 simulator-btn" data-target="badge-craft.html" data-i18n="badgeCraft">勋章制作</button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-outline-primary w-100 simulator-btn" data-target="badge-box.html" data-i18n="badgeBox">勋章宝箱</button>
                                     </div>
                                 </div>
-                                <div class="donation-callout mt-3">
-                                    <div class="donation-callout-text">
-                                        <strong data-i18n="donation">☕ 请我喝一杯咖啡</strong>
-                                        <span data-i18n="donationNote">您的支持是我最大的动力！您的慷慨让这个小工具变得更好！</span>
-                                    </div>
-                                    <button class="btn btn-danger simulator-btn donation-callout-btn" data-target="evolve-eight-star.html" data-i18n="donation">☕ 请我喝一杯咖啡</button>
+                                <div style="display: flex; align-items: center; margin: 16px 0;">
+                                    <span style="font-size: 13px; font-weight: bold; color: #666;">资源消耗</span>
+                                    <hr style="flex: 1; border: none; border-top: 1px solid #dee2e6; margin-left: 8px;">
                                 </div>
-                                <hr class="my-4">
-                                <p data-i18n="simulatorNote">说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。</p>
+                                <div class="resource-summary">
+                                    <div class="resource-item">
+                                        <span class="resource-label">钻石</span>
+                                        <span class="resource-value" id="total-diamonds">0</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-label">突破券</span>
+                                        <span class="resource-value" id="total-breakthrough">0</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-label">原石</span>
+                                        <span class="resource-value" id="total-essence">0</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-label">白金</span>
+                                        <span class="resource-value" id="total-platinum">0</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-label">绿钞</span>
+                                        <span class="resource-value" id="total-greennotes">0</span>
+                                    </div>
+                                    <div class="resource-item">
+                                        <span class="resource-label">珊瑚</span>
+                                        <span class="resource-value" id="total-coral">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 装备信息卡片 -->
+                            <div class="mt-3">
+                                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 13px; font-weight: bold; color: #666;">装备信息</span>
+                                    <hr style="flex: 1; border: none; border-top: 1px solid #dee2e6; margin-left: 8px;">
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="background-color: white; border-radius: 4px; padding: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                                            <h4 style="font-size: 12px; font-weight: bold; margin: 0 0 4px 0;" id="equipment-rod-name">大地神盖亚鱼竿</h4>
+                                            <div style="font-size: 11px; font-weight: bold; color: #007bff;">+<span id="equipment-rod-level">10</span></div>
+                                            <div id="equipment-rod-skill" style="font-size: 10px; margin-top: 4px; padding: 4px; background-color: #e9ecef; border-radius: 3px; display: none;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div style="background-color: white; border-radius: 4px; padding: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">
+                                            <h4 style="font-size: 12px; font-weight: bold; margin: 0 0 4px 0;" id="equipment-reel-name">大地神盖亚线轮</h4>
+                                            <div style="font-size: 11px; font-weight: bold; color: #007bff;">+<span id="equipment-reel-level">10</span></div>
+                                            <div id="equipment-reel-skill" style="font-size: 10px; margin-top: 4px; padding: 4px; background-color: #e9ecef; border-radius: 3px; display: none;"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- 嵌入内容区域 -->
@@ -353,6 +415,14 @@
                     </div>
                     <div class="collapse show" id="data-management-section">
                         <div class="card-body">
+                            <div class="donation-callout mb-4">
+                                <div class="donation-callout-text">
+                                    <strong data-i18n="donation">☕ 请我喝一杯咖啡</strong>
+                                    <span data-i18n="donationNote">请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~</span>
+                                </div>
+                                <button class="btn btn-danger donation-callout-btn" data-i18n="donationBtn" onclick="openPaymentModal()">来杯咖啡续命，数据一键清零</button>
+                            </div>
+                            <hr class="my-4">
                             <div class="mb-4">
                                 <h6 data-i18n="fileOperations">文件操作</h6>
                                 <div class="d-flex gap-2 align-items-center">
@@ -533,6 +603,9 @@
     <script src="js/pagination.js"></script>
     <script src="js/sorting.js"></script>
     <script src="js/charts.js"></script>
+    <script src="js/formatUtils.js"></script>
+    <script src="js/equipmentSync.js"></script>
+    <script src="js/resourceManager.js"></script>
     <script src="js/app.js"></script>
     
     <!-- 鼓励功能脚本 - 鱼儿吐泡泡 -->
@@ -562,6 +635,18 @@
                 showCheerMessage(fishB);
             });
         }
+        
+        // 初始化装备信息显示
+        if (window.resourceManager && typeof window.resourceManager.updateEquipmentDisplay === 'function') {
+            window.resourceManager.updateEquipmentDisplay();
+        }
+        
+        // 监听装备数据更新事件
+        window.addEventListener('equipmentDataUpdated', function() {
+            if (window.resourceManager && typeof window.resourceManager.updateEquipmentDisplay === 'function') {
+                window.resourceManager.updateEquipmentDisplay();
+            }
+        });
     });
     
     function showCheerMessage(speakingFish) {
@@ -637,6 +722,55 @@
                 }, 4000);
             }, index * 250);
         });
+    }
+
+    function openPaymentModal() {
+        const overlay = document.getElementById('payment-modal-overlay');
+        if (overlay) {
+            overlay.classList.add('show');
+        }
+    }
+
+    function closePaymentModal() {
+        const overlay = document.getElementById('payment-modal-overlay');
+        if (overlay) {
+            overlay.classList.remove('show');
+        }
+    }
+
+    function confirmResetAll() {
+        closePaymentModal();
+        resetAllSimulators();
+    }
+
+    function resetAllSimulators() {
+        if (confirm('咖啡喝到了吗？不管怎样，感谢您的支持！即将为您重置所有模拟器数据，此操作不可撤销，确定继续吗？')) {
+            const allKeys = [
+                'enchantMedalData',
+                'badgeCraftData',
+                'beyondEnhancementData',
+                'badgeBoxData',
+                'evolveGaiaData',
+                'evolvePearlData',
+                'crestEnhanceData',
+                'fishingResourceData',
+                'sharedEquipmentData'
+            ];
+            allKeys.forEach(key => {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    console.error(`Error resetting ${key}:`, e);
+                }
+            });
+
+            alert('已为您重置数据！感谢您的支持~');
+            const iframe = document.getElementById('simulator-iframe');
+            if (iframe && iframe.src) {
+                iframe.contentWindow.location.reload();
+            }
+            location.reload();
+        }
     }
     </script>
     

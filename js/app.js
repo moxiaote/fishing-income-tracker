@@ -70,6 +70,11 @@ class App {
             
             // 绑定统计卡片点击事件（支持触摸设备）
             this.bindStatCardClickEvents();
+
+            // 初始化资源管理器，汇总所有小工具的消耗数据，启用自动收集
+            if (window.resourceManager) {
+                window.resourceManager.init(true);
+            }
             
             console.log('初始化成功，使用' + (storageManager.useLocalStorage ? 'localStorage' : 'IndexedDB') + '存储');
         } catch (error) {
@@ -177,11 +182,6 @@ class App {
                             if (donationImg) {
                                 donationImg.style.display = 'block';
                             }
-                            // 更新说明文本
-                            const descriptionText = document.querySelector('.simulator-content p');
-                            if (descriptionText) {
-                                descriptionText.textContent = i18n.getText('donationNote') || '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！';
-                            }
                         } else {
                             // 隐藏打赏图片，显示iframe
                             const iframe = document.getElementById('simulator-iframe');
@@ -192,11 +192,6 @@ class App {
                             const donationImg = document.getElementById('donation-image');
                             if (donationImg) {
                                 donationImg.style.display = 'none';
-                            }
-                            // 恢复说明文本
-                            const descriptionText = document.querySelector('.simulator-content p');
-                            if (descriptionText) {
-                                descriptionText.textContent = i18n.getText('simulatorNote') || '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。';
                             }
                         }
                         
@@ -713,7 +708,7 @@ class App {
 
     // 绑定统计卡片点击事件（支持触摸设备）
     bindStatCardClickEvents() {
-        const statValues = document.querySelectorAll('.stat-value');
+        const statValues = document.querySelectorAll('.stat-value, .resource-value');
         statValues.forEach(element => {
             element.addEventListener('click', () => {
                 this.toggleFullValue(element);

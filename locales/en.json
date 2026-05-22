@@ -24,7 +24,7 @@
         "Every effort pays off! 💰"
     ],
     "appTitle": "Ace Fishing : Wealth Accumulation Diary",
-    "usageTips": "Usage Tips:",
+    "usageTips": "Usage Tips",
     "tip1": "After adding records, data will be automatically saved to the browser",
     "tip2": "Click the \"Save to File\" button to back up data to a local file",
     "tip3": "Click the \"Load from File\" button to restore previously backed up data",
@@ -81,7 +81,8 @@
     "badgeCraft": "Badge Craft",
     "badgeBox": "Badge Box",
     "enchantMedal": "Enchant Medal",
-    "pearlGrowth": "Pearl Growth/Combine",
+    "pearlGrowth": "Pearl Combine",
     "simulatorNote": "Note: This project is for entertainment only. Actual game probabilities may vary.",
-    "donationNote": "Your support is my biggest motivation! Your generosity makes this tool better!"
+    "donationNote": "Buy me a coffee to support this tool's development and unlock data reset! Developers run on coffee~",
+    "donationBtn": "Coffee + Reset Data"
 }

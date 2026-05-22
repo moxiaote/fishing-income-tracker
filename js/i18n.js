@@ -75,7 +75,7 @@ class I18n {
             this.translations = {
                 zh: {
                     appTitle: '钓鱼发烧友：财富积累日记',
-                    usageTips: '使用提示：',
+                    usageTips: '使用提示',
                     tip1: '添加记录后，数据会自动保存到浏览器中',
                     tip2: '点击"保存到文件"按钮可将数据备份到本地文件',
                     tip3: '点击"从文件加载"按钮可恢复之前备份的数据',
@@ -127,15 +127,16 @@ class I18n {
                     evolveGaia: '进化八星',
                     donation: '☕ 请我喝一杯咖啡',
                     badgeCraft: '勋章制作',
-                    badgeBox: '抽勋章宝箱',
+                    badgeBox: '勋章宝箱',
                     enchantMedal: '附魔勋章',
-                    pearlGrowth: '珍珠成长/组合',
+                    pearlGrowth: '珍珠组合',
                     simulatorNote: '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。',
-                    donationNote: '您的支持是我最大的动力！您的慷慨让这个小工具变得更好！'
+                    donationNote: '请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~',
+                    donationBtn: '来杯咖啡续命，数据一键清零'
                 },
                 'zh-TW': {
                     appTitle: '釣魚發燒友：財富積累日記',
-                    usageTips: '使用提示：',
+                    usageTips: '使用提示',
                     tip1: '添加記錄後，數據會自動保存到瀏覽器中',
                     tip2: '點擊"保存到文件"按鈕可將數據備份到本地文件',
                     tip3: '點擊"從文件加載"按鈕可恢復之前備份的數據',
@@ -190,15 +191,16 @@ class I18n {
                     evolveGaia: '進化八星',
                     donation: '☕ 請我喝一杯咖啡',
                     badgeCraft: '勳章製作',
-                    badgeBox: '抽勳章寶箱',
+                    badgeBox: '勳章寶箱',
                     enchantMedal: '附魔勳章',
-                    pearlGrowth: '珍珠成長/組合',
+                    pearlGrowth: '珍珠組合',
                     simulatorNote: '說明：本項目僅供娛樂，實際遊戲中的概率可能會有所不同。',
-                    donationNote: '您的支持是我最大的動力！您的慷慨讓這個小工具變得更好！'
+                    donationNote: '請我喝杯咖啡，既能支持這個小工具的開發，又能解鎖數據重置功能！碼農的能量全靠咖啡~',
+                    donationBtn: '來杯咖啡續命，數據一鍵清零'
                 },
                 en: {
-                    appTitle: 'Ace Fishing : Wild Catch',
-                    usageTips: 'Usage Tips:',
+                    appTitle: 'Ace Fishing : Wealth Accumulation Diary',
+                    usageTips: 'Usage Tips',
                     tip1: 'After adding records, data will be automatically saved to the browser',
                     tip2: 'Click the "Save to File" button to back up data to a local file',
                     tip3: 'Click the "Load from File" button to restore previously backed up data',
@@ -255,13 +257,14 @@ class I18n {
                     badgeCraft: 'Badge Craft',
                     badgeBox: 'Badge Box',
                     enchantMedal: 'Enchant Medal',
-                    pearlGrowth: 'Pearl Growth/Combine',
+                    pearlGrowth: 'Pearl Combine',
                     simulatorNote: 'Note: This project is for entertainment only. Actual game probabilities may vary.',
-                    donationNote: 'Your support is my biggest motivation! Your generosity makes this tool better!'
+                    donationNote: 'Buy me a coffee to support this tool\'s development and unlock data reset! Developers run on coffee~',
+                    donationBtn: 'Coffee + Reset Data'
                 },
                 ko: {
-                    appTitle: '낚시의 신',
-                    usageTips: '사용 팁:',
+                    appTitle: '낚시의 신 : 재산 축적 일기',
+                    usageTips: '사용 팁',
                     tip1: '기록을 추가한 후 데이터가 브라우저에 자동으로 저장됩니다',
                     tip2: '데이터를 로컬 파일에 백업하려면 "파일에 저장" 버튼을 클릭하세요',
                     tip3: '이전에 백업한 데이터를 복원하려면 "파일에서 로드" 버튼을 클릭하세요',
@@ -318,13 +321,14 @@ class I18n {
                     badgeCraft: '배지 제작',
                     badgeBox: '배지 상자',
                     enchantMedal: '인챈트 메달',
-                    pearlGrowth: '진주 성장/조합',
+                    pearlGrowth: '진주 조합',
                     simulatorNote: '참고: 이 프로젝트는 오락용으로만 사용됩니다. 실제 게임 확률은 다를 수 있습니다.',
-                    donationNote: '당신의 지원이 저에게 큰 힘이 됩니다！당신의 관대한 지원이 이 도구를 더 좋게 만듭니다！'
+                    donationNote: '커피 한 잔 사주시면 이 도구 개발을 지원하시고 데이터 리셋 기능도 잠금 해제할 수 있습니다! 개발자는 커피로 살아갑니다~',
+                    donationBtn: '커피 + 데이터 리셋'
                 },
                 vi: {
                     appTitle: 'Người yêu câu cá: Nhật ký tích luỹ tài sản',
-                    usageTips: 'Lưu ý sử dụng：',
+                    usageTips: 'Lưu ý sử dụng',
                     tip1: 'Sau khi thêm ghi chú, dữ liệu sẽ tự động được lưu vào trình duyệt',
                     tip2: 'Nhấn nút "Lưu vào tệp" để sao lưu dữ liệu vào tệp cục bộ',
                     tip3: 'Nhấn nút "Tải từ tệp" để khôi phục dữ liệu đã sao lưu trước đó',
@@ -381,9 +385,10 @@ class I18n {
                     badgeCraft: 'Chế tạo huy hiệu',
                     badgeBox: 'Hộp huy hiệu',
                     enchantMedal: 'Phù phép huy hiệu',
-                    pearlGrowth: 'Phát triển/Kết hợp ngọc trai',
+                    pearlGrowth: 'Kết hợp ngọc trai',
                     simulatorNote: 'Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.',
-                    donationNote: 'Sự ủng hộ của bạn là động lực lớn nhất của tôi！Lòng hào phóng của bạn khiến công cụ này tốt hơn！'
+                    donationNote: 'Mua cho tôi một ly cà phê để ủng hộ phát triển công cụ này và mở khóa đặt lại dữ liệu! Lập trình viên sống bằng cà phê~',
+                    donationBtn: 'Cà phê + Đặt lại dữ liệu'
                 }
             };
         }

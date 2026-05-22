@@ -24,7 +24,7 @@
         "Mọi nỗ lực đều xứng đáng! 💰"
     ],
     "appTitle": "Người yêu câu cá: Nhật ký tích luỹ tài sản",
-    "usageTips": "Lưu ý sử dụng：",
+    "usageTips": "Lưu ý sử dụng",
     "tip1": "Sau khi thêm ghi chú, dữ liệu sẽ tự động được lưu vào trình duyệt",
     "tip2": "Nhấn nút \"Lưu vào tệp\" để sao lưu dữ liệu vào tệp cục bộ",
     "tip3": "Nhấn nút \"Tải từ tệp\" để khôi phục dữ liệu đã sao lưu trước đó",
@@ -81,7 +81,8 @@
     "badgeCraft": "Chế tạo huy hiệu",
     "badgeBox": "Hộp huy hiệu",
     "enchantMedal": "Phù phép huy hiệu",
-    "pearlGrowth": "Phát triển/Kết hợp ngọc trai",
+    "pearlGrowth": "Kết hợp ngọc trai",
     "simulatorNote": "Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.",
-    "donationNote": "Sự ủng hộ của bạn là động lực lớn nhất của tôi！Lòng hào phóng của bạn khiến công cụ này tốt hơn！"
+    "donationNote": "Mua cho tôi một ly cà phê để ủng hộ phát triển công cụ này và mở khóa đặt lại dữ liệu! Lập trình viên sống bằng cà phê~",
+    "donationBtn": "Cà phê + Đặt lại dữ liệu"
 }
