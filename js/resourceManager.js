@@ -105,6 +105,11 @@ const resourceManager = {
                 console.error(`Error resetting ${simulator}:`, e);
             }
         }
+        try {
+            localStorage.removeItem('sharedFourBeastBadges');
+        } catch (e) {
+            console.error('Error resetting sharedFourBeastBadges:', e);
+        }
         this.resetResources();
     },
 
