@@ -100,6 +100,12 @@ const equipmentSync = {
                 detail: data
             });
             window.dispatchEvent(event);
+            if (window.parent && window.parent !== window) {
+                try {
+                    window.parent.dispatchEvent(new CustomEvent(this.UPDATE_EVENT, { detail: data }));
+                } catch (e) {
+                }
+            }
         } catch (e) {
         }
     },

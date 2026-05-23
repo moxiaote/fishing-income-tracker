@@ -47,6 +47,13 @@ const resourceManager = {
                 platinum: 'totalPlatinum',
                 diamonds: 'totalDiamond'
             }
+        },
+        evolvePearl: {
+            key: 'evolvePearlData',
+            mapping: {
+                greenNotes: 'totalMoney',
+                coral: 'totalCoral'
+            }
         }
     },
 
@@ -156,9 +163,7 @@ const resourceManager = {
             element.style.color = '#dc3545';
             element.style.cursor = 'pointer';
             
-            if (element.textContent !== element.dataset.fullValue) {
-                element.textContent = formatted.display;
-            }
+            element.textContent = formatted.display;
         }
 
         updateElement(diamondsEl, resources.diamonds);
@@ -269,9 +274,30 @@ const resourceManager = {
         }
     },
 
+    bindStorageSync() {
+        if (this._storageListenerBound) {
+            return;
+        }
+        this._storageListenerBound = true;
+        const simulatorKeys = new Set(
+            Object.values(this.simulatorData).map(config => config.key)
+        );
+        window.addEventListener('storage', (e) => {
+            if (!e.key) {
+                return;
+            }
+            if (e.key === 'sharedEquipmentData') {
+                this.updateEquipmentDisplay();
+            } else if (e.key === this.STORAGE_KEY || simulatorKeys.has(e.key)) {
+                this.collectFromSimulators();
+            }
+        });
+    },
+
     init(autoCollect = false) {
         this.collectFromSimulators();
         this.updateDisplay();
+        this.bindStorageSync();
         if (autoCollect) {
             this.startAutoCollect();
         }

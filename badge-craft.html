@@ -9,52 +9,29 @@
     <meta name="robots" content="index, follow">
     <title>勋章制作模拟器</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/simulator-common.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/simulator-layout.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin: 0;
-            color: #333;
-        }
-
-        h2 {
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        h3 {
-            font-size: 14px;
-            margin: 8px 0;
-        }
-
-        .equipment-card {
-            background-color: white;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
 
         .target-selector {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            margin: 10px 0;
+            margin: 0 0 6px;
             flex-wrap: wrap;
         }
 
         .target-option {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 15px;
+            gap: 6px;
+            padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
             background-color: #f8f9fa;
             border: 2px solid transparent;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .target-option:hover {
@@ -67,12 +44,16 @@
         }
 
         .target-option input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
             margin: 0;
         }
 
         .target-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: inline-block;
             background-size: cover;
@@ -97,9 +78,9 @@
         .badge-slots-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 15px 0;
+            align-items: flex-start;
+            gap: 6px;
+            margin: 6px 0 4px;
             flex-wrap: nowrap;
         }
 
@@ -521,16 +502,24 @@
 
         .probability-display {
             text-align: center;
-            padding: 12px;
+            padding: 8px 6px;
             background-color: #e9ecef;
             border-radius: 6px;
-            margin: 10px 0;
+            margin: 6px 0 4px;
         }
 
         .probability-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             color: #007bff;
+            line-height: 1.1;
+        }
+
+        #probability-breakdown {
+            font-size: 9px;
+            color: #666;
+            margin-top: 2px;
+            line-height: 1.3;
         }
 
         .probability-label {
@@ -728,15 +717,37 @@
         }
 
         .inventory-section {
-            margin-top: 15px;
+            margin-top: 8px;
         }
 
         .inventory-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            gap: 8px;
+            margin-bottom: 4px;
+            gap: 6px;
+            padding: 4px 2px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .inventory-header .collapse-hint {
+            font-size: 10px;
+            color: #888;
+            flex-shrink: 0;
+        }
+
+        .inventory-card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .inventory-scroll {
+            max-height: none;
+            overflow: visible;
         }
 
         .inventory-title {
@@ -863,7 +874,15 @@
         .section-divider {
             height: 1px;
             background-color: #e9ecef;
-            margin: 15px 0;
+            margin: 8px 0;
+        }
+
+        .craft-btn-wrap {
+            margin-top: 6px;
+        }
+
+        .rules-card .card-toggle-row {
+            margin-bottom: 0;
         }
 
         .stats-row .probability-breakdown {
@@ -897,66 +916,228 @@
             color: #333;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 576px) {
+            body {
+                padding: 4px 6px;
+                padding-bottom: max(4px, env(safe-area-inset-bottom));
+            }
+
+            .equipment-card {
+                padding: 6px;
+                margin-bottom: 6px;
+            }
+
+            .top-stats-bar {
+                font-size: 10px;
+                padding: 3px 6px;
+                margin-bottom: 4px;
+            }
+
+            .target-selector {
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+
+            .target-option {
+                padding: 4px 8px;
+                gap: 4px;
+                flex: 1;
+                min-width: 0;
+                justify-content: center;
+            }
+
+            .target-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            .target-name {
+                font-size: 11px;
+            }
+
             .badge-slots-container {
-                gap: 5px;
+                gap: 2px;
+                margin: 4px 0 2px;
             }
 
             .badge-slot {
-                min-width: 70px;
+                min-width: 0;
+                flex: 1;
+                gap: 2px;
+            }
+
+            .slot-label {
+                font-size: 10px;
+                margin-top: 0;
+            }
+
+            .slot-requirement {
+                display: none;
             }
 
             .badge-circle {
-                width: 50px;
-                height: 50px;
+                width: 44px;
+                height: 44px;
+            }
+
+            .badge-circle .plus-icon {
+                font-size: 18px;
             }
 
             .badge-display {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .central-badge {
+                width: 52px;
+                height: 52px;
+            }
+
+            .central-badge .badge-display {
                 width: 42px;
                 height: 42px;
                 font-size: 18px;
             }
 
+            .probability-display {
+                padding: 5px 4px;
+                margin: 4px 0;
+            }
+
+            .probability-value {
+                font-size: 17px;
+            }
+
+            .probability-label {
+                font-size: 10px;
+                margin-top: 0;
+            }
+
+            #probability-breakdown {
+                font-size: 8px;
+            }
+
+            .btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .craft-btn-wrap {
+                margin-top: 4px;
+            }
+
+            .inventory-section {
+                margin-top: 6px;
+            }
+
+            .inventory-title {
+                font-size: 12px;
+            }
+
+            .inventory-actions .btn {
+                padding: 2px 8px;
+                font-size: 11px;
+            }
+
+            .inventory-card {
+                padding: 4px;
+            }
+
+            .inventory-scroll {
+                max-height: 88px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .badge-grid {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+            }
+
+            .badge-grid-item {
+                border-radius: 6px;
+                border-width: 1px;
+            }
+
+            .badge-grid-item .badge-display {
+                width: 32px;
+                height: 32px;
+                font-size: 13px;
+            }
+
+            .badge-grid-item .badge-stars {
+                font-size: 6px;
+            }
+
+            .badge-delete-btn {
+                top: 1px;
+                right: 1px;
+                width: 16px;
+                height: 16px;
+                font-size: 12px;
+                line-height: 16px;
+            }
+
+            .section-divider {
+                margin: 6px 0;
+            }
+
+            .rules-card h3,
+            .rules-card .btn {
+                font-size: 12px;
+            }
+
+            .selector-content {
+                padding: 10px;
+                max-height: 70vh;
+            }
+
+            .badge-option {
+                padding: 6px;
+                margin-bottom: 4px;
+            }
+
+            .badge-option .badge-display {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .top-stats-bar {
+                font-size: 9px;
+                gap: 1px 4px;
+            }
+
+            .target-name {
+                font-size: 10px;
+            }
+
+            .badge-circle {
+                width: 40px;
+                height: 40px;
+            }
+
             .central-badge {
-                width: 65px;
-                height: 65px;
+                width: 48px;
+                height: 48px;
             }
 
             .central-badge .badge-display {
-                width: 52px;
-                height: 52px;
-                font-size: 22px;
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
             }
 
             .badge-grid {
                 grid-template-columns: repeat(5, 1fr);
             }
 
-            .badge-delete-btn {
-                top: 2px;
-                right: 2px;
-                width: 18px;
-                height: 18px;
-                font-size: 13px;
-                line-height: 18px;
-                background-color: rgba(255, 255, 255, 0.82);
-                box-shadow: 0 1px 2px rgba(0,0,0,0.12);
-            }
-
-            .badge-delete-btn:hover {
-                background-color: rgba(255, 255, 255, 0.92);
-                color: #888;
-                transform: none;
-            }
-
-            .slot-requirement {
-                font-size: 8px;
-            }
-
-            .stats-container {
-                font-size: 12px;
-                padding: 8px;
-                margin-top: 8px;
+            .inventory-scroll {
+                max-height: 76px;
             }
         }
 
@@ -974,36 +1155,33 @@
 </head>
 <body>
     <script src="js/formatUtils.js"></script>
-    <div class="container" style="max-width: 600px; margin: 0 auto;">
-        <div class="d-flex justify-content-center align-items-center gap-2 mb-3 flex-wrap">
-            <div class="stats-container" style="margin: 0; display: inline-block; padding: 4px 8px; font-size: 12px;">
-                累计制作: <span id="total-crafts" style="font-weight: bold;">0</span>次
-                <span style="color: #28a745;">| 成功: <span id="success-count" style="font-weight: bold;">0</span></span>
-                <span style="color: #dc3545;">| 失败: <span id="failure-count" style="font-weight: bold;">0</span></span>
-                <span style="color: #6c757d;">| 白金: <span id="total-platinum-cost" style="font-weight: bold;">0</span></span>
-                <span style="color: #007bff;">| 钻石: <span id="total-diamond-cost" style="font-weight: bold;">0</span></span>
-            </div>
+    <div class="page-wrap">
+        <div class="top-stats-bar">
+            <span>制作 <strong id="total-crafts">0</strong> 次</span>
+            <span class="stat-sep">·</span>
+            <span style="color:#28a745;">成 <strong id="success-count">0</strong></span>
+            <span class="stat-sep">·</span>
+            <span style="color:#dc3545;">败 <strong id="failure-count">0</strong></span>
+            <span class="stat-sep">·</span>
+            <span style="color:#6c757d;">铂 <strong id="total-platinum-cost">0</strong></span>
+            <span class="stat-sep">·</span>
+            <span style="color:#007bff;">钻 <strong id="total-diamond-cost">0</strong></span>
         </div>
 
-        <!-- 目标选择 -->
-        <div class="equipment-card">
-            <h3 style="text-align: center; margin-bottom: 10px; color: #333;">选择制作目标</h3>
+        <!-- 制作区：目标 + 插槽 + 成功率 -->
+        <div class="equipment-card craft-main">
             <div class="target-selector">
-                <div class="target-option selected" onclick="selectTarget('kraken')">
+                <div class="target-option selected" onclick="selectTarget('kraken', this)">
                     <input type="radio" name="target" value="kraken" checked>
                     <span class="target-icon target-icon-kraken"></span>
-                    <span class="target-name">克拉肯勋章</span>
+                    <span class="target-name">克拉肯</span>
                 </div>
-                <div class="target-option" onclick="selectTarget('leviathan')">
+                <div class="target-option" onclick="selectTarget('leviathan', this)">
                     <input type="radio" name="target" value="leviathan">
                     <span class="target-icon target-icon-leviathan"></span>
-                    <span class="target-name">利维坦勋章</span>
+                    <span class="target-name">利维坦</span>
                 </div>
             </div>
-        </div>
-
-        <!-- 勋章插槽 -->
-        <div class="equipment-card">
             <div class="badge-slots-container">
                 <!-- 材料勋章 -->
                 <div class="badge-slot" onclick="handleSlotClick('material')">
@@ -1045,7 +1223,7 @@
             <div id="result-message" class="result-message"></div>
 
             <!-- 制作按钮 -->
-            <div class="text-center mt-3">
+            <div class="text-center craft-btn-wrap">
                 <button id="craft-btn" class="btn btn-primary w-100" onclick="craftBadge()" disabled>
                     制作勋章
                 </button>
@@ -1054,24 +1232,34 @@
 
         <!-- 四神兽勋章库存 -->
         <div class="inventory-section">
-            <div class="inventory-header">
-                <span class="inventory-title">🐲 四神兽勋章库存</span>
-                <div class="inventory-actions">
-                    <button class="btn btn-sm btn-primary" onclick="autoUpgradeBadges()">一键升级</button>
+            <div class="inventory-header" data-bs-toggle="collapse" data-bs-target="#four-beast-collapse" aria-expanded="false" aria-controls="four-beast-collapse">
+                <span class="inventory-title">🐲 四神兽库存</span>
+                <div class="inventory-actions" onclick="event.stopPropagation()">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="autoUpgradeBadges()">升级</button>
+                    <span class="collapse-hint">展开</span>
                 </div>
             </div>
-            <div class="equipment-card" style="padding: 10px;">
-                <div class="badge-grid" id="four-beast-grid"></div>
+            <div class="collapse" id="four-beast-collapse">
+                <div class="inventory-card">
+                    <div class="inventory-scroll">
+                        <div class="badge-grid" id="four-beast-grid"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- 制作结果库存 -->
         <div class="inventory-section">
-            <div class="inventory-header">
-                <span class="inventory-title">🏆 制作结果库存</span>
+            <div class="inventory-header" data-bs-toggle="collapse" data-bs-target="#crafted-collapse" aria-expanded="false" aria-controls="crafted-collapse">
+                <span class="inventory-title">🏆 成品库存</span>
+                <span class="collapse-hint">展开</span>
             </div>
-            <div class="equipment-card" style="padding: 10px;">
-                <div class="badge-grid" id="crafted-grid"></div>
+            <div class="collapse" id="crafted-collapse">
+                <div class="inventory-card">
+                    <div class="inventory-scroll">
+                        <div class="badge-grid" id="crafted-grid"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1079,11 +1267,11 @@
         <div class="section-divider"></div>
 
         <!-- 说明（默认折叠） -->
-        <div class="equipment-card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="equipment-card rules-card">
+            <div class="d-flex justify-content-between align-items-center card-toggle-row">
                 <h3 class="mb-0" style="font-size: 14px; color: #333;">制作规则</h3>
                 <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
-                    展开/收起
+                    表
                 </button>
             </div>
             <div class="collapse" id="rules-content">
@@ -1100,11 +1288,11 @@
         </div>
 
         <!-- 概率表（默认折叠） -->
-        <div class="equipment-card">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="equipment-card rules-card">
+            <div class="d-flex justify-content-between align-items-center card-toggle-row">
                 <h3 class="mb-0" style="font-size: 14px; color: #333;">词条概率表</h3>
                 <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-content" aria-expanded="false" aria-controls="probability-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
-                    展开/收起
+                    表
                 </button>
             </div>
             <div class="collapse" id="probability-content">
@@ -1499,20 +1687,27 @@
                 gameState.failureCount = data.failureCount || 0;
                 gameState.totalPlatinumCost = data.totalPlatinumCost || 0;
                 gameState.totalDiamondCost = data.totalDiamondCost || 0;
-                if (data.coreBadge) {
-                    gameState.fourBeastBadges.push(data.coreBadge);
-                }
-                if (data.materialBadge) {
-                    gameState.fourBeastBadges.push(data.materialBadge);
-                }
-                if (data.assistBadge) {
-                    gameState.fourBeastBadges.push(data.assistBadge);
+                gameState.coreBadge = data.coreBadge || null;
+                gameState.materialBadge = data.materialBadge || null;
+                gameState.assistBadge = data.assistBadge || null;
+
+                const slotIds = new Set(
+                    [gameState.coreBadge, gameState.materialBadge, gameState.assistBadge]
+                        .filter(Boolean)
+                        .map(badge => badge.id)
+                );
+                if (slotIds.size > 0) {
+                    gameState.fourBeastBadges = gameState.fourBeastBadges.filter(badge => !slotIds.has(badge.id));
                 }
             }
             saveSharedFourBeastBadges(gameState.fourBeastBadges);
             updateStats();
+            renderBadgeInSlot('core', gameState.coreBadge);
+            renderBadgeInSlot('material', gameState.materialBadge);
+            renderBadgeInSlot('assist', gameState.assistBadge);
             displayFourBeastBadges();
             displayCraftedBadges();
+            updateProbabilityDisplay();
         }
 
         function saveData() {
@@ -1538,12 +1733,15 @@
             document.getElementById('total-diamond-cost').textContent = formatUtils.formatNumber(gameState.totalDiamondCost).display;
         }
 
-        function selectTarget(type) {
+        function selectTarget(type, element) {
             gameState.targetType = type;
             document.querySelectorAll('.target-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
-            event.currentTarget.classList.add('selected');
+            const target = element || (typeof event !== 'undefined' ? event.currentTarget : null);
+            if (target) {
+                target.classList.add('selected');
+            }
         }
 
         function calculateProbability() {
@@ -2202,8 +2400,8 @@
                 btn.textContent = '太棒了';
             } else {
                 modal.className = 'result-modal failure';
-                icon.textContent = '💔';
-                title.textContent = '制作失败';
+                icon.textContent = '';
+                title.textContent = '💔 制作失败';
                 btn.textContent = '再接再厉';
             }
 

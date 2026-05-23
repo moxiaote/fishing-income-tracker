@@ -484,7 +484,6 @@ class App {
                 chartManager.updateStatCards(this.records);
                 
                 alert(i18n.getText('dataLoaded') || '数据已从文件加载');
-                alert('数据已同步到云端');
 
             } catch (error) {
                 alert(i18n.getText('fileFormatError') || '文件格式错误，无法加载数据');
@@ -497,10 +496,10 @@ class App {
         const tableBody = document.getElementById('records-table');
         tableBody.innerHTML = '';
 
-        // 显示已加载的记录
-        const currentRecords = this.records.slice(0, this.loadedRecords);
+        const endIndex = Math.min(this.loadedRecords, this.records.length);
 
-        currentRecords.forEach((record, index) => {
+        for (let i = 0; i < endIndex; i++) {
+            const record = this.records[i];
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${record.date}</td>
@@ -511,11 +510,11 @@ class App {
                 <td>${record.platinum}</td>
                 <td>${record.remark || '-'}</td>
                 <td>
-                    <button class="btn btn-danger btn-sm" onclick="app.deleteRecord(${index})" data-i18n="delete">删除</button>
+                    <button class="btn btn-danger btn-sm" onclick="app.deleteRecord(${i})" data-i18n="delete">删除</button>
                 </td>
             `;
             tableBody.appendChild(row);
-        });
+        }
         
         // 显示/隐藏加载更多按钮
         const loadMoreContainer = document.getElementById('load-more-container');
