@@ -424,6 +424,156 @@
             margin-top: 16px;
         }
 
+        /* 成品库预览（适配主页 iframe 高度） */
+        .crafted-preview-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 6px;
+            background: transparent;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .crafted-preview-overlay.show {
+            display: flex;
+        }
+
+        .crafted-preview-panel {
+            display: flex;
+            flex-direction: column;
+            max-height: 100%;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #007bff;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+
+        .crafted-preview-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px 8px;
+            border-bottom: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+
+        .crafted-preview-title {
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.3;
+            color: #333;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .crafted-preview-close {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            background: #f1f3f4;
+            color: #666;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .crafted-preview-close:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .crafted-preview-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            flex-shrink: 0;
+        }
+
+        .crafted-preview-top .badge-display {
+            width: 48px;
+            height: 48px;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .crafted-preview-skill {
+            font-size: 11px;
+            line-height: 1.35;
+            color: #666;
+            min-width: 0;
+        }
+
+        .crafted-preview-skill strong {
+            color: #fd7e14;
+            font-size: 12px;
+        }
+
+        .crafted-preview-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 6px 12px 8px;
+            font-size: 11px;
+        }
+
+        .crafted-preview-attr-main {
+            font-weight: bold;
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #f0f4ff;
+        }
+
+        .crafted-preview-attr {
+            padding: 4px 8px;
+            margin: 2px 0;
+            border-radius: 4px;
+            background: #f8f9fa;
+            line-height: 1.35;
+        }
+
+        .crafted-preview-footer {
+            flex-shrink: 0;
+            padding: 8px 12px 10px;
+            border-top: 1px solid #e9ecef;
+            background: #fff;
+        }
+
+        .crafted-preview-footer .btn {
+            margin-top: 0;
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .crafted-preview-footer-hint {
+            font-size: 10px;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .crafted-preview-maxed {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            padding: 4px 0;
+        }
+
         .result-modal-btn {
             display: block;
             width: 100%;
@@ -498,6 +648,93 @@
         .stats-row .value {
             color: #333;
             font-weight: bold;
+        }
+
+        .craft-action-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin: 4px 0;
+        }
+
+        .craft-action-row .probability-display {
+            flex: 1;
+            min-width: 0;
+            margin: 0;
+            padding: 4px 6px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+
+        .craft-action-row .probability-line {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: baseline;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+            min-width: 0;
+            line-height: 1.2;
+        }
+
+        .craft-action-row .probability-value {
+            font-size: 15px;
+            font-weight: bold;
+            color: #007bff;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .craft-action-row .probability-label {
+            font-size: 10px;
+            color: #666;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .craft-action-row #probability-breakdown {
+            font-size: 9px;
+            color: #666;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1 1 auto;
+        }
+
+        .craft-action-row #probability-breakdown:empty {
+            display: none;
+        }
+
+        .craft-action-row #probability-breakdown:not(:empty)::before {
+            content: '·';
+            margin-right: 4px;
+            color: #adb5bd;
+        }
+
+        .craft-action-row .hidden-probability {
+            display: none;
+        }
+
+        .craft-action-row .craft-btn-wrap {
+            flex: 0 0 auto;
+            max-width: 108px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .craft-action-row .craft-btn-wrap .btn {
+            width: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 12px;
+            line-height: 1.2;
+            padding: 5px 8px;
+            border-radius: 4px;
         }
 
         .probability-display {
@@ -727,15 +964,6 @@
             margin-bottom: 4px;
             gap: 6px;
             padding: 4px 2px;
-            cursor: pointer;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .inventory-header .collapse-hint {
-            font-size: 10px;
-            color: #888;
-            flex-shrink: 0;
         }
 
         .inventory-card {
@@ -756,49 +984,164 @@
             color: #333;
         }
 
-        .inventory-actions {
-            display: flex;
-            gap: 6px;
-            align-items: center;
+        .inventory-count {
+            font-size: 11px;
+            font-weight: normal;
+            color: #6c757d;
+            margin-left: 4px;
         }
 
-        .badge-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
+        .inventory-pick-hint {
+            display: none;
+            margin: 6px 0 4px;
+            padding: 8px 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            text-align: center;
+            background: #e7f1ff;
+            border: 1px solid #b8daff;
+            border-radius: 6px;
+            color: #004085;
         }
 
-        .badge-grid-item {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 2px dashed #ddd;
+        .inventory-pick-hint .inventory-pick-cancel {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 0 4px;
+            font-size: 12px;
+            vertical-align: baseline;
+        }
+
+        body.badge-pick-mode .inventory-pick-hint {
+            display: block;
+        }
+
+        body.badge-pick-mode .inventory-stash--active {
+            box-shadow: 0 0 0 2px #007bff;
             border-radius: 8px;
-            transition: all 0.2s ease;
-            position: relative;
         }
 
-        .badge-grid-item:hover {
+        .badge-slot.slot-pick-active .badge-circle,
+        .badge-slot.slot-pick-active .central-badge {
+            box-shadow: 0 0 0 3px #007bff;
+            border-color: #007bff;
+        }
+
+        #four-beast-grid.inventory-pick-target .badge-grid-item {
+            border-style: solid;
+            border-color: #90caf9;
+        }
+
+        #four-beast-grid.inventory-pick-target .badge-grid-item:active {
             border-color: #007bff;
             background-color: #e3f2fd;
         }
 
-        .badge-grid-item .badge-display {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
+        .badge-grid-item--empty {
+            cursor: default;
+            opacity: 0.45;
+            border-style: dotted;
+            background: #fafafa;
+        }
+
+        .badge-grid-item--empty:active {
+            transform: none;
+            background: #fafafa;
+        }
+
+        .inventory-empty-hint {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            padding: 12px 8px;
+        }
+
+        .info-message {
+            display: block;
+            background-color: #e7f1ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+        .inventory-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
             flex-shrink: 0;
         }
 
-        .badge-grid-item .badge-stars {
-            font-size: 8px;
-            margin-top: 1px;
+        .inventory-actions .btn {
+            margin-top: 0;
+        }
+
+        .inventory-stash .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+        }
+
+        .inventory-stash .badge-grid-item {
             display: flex;
+            align-items: center;
             justify-content: center;
+            padding: 2px;
+            cursor: pointer;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
+            position: relative;
+        }
+
+        .inventory-stash .badge-grid-item:hover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+
+        .inventory-stash .badge-grid-item .badge-display {
+            width: 34px;
+            height: 34px;
+            font-size: 14px;
             flex-shrink: 0;
+        }
+
+        .inventory-stash .badge-grid-item .badge-stars {
+            font-size: 6px;
+            bottom: 1px;
+        }
+
+        .inventory-stash .badge-grid-count {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 3;
+            min-width: 14px;
+            height: 14px;
+            padding: 0 3px;
+            background: rgba(0, 123, 255, 0.92);
+            color: #fff;
+            font-size: 8px;
+            font-weight: bold;
+            line-height: 14px;
+            text-align: center;
+            border-radius: 7px;
+        }
+
+        .inventory-stash .badge-grid-item--empty {
+            min-height: 38px;
+        }
+
+        .inventory-stash .badge-delete-btn {
+            top: 0;
+            right: 0;
+            width: 16px;
+            height: 16px;
+            font-size: 12px;
+            line-height: 16px;
+        }
+
+        .inventory-stash .badge-delete-btn::before {
+            inset: -5px;
         }
 
         .badge-delete-btn {
@@ -879,6 +1222,10 @@
 
         .craft-btn-wrap {
             margin-top: 6px;
+        }
+
+        .craft-action-row + #result-message {
+            margin-top: 4px;
         }
 
         .rules-card .card-toggle-row {
@@ -1001,31 +1348,43 @@
                 font-size: 18px;
             }
 
-            .probability-display {
-                padding: 5px 4px;
-                margin: 4px 0;
+            .craft-action-row {
+                gap: 3px;
+                margin: 3px 0;
             }
 
-            .probability-value {
-                font-size: 17px;
+            .craft-action-row .probability-display {
+                padding: 3px 4px;
             }
 
-            .probability-label {
-                font-size: 10px;
-                margin-top: 0;
+            .craft-action-row .probability-line {
+                gap: 3px;
             }
 
-            #probability-breakdown {
+            .craft-action-row .probability-value {
+                font-size: 14px;
+            }
+
+            .craft-action-row .probability-label {
+                font-size: 9px;
+            }
+
+            .craft-action-row #probability-breakdown {
                 font-size: 8px;
+            }
+
+            .craft-action-row .craft-btn-wrap {
+                max-width: 96px;
+            }
+
+            .craft-action-row .craft-btn-wrap .btn {
+                font-size: 11px;
+                padding: 4px 6px;
             }
 
             .btn {
                 font-size: 12px;
                 padding: 6px 12px;
-            }
-
-            .craft-btn-wrap {
-                margin-top: 4px;
             }
 
             .inventory-section {
@@ -1042,42 +1401,64 @@
             }
 
             .inventory-card {
-                padding: 4px;
+                padding: 3px;
+            }
+
+            .inventory-pick-hint {
+                display: block;
+            }
+
+            .inventory-stash .sim-toggle-btn {
+                display: none;
+            }
+
+            .inventory-stash .inventory-collapse.collapse:not(.show) {
+                display: block !important;
+                height: auto !important;
+                visibility: visible !important;
             }
 
             .inventory-scroll {
-                max-height: 88px;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
+                max-height: none;
+                overflow: visible;
             }
 
-            .badge-grid {
-                grid-template-columns: repeat(6, 1fr);
-                gap: 4px;
+            .inventory-stash .badge-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 3px;
             }
 
-            .badge-grid-item {
-                border-radius: 6px;
-                border-width: 1px;
+            .inventory-stash .badge-grid-item {
+                -webkit-tap-highlight-color: transparent;
             }
 
-            .badge-grid-item .badge-display {
-                width: 32px;
-                height: 32px;
-                font-size: 13px;
+            .inventory-stash .badge-grid-item:not(.badge-grid-item--empty):active {
+                background-color: #e3f2fd;
             }
 
-            .badge-grid-item .badge-stars {
-                font-size: 6px;
-            }
-
-            .badge-delete-btn {
-                top: 1px;
-                right: 1px;
-                width: 16px;
-                height: 16px;
+            .inventory-stash .badge-grid-item .badge-display {
+                width: 30px;
+                height: 30px;
                 font-size: 12px;
-                line-height: 16px;
+            }
+
+            .inventory-stash .badge-grid-item .badge-stars {
+                font-size: 5px;
+            }
+
+            .inventory-stash .badge-delete-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 13px;
+                line-height: 18px;
+            }
+
+            .inventory-stash .badge-delete-btn::before {
+                inset: -6px;
+            }
+
+            .inventory-stash .badge-grid-item--empty {
+                min-height: 34px;
             }
 
             .section-divider {
@@ -1132,12 +1513,19 @@
                 font-size: 16px;
             }
 
-            .badge-grid {
+            .inventory-stash .badge-grid {
                 grid-template-columns: repeat(5, 1fr);
+                gap: 2px;
             }
 
-            .inventory-scroll {
-                max-height: 76px;
+            .inventory-stash .badge-grid-item .badge-display {
+                width: 28px;
+                height: 28px;
+                font-size: 11px;
+            }
+
+            .inventory-stash .badge-grid-item--empty {
+                min-height: 32px;
             }
         }
 
@@ -1163,9 +1551,9 @@
             <span class="stat-sep">·</span>
             <span style="color:#dc3545;">败 <strong id="failure-count">0</strong></span>
             <span class="stat-sep">·</span>
-            <span style="color:#6c757d;">铂 <strong id="total-platinum-cost">0</strong></span>
+            <span style="color:#6c757d;">白金 <strong id="total-platinum-cost">0</strong></span>
             <span class="stat-sep">·</span>
-            <span style="color:#007bff;">钻 <strong id="total-diamond-cost">0</strong></span>
+            <span style="color:#007bff;">钻石 <strong id="total-diamond-cost">0</strong></span>
         </div>
 
         <!-- 制作区：目标 + 插槽 + 成功率 -->
@@ -1184,7 +1572,7 @@
             </div>
             <div class="badge-slots-container">
                 <!-- 材料勋章 -->
-                <div class="badge-slot" onclick="handleSlotClick('material')">
+                <div class="badge-slot" data-slot="material" onclick="handleSlotClick('material')">
                     <div class="badge-circle" id="material-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1193,7 +1581,7 @@
                 </div>
 
                 <!-- 核心勋章（中心） -->
-                <div class="badge-slot" onclick="handleSlotClick('core')">
+                <div class="badge-slot" data-slot="core" onclick="handleSlotClick('core')">
                     <div class="central-badge badge-circle" id="core-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1202,7 +1590,7 @@
                 </div>
 
                 <!-- 辅助勋章 -->
-                <div class="badge-slot" onclick="handleSlotClick('assist')">
+                <div class="badge-slot" data-slot="assist" onclick="handleSlotClick('assist')">
                     <div class="badge-circle" id="assist-slot">
                         <span class="plus-icon">+</span>
                     </div>
@@ -1211,35 +1599,41 @@
                 </div>
             </div>
 
-            <!-- 成功率显示 -->
-            <div class="probability-display">
-                <div class="probability-value" id="success-probability">0%</div>
-                <div class="probability-label">制作成功率</div>
-                <div class="hidden-probability" id="hidden-probability"></div>
-                <div class="probability-breakdown" id="probability-breakdown"></div>
+            <div class="craft-action-row">
+                <div class="probability-display">
+                    <div class="probability-line">
+                        <span class="probability-value" id="success-probability">0%</span>
+                        <span class="probability-label">制作成功率</span>
+                        <span class="probability-breakdown" id="probability-breakdown"></span>
+                    </div>
+                    <div class="hidden-probability" id="hidden-probability" hidden></div>
+                </div>
+                <div class="craft-btn-wrap">
+                    <button id="craft-btn" class="btn btn-primary" onclick="craftBadge()" disabled>
+                        制作勋章
+                    </button>
+                </div>
             </div>
 
             <!-- 结果消息 -->
             <div id="result-message" class="result-message"></div>
-
-            <!-- 制作按钮 -->
-            <div class="text-center craft-btn-wrap">
-                <button id="craft-btn" class="btn btn-primary w-100" onclick="craftBadge()" disabled>
-                    制作勋章
-                </button>
-            </div>
         </div>
 
+        <p id="inventory-pick-hint" class="inventory-pick-hint" aria-live="polite">
+            <span id="inventory-pick-text">① 点上方空槽位 → ② 点下方四神兽库存放入</span>
+            <button type="button" class="btn btn-link btn-sm inventory-pick-cancel" onclick="closeInventoryPickMode()" hidden>取消</button>
+        </p>
+
         <!-- 四神兽勋章库存 -->
-        <div class="inventory-section">
-            <div class="inventory-header" data-bs-toggle="collapse" data-bs-target="#four-beast-collapse" aria-expanded="false" aria-controls="four-beast-collapse">
-                <span class="inventory-title">🐲 四神兽库存</span>
-                <div class="inventory-actions" onclick="event.stopPropagation()">
+        <div class="inventory-section inventory-stash" id="four-beast-section">
+            <div class="inventory-header card-toggle-row">
+                <span class="inventory-title">🐲 四神兽库存<span id="four-beast-count" class="inventory-count"></span></span>
+                <div class="inventory-actions">
                     <button type="button" class="btn btn-sm btn-primary" onclick="autoUpgradeBadges()">升级</button>
-                    <span class="collapse-hint">展开</span>
+                    <button class="btn btn-sm btn-outline-secondary sim-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#four-beast-collapse" aria-expanded="true" aria-controls="four-beast-collapse">表</button>
                 </div>
             </div>
-            <div class="collapse" id="four-beast-collapse">
+            <div class="collapse show inventory-collapse" id="four-beast-collapse" data-inventory-mobile-open>
                 <div class="inventory-card">
                     <div class="inventory-scroll">
                         <div class="badge-grid" id="four-beast-grid"></div>
@@ -1249,12 +1643,12 @@
         </div>
 
         <!-- 制作结果库存 -->
-        <div class="inventory-section">
-            <div class="inventory-header" data-bs-toggle="collapse" data-bs-target="#crafted-collapse" aria-expanded="false" aria-controls="crafted-collapse">
-                <span class="inventory-title">🏆 成品库存</span>
-                <span class="collapse-hint">展开</span>
+        <div class="inventory-section inventory-stash" id="crafted-section">
+            <div class="inventory-header card-toggle-row">
+                <span class="inventory-title">🏆 成品库存<span id="crafted-count" class="inventory-count"></span></span>
+                <button class="btn btn-sm btn-outline-secondary sim-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#crafted-collapse" aria-expanded="true" aria-controls="crafted-collapse">表</button>
             </div>
-            <div class="collapse" id="crafted-collapse">
+            <div class="collapse show inventory-collapse" id="crafted-collapse" data-inventory-mobile-open>
                 <div class="inventory-card">
                     <div class="inventory-scroll">
                         <div class="badge-grid" id="crafted-grid"></div>
@@ -1269,10 +1663,8 @@
         <!-- 说明（默认折叠） -->
         <div class="equipment-card rules-card">
             <div class="d-flex justify-content-between align-items-center card-toggle-row">
-                <h3 class="mb-0" style="font-size: 14px; color: #333;">制作规则</h3>
-                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
-                    表
-                </button>
+                <h3 class="mb-0">制作规则</h3>
+                <button class="btn btn-sm btn-outline-secondary sim-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#rules-content" aria-expanded="false" aria-controls="rules-content">表</button>
             </div>
             <div class="collapse" id="rules-content">
                 <div style="font-size: 12px; line-height: 1.8; color: #555;">
@@ -1290,10 +1682,8 @@
         <!-- 概率表（默认折叠） -->
         <div class="equipment-card rules-card">
             <div class="d-flex justify-content-between align-items-center card-toggle-row">
-                <h3 class="mb-0" style="font-size: 14px; color: #333;">词条概率表</h3>
-                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#probability-content" aria-expanded="false" aria-controls="probability-content" style="width: auto; padding: 4px 8px; font-size: 12px;">
-                    表
-                </button>
+                <h3 class="mb-0">词条概率表</h3>
+                <button class="btn btn-sm btn-outline-secondary sim-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#probability-content" aria-expanded="false" aria-controls="probability-content">表</button>
             </div>
             <div class="collapse" id="probability-content">
                 <div id="probability-table"></div>
@@ -1321,12 +1711,92 @@
         
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function(event) {
+            if (event.target.closest('.inventory-stash, .badge-grid-item, .badge-delete-btn, .badge-slot, .badge-selector')) {
+                return;
+            }
             const now = Date.now();
             if (now - lastTouchEnd <= 300) {
                 event.preventDefault();
             }
             lastTouchEnd = now;
         }, false);
+
+        function isNarrowViewport() {
+            return window.matchMedia('(max-width: 576px)').matches;
+        }
+
+        function initInventoryMobileExpanded() {
+            if (!isNarrowViewport()) return;
+            ['four-beast-collapse', 'crafted-collapse'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) el.classList.add('show');
+            });
+        }
+
+        let inventoryToastTimer = null;
+        function showInventoryToast(message) {
+            var el = document.getElementById('result-message');
+            if (!el) return;
+            clearTimeout(inventoryToastTimer);
+            el.textContent = message;
+            el.className = 'result-message info-message';
+            el.style.display = 'block';
+            inventoryToastTimer = setTimeout(function () {
+                if (!document.body.classList.contains('badge-pick-mode')) {
+                    el.style.display = 'none';
+                }
+            }, 2800);
+        }
+
+        var SLOT_PICK_LABELS = { material: '材料', core: '核心', assist: '辅助' };
+
+        function updateInventoryCounts() {
+            var fb = document.getElementById('four-beast-count');
+            var cr = document.getElementById('crafted-count');
+            if (fb) fb.textContent = ' (' + gameState.fourBeastBadges.length + ')';
+            if (cr) cr.textContent = ' (' + gameState.craftedBadges.length + '/' + MAX_CRAFTED_INVENTORY + ')';
+        }
+
+        function updatePickModeUI() {
+            var cancel = document.querySelector('.inventory-pick-cancel');
+            var text = document.getElementById('inventory-pick-text');
+            var section = document.getElementById('four-beast-section');
+            var grid = document.getElementById('four-beast-grid');
+            document.querySelectorAll('.badge-slot').forEach(function (s) {
+                s.classList.remove('slot-pick-active');
+            });
+            if (grid) grid.classList.toggle('inventory-pick-target', !!currentSlot);
+            if (section) section.classList.toggle('inventory-stash--active', !!currentSlot);
+            if (currentSlot) {
+                document.body.classList.add('badge-pick-mode');
+                var slotEl = document.querySelector('.badge-slot[data-slot="' + currentSlot + '"]');
+                if (slotEl) slotEl.classList.add('slot-pick-active');
+                if (text) text.textContent = '正在选「' + (SLOT_PICK_LABELS[currentSlot] || '') + '」勋章，点击下方四神兽库存放入';
+                if (cancel) cancel.hidden = false;
+            } else {
+                document.body.classList.remove('badge-pick-mode');
+                if (text) text.textContent = '① 点上方空槽位 → ② 点下方四神兽库存放入';
+                if (cancel) cancel.hidden = true;
+            }
+        }
+
+        function enterInventoryPickMode(slotType) {
+            currentSlot = slotType;
+            updatePickModeUI();
+            var section = document.getElementById('four-beast-section');
+            if (section && isNarrowViewport()) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function closeInventoryPickMode() {
+            currentSlot = null;
+            updatePickModeUI();
+            var el = document.getElementById('result-message');
+            if (el && !el.classList.contains('success-message') && !el.classList.contains('error-message')) {
+                el.style.display = 'none';
+            }
+        }
 
         const SHARED_FOUR_BEAST_STORAGE = 'sharedFourBeastBadges';
         const FOUR_BEAST_TYPES = ['qinglong', 'baihu', 'zhuque', 'xuanwu'];
@@ -1335,6 +1805,7 @@
         const FOUR_BEAST_MIN_STARS = 6;
         const FOUR_BEAST_MAX_STARS = 6;
         const MAX_CRAFT_BONUS = 12.25;
+        const MAX_CRAFTED_INVENTORY = 20;
         const BASE_SUCCESS_RATE = 12.25;
         const UPGRADE_5_TO_6_PLATINUM = 4000;
         const UPGRADE_5_TO_6_DIAMOND = 50;
@@ -1627,8 +2098,7 @@
             });
             gameState.craftedBadges.push(upgradedBadge);
 
-            const popup = document.getElementById('crafted-badge-popup');
-            if (popup) popup.remove();
+            closeCraftedBadgePreview();
 
             saveData();
             displayCraftedBadges();
@@ -1681,7 +2151,7 @@
             gameState.fourBeastBadges = loadSharedFourBeastBadges();
             if (saved) {
                 const data = JSON.parse(saved);
-                gameState.craftedBadges = data.craftedBadges || [];
+                gameState.craftedBadges = (data.craftedBadges || []).slice(0, MAX_CRAFTED_INVENTORY);
                 gameState.totalCrafts = data.totalCrafts || 0;
                 gameState.successCount = data.successCount || 0;
                 gameState.failureCount = data.failureCount || 0;
@@ -1803,7 +2273,7 @@
             const rate = getCurrentSuccessRate();
             let rateDisplay = rate.toFixed(2) + '%';
             document.getElementById('success-probability').textContent = rateDisplay;
-            document.getElementById('probability-breakdown').textContent = breakdown.join(' | ');
+            document.getElementById('probability-breakdown').textContent = breakdown.length ? breakdown.join(' · ') : '';
             
             const craftBtn = document.getElementById('craft-btn');
             const canCraft = gameState.coreBadge && gameState.materialBadge && 
@@ -1855,13 +2325,19 @@
             grid.innerHTML = '';
 
             const groups = groupFourBeastBadges();
+            updateInventoryCounts();
+
+            if (groups.length === 0) {
+                grid.innerHTML = '<div class="inventory-empty-hint">暂无四神兽勋章</div>';
+                return;
+            }
 
             groups.forEach((group) => {
                 const item = document.createElement('div');
                 item.className = 'badge-grid-item';
 
                 const count = group.badges.length;
-                const countDisplay = count > 1 ? `<div style="position:absolute;top:2px;left:2px;background:rgba(0,123,255,0.9);color:white;font-size:10px;font-weight:bold;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;z-index:3;">${count}</div>` : '';
+                const countDisplay = count > 1 ? `<div class="badge-grid-count">${count}</div>` : '';
 
                 item.innerHTML = `
                     ${countDisplay}
@@ -1886,8 +2362,9 @@
         function displayCraftedBadges() {
             const grid = document.getElementById('crafted-grid');
             grid.innerHTML = '';
+            updateInventoryCounts();
             
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < MAX_CRAFTED_INVENTORY; i++) {
                 const item = document.createElement('div');
                 item.className = 'badge-grid-item';
                 
@@ -1907,6 +2384,8 @@
                         deleteCraftedBadge(i);
                     };
                     item.onclick = () => showCraftedBadgeInfo(i);
+                } else {
+                    item.classList.add('badge-grid-item--empty');
                 }
                 
                 grid.appendChild(item);
@@ -2116,9 +2595,18 @@
             updateProbabilityDisplay();
         }
 
+        function closeCraftedBadgePreview(e) {
+            if (e && e.target !== e.currentTarget) return;
+            const popup = document.getElementById('crafted-badge-popup');
+            if (popup) popup.classList.remove('show');
+        }
+
         function showCraftedBadgeInfo(index) {
             const badge = gameState.craftedBadges[index];
             if (!badge) return;
+
+            const popup = document.getElementById('crafted-badge-popup');
+            if (!popup) return;
 
             const targetData = TARGET_DATA[badge.id];
             const mainAttr = badge.attributes[0];
@@ -2142,61 +2630,41 @@
                     }
                     tierDisplay = `<span class="attribute-badge attr-${displayTier}">${attributeTiers[displayTier].name}</span>`;
                 }
-                return `<div style="padding: 6px 10px; margin: 3px 0; border-radius: 4px; background-color: #f8f9fa;">${attr.name} ${formatAttributeValue(attr.name, attr.value)} ${tierDisplay}</div>`;
+                return `<div class="crafted-preview-attr">${attr.name} ${formatAttributeValue(attr.name, attr.value)} ${tierDisplay}</div>`;
             }).join('');
             const combineStatus = getCraftedCombineStatus(index);
             const nextStars = badge.stars + 1;
-            const combineButtonHtml = badge.stars < 5 ? `
-                <div style="margin-top:15px;padding-top:12px;border-top:1px solid #e9ecef;">
-                    <button class="btn ${combineStatus.canCombine ? 'btn-primary' : 'btn-secondary'} w-100" ${combineStatus.canCombine ? `onclick="combineCraftedBadgeFromPopup(${index})"` : 'disabled'}>
+            const footerEl = document.getElementById('crafted-preview-footer');
+            if (badge.stars < 5) {
+                footerEl.innerHTML = `
+                    <button type="button" class="btn ${combineStatus.canCombine ? 'btn-primary' : 'btn-secondary'} w-100" ${combineStatus.canCombine ? `onclick="combineCraftedBadgeFromPopup(${index})"` : 'disabled'}>
                         合成到${nextStars}星
                     </button>
-                    <div style="font-size:11px;color:#666;margin-top:6px;text-align:center;">${combineStatus.message}</div>
-                </div>
-            ` : `
-                <div style="margin-top:15px;padding-top:12px;border-top:1px solid #e9ecef;font-size:12px;color:#666;text-align:center;">
-                    已达到最高星级
-                </div>
-            `;
-            
+                    <div class="crafted-preview-footer-hint">${combineStatus.message}</div>
+                `;
+            } else {
+                footerEl.innerHTML = '<div class="crafted-preview-maxed">已达到最高星级</div>';
+            }
+
             let skillHtml = '';
             if (badge.hasSkill) {
-                skillHtml = `
-                    <div style="color:#fd7e14;font-weight:bold;margin-top:8px;">${targetData.skillName}</div>
-                    <div style="font-size:11px;color:#666;margin-top:4px;">${targetData.skillDesc}</div>
-                `;
+                skillHtml = `<div class="crafted-preview-skill"><strong>${targetData.skillName}</strong><br>${targetData.skillDesc}</div>`;
             }
-            
-            const weightedMark = '';
-            const popup = document.createElement('div');
-            popup.id = 'crafted-badge-popup';
-            popup.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:transparent;display:flex;align-items:center;justify-content:center;z-index:2000;padding:20px;animation: slideUp 0.3s ease;';
-            popup.innerHTML = `
-                <div style="background-color:white;border-radius:8px;padding:20px;max-width:360px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.2);border:1px solid #007bff;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-                        <h4 style="margin:0; color:#333;">${badge.name} (${badge.stars}星)${weightedMark}</h4>
-                        <button onclick="this.parentElement.parentElement.parentElement.remove()" style="background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
-                    </div>
-                    <div style="margin-bottom:15px;">
-                        <div class="craft-result-badge" style="display:inline-block;">
-                            <div class="badge-display crafted-badge-display ${badge.id} badge-stars-${badge.stars}" style="width:60px;height:60px;font-size:24px;">
-                                <span>${getCraftedBadgeMark(badge)}</span>
-                                <div class="badge-stars" style="font-size:12px;bottom:4px;">
-                                    ${'<span class="star">★</span>'.repeat(badge.stars)}
-                                </div>
-                            </div>
-                        </div>
-                        ${skillHtml}
-                    </div>
-                    <div style="font-size:12px;">
-                        <div style="margin-bottom: 3px; font-weight: bold;">${mainAttr.name} ${formatAttributeValue(mainAttr.name, mainAttr.value)} ${getMainAttrTierDisplay(badge.id, mainAttr, targetData)}</div>
-                        ${attrHtml}
-                    </div>
-                    ${combineButtonHtml}
+
+            document.getElementById('crafted-preview-title').textContent = `${badge.name} (${badge.stars}星)`;
+            document.getElementById('crafted-preview-badge').innerHTML = `
+                <div class="badge-display crafted-badge-display ${badge.id} badge-stars-${badge.stars}">
+                    <span>${getCraftedBadgeMark(badge)}</span>
+                    <div class="badge-stars">${'<span class="star">★</span>'.repeat(badge.stars)}</div>
                 </div>
             `;
-            popup.onclick = (e) => { if (e.target === popup) popup.remove(); };
-            document.body.appendChild(popup);
+            document.getElementById('crafted-preview-skill').innerHTML = skillHtml;
+            document.getElementById('crafted-preview-body').innerHTML = `
+                <div class="crafted-preview-attr-main">${mainAttr.name} ${formatAttributeValue(mainAttr.name, mainAttr.value)} ${getMainAttrTierDisplay(badge.id, mainAttr, targetData)}</div>
+                ${attrHtml}
+            `;
+
+            popup.classList.add('show');
         }
 
         function handleInventoryClick(index, type) {
@@ -2238,7 +2706,13 @@
         }
 
         function handleGroupInventoryClick(group) {
-            if (!currentSlot || !group || group.badges.length === 0) return;
+            if (!group || group.badges.length === 0) return;
+            if (!currentSlot) {
+                if (isNarrowViewport()) {
+                    showInventoryToast('请先点击上方材料 / 核心 / 辅助空槽位');
+                }
+                return;
+            }
 
             const badge = group.badges[0].badge;
             const canUse = checkBadgeRequirements(badge, currentSlot);
@@ -2268,7 +2742,11 @@
             saveData();
             displayFourBeastBadges();
             updateProbabilityDisplay();
-            closeBadgeSelector();
+            if (isNarrowViewport()) {
+                closeInventoryPickMode();
+            } else {
+                closeBadgeSelector();
+            }
         }
 
         function checkBadgeRequirements(badge, slotType) {
@@ -2298,6 +2776,7 @@
                 saveData();
                 displayFourBeastBadges();
                 updateProbabilityDisplay();
+                closeInventoryPickMode();
             } else if (slotType === 'core' && gameState.coreBadge) {
                 gameState.fourBeastBadges.push(gameState.coreBadge);
                 gameState.coreBadge = null;
@@ -2305,6 +2784,7 @@
                 saveData();
                 displayFourBeastBadges();
                 updateProbabilityDisplay();
+                closeInventoryPickMode();
             } else if (slotType === 'assist' && gameState.assistBadge) {
                 gameState.fourBeastBadges.push(gameState.assistBadge);
                 gameState.assistBadge = null;
@@ -2312,6 +2792,9 @@
                 saveData();
                 displayFourBeastBadges();
                 updateProbabilityDisplay();
+                closeInventoryPickMode();
+            } else if (isNarrowViewport()) {
+                enterInventoryPickMode(slotType);
             } else {
                 openBadgeSelector(slotType);
             }
@@ -2319,6 +2802,7 @@
 
         function openBadgeSelector(slotType) {
             currentSlot = slotType;
+            updatePickModeUI();
             const titles = {
                 core: '选择核心勋章（必须6星）',
                 material: '选择材料勋章（5-6星）',
@@ -2332,7 +2816,7 @@
 
         function closeBadgeSelector() {
             document.getElementById('badge-selector').classList.remove('show');
-            currentSlot = null;
+            closeInventoryPickMode();
         }
 
         function renderBadgeOptions(slotType) {
@@ -2489,9 +2973,11 @@
                         weightedVersion: true
                     };
 
-                    if (gameState.craftedBadges.length < 10) {
+                    const addedToInventory = gameState.craftedBadges.length < MAX_CRAFTED_INVENTORY;
+                    if (addedToInventory) {
                         gameState.craftedBadges.push(craftedBadge);
                     }
+                    const inventoryFullNote = addedToInventory ? '' : '<div style="color:#dc3545;margin-top:8px;font-size:12px;">成品库已满（最多' + MAX_CRAFTED_INVENTORY + '个），勋章未入库</div>';
 
                     gameState.coreBadge = null;
                     gameState.materialBadge = null;
@@ -2540,6 +3026,7 @@
                             <div class="result-attributes" style="margin-top: 10px;">
                                 ${attrHtml}
                             </div>
+                            ${inventoryFullNote}
                         </div>
                     `);
 
@@ -2619,16 +3106,48 @@
         loadData();
         updateProbabilityDisplay();
         generateProbabilityTable();
+        initInventoryMobileExpanded();
+        updatePickModeUI();
 
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
+                initInventoryMobileExpanded();
+                var selector = document.getElementById('badge-selector');
+                if (isNarrowViewport()) {
+                    if (selector) selector.classList.remove('show');
+                } else if (currentSlot && selector) {
+                    var titles = {
+                        core: '选择核心勋章（必须6星）',
+                        material: '选择材料勋章（5-6星）',
+                        assist: '选择辅助勋章（至少5星）'
+                    };
+                    document.getElementById('selector-title').textContent = titles[currentSlot];
+                    renderBadgeOptions(currentSlot);
+                    selector.classList.add('show');
+                }
                 displayFourBeastBadges();
                 displayCraftedBadges();
+                updatePickModeUI();
             }, 200);
         });
     </script>
+
+    <div id="crafted-badge-popup" class="crafted-preview-overlay" onclick="closeCraftedBadgePreview(event)">
+        <div class="crafted-preview-panel" onclick="event.stopPropagation()">
+            <div class="crafted-preview-header">
+                <h4 class="crafted-preview-title" id="crafted-preview-title"></h4>
+                <button type="button" class="crafted-preview-close" onclick="closeCraftedBadgePreview()" aria-label="关闭">&times;</button>
+            </div>
+            <div class="crafted-preview-top">
+                <div id="crafted-preview-badge"></div>
+                <div id="crafted-preview-skill"></div>
+            </div>
+            <div class="crafted-preview-body" id="crafted-preview-body"></div>
+            <div class="crafted-preview-footer" id="crafted-preview-footer"></div>
+        </div>
+    </div>
 
     <div id="result-modal-overlay" class="result-modal-overlay" onclick="closeResultModal()">
         <div class="result-modal" id="result-modal" onclick="event.stopPropagation()">

@@ -2,6 +2,9 @@
 @media (max-width: 768px) {
     .container {
         padding: 10px;
+        overflow-x: hidden;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     h1 {
@@ -26,6 +29,10 @@
     
     .table-responsive {
         font-size: 12px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .table th {
@@ -102,5 +109,50 @@
     /* 图表响应式 */
     .chart-container {
         margin-bottom: 20px;
+    }
+    
+    /* 资源汇总响应式 */
+    .resource-summary {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 6px 8px;
+    }
+    
+    .resource-item {
+        gap: 3px;
+        padding: 2px 4px;
+    }
+    
+    .resource-label {
+        font-size: 11px;
+    }
+    
+    .resource-value {
+        font-size: 11px;
+        min-width: 35px;
+    }
+}
+
+/* 手机横屏样式 */
+@media (max-width: 768px) and (orientation: landscape) {
+    .resource-summary {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 6px 8px;
+    }
+    
+    .resource-item {
+        gap: 3px;
+        padding: 2px 4px;
+        justify-content: center;
+    }
+    
+    .resource-label {
+        font-size: 10px;
+    }
+    
+    .resource-value {
+        font-size: 11px;
+        min-width: 35px;
     }
 }

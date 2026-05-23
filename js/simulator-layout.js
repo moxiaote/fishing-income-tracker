@@ -15,6 +15,11 @@
 
     function applyMobileCompactLayout() {
         var narrow = window.matchMedia('(max-width: 576px)').matches;
+        document.querySelectorAll('[data-inventory-mobile-open]').forEach(function (panel) {
+            if (narrow) {
+                panel.classList.add('show');
+            }
+        });
         document.querySelectorAll('[data-sim-collapse]').forEach(function (panel) {
             if (narrow) {
                 panel.classList.remove('show');
