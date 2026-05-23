@@ -91,6 +91,8 @@
             gap: 5px;
             flex: 1;
             min-width: 80px;
+            overflow: visible;
+            padding: 3px;
         }
 
         .slot-label {
@@ -664,6 +666,10 @@
             padding: 4px 6px;
             background-color: #e9ecef;
             border-radius: 4px;
+            min-height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .craft-action-row .probability-line {
@@ -692,6 +698,15 @@
             white-space: nowrap;
         }
 
+        .craft-action-row .action-hint {
+            font-size: 10px;
+            color: #28a745;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         .craft-action-row #probability-breakdown {
             font-size: 9px;
             color: #666;
@@ -718,14 +733,14 @@
 
         .craft-action-row .craft-btn-wrap {
             flex: 0 0 auto;
-            max-width: 108px;
+            max-width: none;
             margin: 0;
             display: flex;
             align-items: center;
+            gap: 4px;
         }
 
         .craft-action-row .craft-btn-wrap .btn {
-            width: 100%;
             margin: 0;
             display: flex;
             align-items: center;
@@ -733,7 +748,8 @@
             white-space: nowrap;
             font-size: 12px;
             line-height: 1.2;
-            padding: 5px 8px;
+            padding: 0 8px;
+            height: 28px;
             border-radius: 4px;
         }
 
@@ -991,49 +1007,12 @@
             margin-left: 4px;
         }
 
-        .inventory-pick-hint {
-            display: none;
-            margin: 6px 0 4px;
-            padding: 8px 10px;
-            font-size: 12px;
-            line-height: 1.4;
-            text-align: center;
-            background: #e7f1ff;
-            border: 1px solid #b8daff;
-            border-radius: 6px;
-            color: #004085;
-        }
-
-        .inventory-pick-hint .inventory-pick-cancel {
-            display: inline-block;
-            margin-left: 6px;
-            padding: 0 4px;
-            font-size: 12px;
-            vertical-align: baseline;
-        }
-
-        body.badge-pick-mode .inventory-pick-hint {
-            display: block;
-        }
-
-        body.badge-pick-mode .inventory-stash--active {
-            box-shadow: 0 0 0 2px #007bff;
+        body.badge-pick-mode .inventory-stash--active .inventory-card {
+            border: 2px solid #007bff;
             border-radius: 8px;
         }
 
-        .badge-slot.slot-pick-active .badge-circle,
-        .badge-slot.slot-pick-active .central-badge {
-            box-shadow: 0 0 0 3px #007bff;
-            border-color: #007bff;
-        }
-
-        #four-beast-grid.inventory-pick-target .badge-grid-item {
-            border-style: solid;
-            border-color: #90caf9;
-        }
-
         #four-beast-grid.inventory-pick-target .badge-grid-item:active {
-            border-color: #007bff;
             background-color: #e3f2fd;
         }
 
@@ -1404,10 +1383,6 @@
                 padding: 3px;
             }
 
-            .inventory-pick-hint {
-                display: block;
-            }
-
             .inventory-stash .sim-toggle-btn {
                 display: none;
             }
@@ -1601,17 +1576,19 @@
 
             <div class="craft-action-row">
                 <div class="probability-display">
-                    <div class="probability-line">
+                    <div class="probability-line" id="probability-line">
                         <span class="probability-value" id="success-probability">0%</span>
                         <span class="probability-label">制作成功率</span>
                         <span class="probability-breakdown" id="probability-breakdown"></span>
                     </div>
+                    <div class="action-hint" id="action-hint" hidden></div>
                     <div class="hidden-probability" id="hidden-probability" hidden></div>
                 </div>
                 <div class="craft-btn-wrap">
                     <button id="craft-btn" class="btn btn-primary" onclick="craftBadge()" disabled>
                         制作勋章
                     </button>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="autoUpgradeBadges()">升级</button>
                 </div>
             </div>
 
@@ -1619,17 +1596,14 @@
             <div id="result-message" class="result-message"></div>
         </div>
 
-        <p id="inventory-pick-hint" class="inventory-pick-hint" aria-live="polite">
-            <span id="inventory-pick-text">① 点上方空槽位 → ② 点下方四神兽库存放入</span>
-            <button type="button" class="btn btn-link btn-sm inventory-pick-cancel" onclick="closeInventoryPickMode()" hidden>取消</button>
-        </p>
+        <!-- 选中提示 -->
+
 
         <!-- 四神兽勋章库存 -->
         <div class="inventory-section inventory-stash" id="four-beast-section">
             <div class="inventory-header card-toggle-row">
                 <span class="inventory-title">🐲 四神兽库存<span id="four-beast-count" class="inventory-count"></span></span>
                 <div class="inventory-actions">
-                    <button type="button" class="btn btn-sm btn-primary" onclick="autoUpgradeBadges()">升级</button>
                     <button class="btn btn-sm btn-outline-secondary sim-toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#four-beast-collapse" aria-expanded="true" aria-controls="four-beast-collapse">表</button>
                 </div>
             </div>
@@ -1758,10 +1732,10 @@
         }
 
         function updatePickModeUI() {
-            var cancel = document.querySelector('.inventory-pick-cancel');
-            var text = document.getElementById('inventory-pick-text');
             var section = document.getElementById('four-beast-section');
             var grid = document.getElementById('four-beast-grid');
+            var probabilityLine = document.getElementById('probability-line');
+            var actionHint = document.getElementById('action-hint');
             document.querySelectorAll('.badge-slot').forEach(function (s) {
                 s.classList.remove('slot-pick-active');
             });
@@ -1771,12 +1745,15 @@
                 document.body.classList.add('badge-pick-mode');
                 var slotEl = document.querySelector('.badge-slot[data-slot="' + currentSlot + '"]');
                 if (slotEl) slotEl.classList.add('slot-pick-active');
-                if (text) text.textContent = '正在选「' + (SLOT_PICK_LABELS[currentSlot] || '') + '」勋章，点击下方四神兽库存放入';
-                if (cancel) cancel.hidden = false;
+                if (probabilityLine) probabilityLine.hidden = true;
+                if (actionHint) {
+                    actionHint.hidden = false;
+                    actionHint.textContent = '正在选「' + (SLOT_PICK_LABELS[currentSlot] || '') + '」勋章，点击下方四神兽库存放入';
+                }
             } else {
                 document.body.classList.remove('badge-pick-mode');
-                if (text) text.textContent = '① 点上方空槽位 → ② 点下方四神兽库存放入';
-                if (cancel) cancel.hidden = true;
+                if (probabilityLine) probabilityLine.hidden = false;
+                if (actionHint) actionHint.hidden = true;
             }
         }
 
