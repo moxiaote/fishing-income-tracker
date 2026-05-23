@@ -159,6 +159,12 @@ class App {
                     const target = button.getAttribute('data-target');
                     const i18nKey = button.getAttribute('data-i18n');
                     
+                    // 如果没有指定目标（备用按钮），则关闭嵌套窗口
+                    if (!target || target === '') {
+                        this.closeSimulator();
+                        return;
+                    }
+                    
                     // 检查是否是当前打开的模拟器
                     if (this.currentSimulator === target) {
                         // 如果是当前打开的模拟器，则关闭
@@ -604,28 +610,36 @@ class App {
         
         // 更新统计概览显示
         const diamondElement = document.getElementById('stat-diamond');
-        diamondElement.textContent = formattedDiamond.display;
         diamondElement.title = formattedDiamond.full;
         diamondElement.dataset.fullValue = formattedDiamond.full;
         diamondElement.dataset.displayValue = formattedDiamond.display;
+        if (!diamondElement.classList.contains('show-full')) {
+            diamondElement.textContent = formattedDiamond.display;
+        }
         
         const breakthroughElement = document.getElementById('stat-breakthrough');
-        breakthroughElement.textContent = formattedBreakthrough.display;
         breakthroughElement.title = formattedBreakthrough.full;
         breakthroughElement.dataset.fullValue = formattedBreakthrough.full;
         breakthroughElement.dataset.displayValue = formattedBreakthrough.display;
+        if (!breakthroughElement.classList.contains('show-full')) {
+            breakthroughElement.textContent = formattedBreakthrough.display;
+        }
         
         const rawstoneElement = document.getElementById('stat-rawstone');
-        rawstoneElement.textContent = formattedRawstone.display;
         rawstoneElement.title = formattedRawstone.full;
         rawstoneElement.dataset.fullValue = formattedRawstone.full;
         rawstoneElement.dataset.displayValue = formattedRawstone.display;
+        if (!rawstoneElement.classList.contains('show-full')) {
+            rawstoneElement.textContent = formattedRawstone.display;
+        }
         
         const platinumElement = document.getElementById('stat-platinum');
-        platinumElement.textContent = formattedPlatinum.display;
         platinumElement.title = formattedPlatinum.full;
         platinumElement.dataset.fullValue = formattedPlatinum.full;
         platinumElement.dataset.displayValue = formattedPlatinum.display;
+        if (!platinumElement.classList.contains('show-full')) {
+            platinumElement.textContent = formattedPlatinum.display;
+        }
 
         // 更新统计概览变化显示
         this.updateChangeIndicator('stat-diamond-change', todayChange.diamond);

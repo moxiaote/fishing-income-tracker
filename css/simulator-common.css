@@ -335,47 +335,783 @@ h3 {
     padding: 8px;
 }
 
-.crest-enhance .stage-display {
-    padding: 10px;
-    margin-bottom: 8px;
-}
-
-.crest-enhance .stage-number {
-    font-size: 32px;
-}
-
-.crest-enhance .probability-info {
-    padding: 6px 8px;
-    margin-bottom: 8px;
-}
-
-.crest-enhance .probability-value {
-    font-size: 22px;
-}
-
 .crest-enhance .crest-select {
-    gap: 6px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
     margin-bottom: 8px;
 }
 
 .crest-enhance .crest-option {
     padding: 6px 4px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
     font-size: 10px;
+    background-color: #fff;
+}
+
+.crest-enhance .crest-option:hover {
+    border-color: #007bff;
+    background-color: #e3f2fd;
+}
+
+.crest-enhance .crest-option.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.2);
 }
 
 .crest-enhance .crest-icon {
-    font-size: 18px;
-    margin-bottom: 2px;
+    font-size: 14px;
+    margin-bottom: 1px;
+}
+
+.crest-enhance .crest-name {
+    font-weight: bold;
+    color: #333;
+    font-size: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.crest-enhance .stage-display-container {
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #dee2e6;
+    position: relative;
+}
+
+.crest-enhance .main-content-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.crest-enhance .left-panel {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 170px;
+}
+
+.crest-enhance .right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.crest-enhance .circle-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0;
+}
+
+.crest-enhance .orb {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: bold;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity: 0;
+    transform: scale(0);
+}
+
+.crest-enhance .orb.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.crest-enhance .orb.tier1 {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border: 2px solid #ced4da;
+    color: #6c757d;
+}
+
+.crest-enhance .orb.tier1.active {
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    border-color: #aab;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.7);
+    animation: pulse 1.5s infinite;
+}
+
+/* 第Ⅰ阶 - 日之起源 */
+.crest-enhance .orb.tier1.sun {
+    background: linear-gradient(145deg, #fff9e6, #fff3cd);
+    border: 2px solid #f1c40f;
+    color: #f1c40f;
+}
+.crest-enhance .orb.tier1.sun.active {
+    background: linear-gradient(145deg, #f1c40f, #e67e22);
+    border-color: #f39c12;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.7);
+}
+
+/* 第Ⅰ阶 - 月之起源 */
+.crest-enhance .orb.tier1.moon {
+    background: linear-gradient(145deg, #e8f4f8, #d4e6f1);
+    border: 2px solid #3498db;
+    color: #3498db;
+}
+.crest-enhance .orb.tier1.moon.active {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    border-color: #5dade2;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.7);
+}
+
+/* 第Ⅰ阶 - 云之起源 */
+.crest-enhance .orb.tier1.cloud {
+    background: linear-gradient(145deg, #e8f8f5, #d1f2eb);
+    border: 2px solid #1abc9c;
+    color: #1abc9c;
+}
+.crest-enhance .orb.tier1.cloud.active {
+    background: linear-gradient(145deg, #1abc9c, #16a085);
+    border-color: #48c9b0;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(26, 188, 156, 0.7);
+}
+
+/* 第Ⅰ阶 - 勿忘草之起源 */
+.crest-enhance .orb.tier1.flower {
+    background: linear-gradient(145deg, #fde2e6, #fadbd8);
+    border: 2px solid #e91e63;
+    color: #e91e63;
+}
+.crest-enhance .orb.tier1.flower.active {
+    background: linear-gradient(145deg, #e91e63, #c2185b);
+    border-color: #f06292;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(233, 30, 99, 0.7);
+}
+
+/* 第Ⅰ阶 - 星之起源 */
+.crest-enhance .orb.tier1.star {
+    background: linear-gradient(145deg, #f4ecf7, #e8daef);
+    border: 2px solid #9b59b6;
+    color: #9b59b6;
+}
+.crest-enhance .orb.tier1.star.active {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad);
+    border-color: #bb8fce;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.7);
+}
+
+/* 第Ⅰ阶 - 闪电的起源 */
+.crest-enhance .orb.tier1.lightning {
+    background: linear-gradient(145deg, #fef9e7, #fdebd0);
+    border: 2px solid #f39c12;
+    color: #f39c12;
+}
+.crest-enhance .orb.tier1.lightning.active {
+    background: linear-gradient(145deg, #f39c12, #d68910);
+    border-color: #f5b041;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.7);
+}
+
+/* 第Ⅰ阶 - 岛之起源 */
+.crest-enhance .orb.tier1.island {
+    background: linear-gradient(145deg, #f2f3f4, #e5e7e9);
+    border: 2px solid #7f8c8d;
+    color: #7f8c8d;
+}
+.crest-enhance .orb.tier1.island.active {
+    background: linear-gradient(145deg, #7f8c8d, #707b7c);
+    border-color: #aeb6bf;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(127, 140, 141, 0.7);
+}
+
+.crest-enhance .orb.tier2-big {
+    width: 34px;
+    height: 34px;
+    background: linear-gradient(145deg, #fff3cd, #ffeeba);
+    border: 2px solid #ffc107;
+    color: #856404;
+}
+
+.crest-enhance .orb.tier2-big.active {
+    background: linear-gradient(145deg, #f39c12, #e74c3c);
+    border-color: #fbb;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(243, 156, 18, 0.7);
+    animation: pulse 1.5s infinite;
+}
+
+.crest-enhance .orb.tier2-small {
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border: 1.5px solid #dee2e6;
+    color: #adb5bd;
+}
+
+.crest-enhance .orb.tier2-small.active {
+    background: linear-gradient(145deg, #ffd700, #ffaa00);
+    border-color: #ffd;
+    color: #333;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    animation: pulse 1.5s infinite;
+}
+
+/* 第Ⅱ阶 - 日之起源 */
+.crest-enhance .orb.tier2-big.sun {
+    background: linear-gradient(145deg, #fff9e6, #fff3cd);
+    border: 2px solid #f1c40f;
+    color: #f1c40f;
+}
+.crest-enhance .orb.tier2-big.sun.active {
+    background: linear-gradient(145deg, #f1c40f, #e67e22);
+    border-color: #f39c12;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(241, 196, 15, 0.7);
+}
+.crest-enhance .orb.tier2-small.sun {
+    background: linear-gradient(145deg, #fff9e6, #fff3cd);
+    border: 1px solid #f1c40f;
+    color: #f1c40f;
+}
+.crest-enhance .orb.tier2-small.sun.active {
+    background: linear-gradient(145deg, #f1c40f, #e67e22);
+    border-color: #f39c12;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(241, 196, 15, 0.6);
+}
+
+/* 第Ⅱ阶 - 月之起源 */
+.crest-enhance .orb.tier2-big.moon {
+    background: linear-gradient(145deg, #e8f4f8, #d4e6f1);
+    border: 2px solid #3498db;
+    color: #3498db;
+}
+.crest-enhance .orb.tier2-big.moon.active {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    border-color: #5dade2;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(52, 152, 219, 0.7);
+}
+.crest-enhance .orb.tier2-small.moon {
+    background: linear-gradient(145deg, #e8f4f8, #d4e6f1);
+    border: 1px solid #3498db;
+    color: #3498db;
+}
+.crest-enhance .orb.tier2-small.moon.active {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    border-color: #5dade2;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(52, 152, 219, 0.6);
+}
+
+/* 第Ⅱ阶 - 云之起源 */
+.crest-enhance .orb.tier2-big.cloud {
+    background: linear-gradient(145deg, #e8f8f5, #d1f2eb);
+    border: 2px solid #1abc9c;
+    color: #1abc9c;
+}
+.crest-enhance .orb.tier2-big.cloud.active {
+    background: linear-gradient(145deg, #1abc9c, #16a085);
+    border-color: #48c9b0;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(26, 188, 156, 0.7);
+}
+.crest-enhance .orb.tier2-small.cloud {
+    background: linear-gradient(145deg, #e8f8f5, #d1f2eb);
+    border: 1px solid #1abc9c;
+    color: #1abc9c;
+}
+.crest-enhance .orb.tier2-small.cloud.active {
+    background: linear-gradient(145deg, #1abc9c, #16a085);
+    border-color: #48c9b0;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(26, 188, 156, 0.6);
+}
+
+/* 第Ⅱ阶 - 勿忘草之起源 */
+.crest-enhance .orb.tier2-big.flower {
+    background: linear-gradient(145deg, #fde2e6, #fadbd8);
+    border: 2px solid #e91e63;
+    color: #e91e63;
+}
+.crest-enhance .orb.tier2-big.flower.active {
+    background: linear-gradient(145deg, #e91e63, #c2185b);
+    border-color: #f06292;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(233, 30, 99, 0.7);
+}
+.crest-enhance .orb.tier2-small.flower {
+    background: linear-gradient(145deg, #fde2e6, #fadbd8);
+    border: 1px solid #e91e63;
+    color: #e91e63;
+}
+.crest-enhance .orb.tier2-small.flower.active {
+    background: linear-gradient(145deg, #e91e63, #c2185b);
+    border-color: #f06292;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(233, 30, 99, 0.6);
+}
+
+/* 第Ⅱ阶 - 星之起源 */
+.crest-enhance .orb.tier2-big.star {
+    background: linear-gradient(145deg, #f4ecf7, #e8daef);
+    border: 2px solid #9b59b6;
+    color: #9b59b6;
+}
+.crest-enhance .orb.tier2-big.star.active {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad);
+    border-color: #bb8fce;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(155, 89, 182, 0.7);
+}
+.crest-enhance .orb.tier2-small.star {
+    background: linear-gradient(145deg, #f4ecf7, #e8daef);
+    border: 1px solid #9b59b6;
+    color: #9b59b6;
+}
+.crest-enhance .orb.tier2-small.star.active {
+    background: linear-gradient(145deg, #9b59b6, #8e44ad);
+    border-color: #bb8fce;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.6);
+}
+
+/* 第Ⅱ阶 - 闪电的起源 */
+.crest-enhance .orb.tier2-big.lightning {
+    background: linear-gradient(145deg, #fef9e7, #fdebd0);
+    border: 2px solid #f39c12;
+    color: #f39c12;
+}
+.crest-enhance .orb.tier2-big.lightning.active {
+    background: linear-gradient(145deg, #f39c12, #d68910);
+    border-color: #f5b041;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(243, 156, 18, 0.7);
+}
+.crest-enhance .orb.tier2-small.lightning {
+    background: linear-gradient(145deg, #fef9e7, #fdebd0);
+    border: 1px solid #f39c12;
+    color: #f39c12;
+}
+.crest-enhance .orb.tier2-small.lightning.active {
+    background: linear-gradient(145deg, #f39c12, #d68910);
+    border-color: #f5b041;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.6);
+}
+
+/* 第Ⅱ阶 - 岛之起源 */
+.crest-enhance .orb.tier2-big.island {
+    background: linear-gradient(145deg, #f2f3f4, #e5e7e9);
+    border: 2px solid #7f8c8d;
+    color: #7f8c8d;
+}
+.crest-enhance .orb.tier2-big.island.active {
+    background: linear-gradient(145deg, #7f8c8d, #707b7c);
+    border-color: #aeb6bf;
+    color: #fff;
+    box-shadow: 0 0 18px rgba(127, 140, 141, 0.7);
+}
+.crest-enhance .orb.tier2-small.island {
+    background: linear-gradient(145deg, #f2f3f4, #e5e7e9);
+    border: 1px solid #7f8c8d;
+    color: #7f8c8d;
+}
+.crest-enhance .orb.tier2-small.island.active {
+    background: linear-gradient(145deg, #7f8c8d, #707b7c);
+    border-color: #aeb6bf;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(127, 140, 141, 0.6);
+}
+
+.crest-enhance .center-icon {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 58px;
+    background: transparent;
+    border: 4px solid;
+    transition: all 0.3s ease;
+    z-index: 0;
+}
+
+.crest-enhance .center-icon.sun {
+    color: #f1c40f;
+    border-color: #f1c40f;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.moon {
+    color: #3498db;
+    border-color: #3498db;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.cloud {
+    color: #1abc9c;
+    border-color: #1abc9c;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.flower {
+    color: #e91e63;
+    border-color: #e91e63;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.star {
+    color: #9b59b6;
+    border-color: #9b59b6;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.lightning {
+    color: #f39c12;
+    border-color: #f39c12;
+    box-shadow: none;
+}
+
+.crest-enhance .center-icon.island {
+    color: #7f8c8d;
+    border-color: #7f8c8d;
+    box-shadow: none;
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        box-shadow: 0 0 10px currentColor;
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 25px currentColor, 0 0 40px currentColor;
+        transform: scale(1.05);
+    }
+}
+
+.crest-enhance .tier-selector {
+    display: flex;
+    gap: 4px;
+}
+
+.crest-enhance .tier-tab {
+    flex: 1;
+    padding: 6px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #dee2e6;
+    background: #f8f9fa;
+    color: #6c757d;
+    text-align: center;
+    min-width: 0;
+}
+
+.crest-enhance .tier-tab.tier-1.active,
+.crest-enhance .tier-tab.tier-2.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.crest-enhance .divider {
+    height: 1px;
+    background: #dee2e6;
+    margin: 4px 0;
+}
+
+.crest-enhance .stage-info {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 16px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.crest-enhance .sale-tag {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #dc3545;
+    color: white;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+    z-index: 10;
+    display: none;
+}
+
+
+
+.crest-enhance .stage-title {
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+}
+
+.crest-enhance .tier-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 10px !important;
+    border-radius: 4px !important;
+    font-size: 11px !important;
+    background: #e9ecef !important;
+    border: 1px solid #dee2e6 !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    color: #6c757d !important;
+    font-weight: bold !important;
+    box-sizing: border-box !important;
+}
+
+.crest-enhance .probability-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background-color: #fff3cd;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #ffeeba;
+}
+
+.crest-enhance .probability-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #dc3545;
+}
+
+.crest-enhance .probability-label {
+    font-size: 11px;
+    color: #856404;
 }
 
 .crest-enhance .action-buttons {
-    margin-top: 6px;
+    display: flex;
     gap: 6px;
+    margin-top: 0;
+    align-items: center;
+    height: 36px;
 }
 
 .crest-enhance .action-buttons .btn {
-    margin-top: 0;
-    padding: 6px 10px;
+    width: 65px;
+    margin: 0 !important;
+    padding: 0 6px !important;
+    font-size: 12px !important;
+    flex-shrink: 0;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+}
+
+.crest-enhance .action-buttons-row {
+    display: flex;
+    gap: 6px;
+}
+
+.crest-enhance .action-buttons-row .btn {
+    flex: 1;
+    margin: 0 !important;
+    padding: 0 6px !important;
+    font-size: 12px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+}
+
+.crest-enhance .tier-badge-container {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.crest-enhance .tier-badge {
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.crest-enhance .tier-selector {
+    display: flex;
+    gap: 6px;
+}
+
+.crest-enhance .tier-tab {
+    flex: 1;
+    padding: 0 !important;
+    border-radius: 4px !important;
+    font-size: 13px !important;
+    font-weight: bold !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid #dee2e6 !important;
+    background: #f8f9fa !important;
+    color: #6c757d !important;
+    text-align: center;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.crest-enhance .reset-btn {
+    font-size: 11px;
+    padding: 6px 12px;
+}
+
+.crest-enhance .result-message {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-align: center;
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.crest-enhance .success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.crest-enhance .failure-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.crest-enhance .max-message {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.crest-enhance .probability-table {
+    margin-top: 8px;
+    font-size: 10px;
+}
+
+.crest-enhance .probability-table th,
+.crest-enhance .probability-table td {
+    text-align: center;
+    padding: 4px 2px;
+}
+
+.crest-enhance .probability-table .current-stage {
+    font-weight: bold;
+    color: #dc3545;
+    background-color: #fff3cd;
+}
+
+.crest-enhance .probability-table .tier-1-header {
+    background-color: #cce5ff;
+    color: #004085;
+    font-weight: bold;
+}
+
+.crest-enhance .probability-table .tier-2-header {
+    background-color: #fff3cd;
+    color: #856404;
+    font-weight: bold;
+}
+
+.crest-enhance .collapsible-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    color: #6c757d;
+}
+
+.crest-enhance .collapsible-header:hover {
+    color: #007bff;
+}
+
+.crest-enhance .collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.crest-enhance .collapsible-content.open {
+    max-height: 500px;
+}
+
+.crest-enhance .lightning { color: #f39c12; }
+.crest-enhance .star { color: #9b59b6; }
+.crest-enhance .sun { color: #f1c40f; }
+.crest-enhance .moon { color: #3498db; }
+.crest-enhance .cloud { color: #1abc9c; }
+.crest-enhance .flower { color: #e91e63; }
+.crest-enhance .island { color: #7f8c8d; }
+
+.crest-enhance .enhance-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.crest-enhance .enhance-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.crest-enhance .enhance-btn:hover::after {
+    left: 100%;
 }
 
 @media (max-width: 576px) {
@@ -457,16 +1193,134 @@ h3 {
         margin: 6px 0 !important;
     }
 
-    .crest-enhance .stage-number {
-        font-size: 26px;
+    .crest-enhance .crest-select {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 3px;
+    }
+
+    .crest-enhance .crest-option {
+        padding: 6px 4px;
+        font-size: 10px;
+    }
+
+    .crest-enhance .crest-icon {
+        font-size: 12px;
+    }
+
+    .crest-enhance .circle-container {
+        width: 160px;
+        height: 160px;
+    }
+
+    .crest-enhance .orb.tier1 {
+        width: 24px;
+        height: 24px;
+        font-size: 8px;
+    }
+
+    .crest-enhance .orb.tier2-big {
+        width: 28px;
+        height: 28px;
+        font-size: 8px;
+    }
+
+    .crest-enhance .orb.tier2-small {
+        width: 15px;
+        height: 15px;
+    }
+
+    .crest-enhance .center-icon {
+        font-size: 48px;
+    }
+
+    .crest-enhance .left-panel {
+        width: 150px;
+    }
+
+    .crest-enhance .action-buttons {
+        height: 32px;
+    }
+
+    .crest-enhance .action-buttons .btn {
+        width: 55px !important;
+        padding: 0 4px !important;
+        font-size: 11px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .crest-enhance .action-buttons-row .btn {
+        padding: 0 4px !important;
+        font-size: 11px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .crest-enhance .tier-badge {
+        font-size: 10px !important;
+        padding: 0 8px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .crest-enhance .tier-tab {
+        padding: 0 !important;
+        font-size: 12px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        max-height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .crest-enhance .stage-title {
+        font-size: 12px;
+    }
+
+    .crest-enhance .tier-badge {
+        font-size: 10px;
+        padding: 2px 10px;
+        margin-top: 4px;
     }
 
     .crest-enhance .probability-value {
-        font-size: 18px;
+        font-size: 20px;
     }
 
-    .crest-enhance .crest-select {
-        grid-template-columns: repeat(4, 1fr);
+    .crest-enhance .probability-label {
+        font-size: 10px;
+    }
+
+    .crest-enhance .probability-table {
+        font-size: 9px;
+    }
+
+    .crest-enhance .probability-table th,
+    .crest-enhance .probability-table td {
+        padding: 3px 1px;
     }
 
     /* 珍珠 */

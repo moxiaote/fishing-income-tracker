@@ -69,12 +69,14 @@ body {
 }
 
 .card-header {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
+    padding: 8px 12px;
 }
 
 .card-body {
-    font-size: 14px;
+    font-size: 13px;
+    padding: 10px;
 }
 
 h1 {
@@ -683,21 +685,21 @@ h1 {
 .resource-summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    padding: 8px 10px;
+    gap: 4px;
+    padding: 6px 8px;
     background: white;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #dee2e6;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .resource-item {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 4px;
-    padding: 3px 6px;
-    border-radius: 4px;
+    gap: 3px;
+    padding: 2px 4px;
+    border-radius: 3px;
     transition: all 0.2s ease;
     white-space: nowrap;
 }
@@ -742,9 +744,17 @@ h1 {
 }
 
 /* 模拟器样式 */
+.simulator-content .d-flex.flex-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
 .simulator-btn {
     transition: all 0.3s ease;
     border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
 }
 
 .simulator-btn:hover {

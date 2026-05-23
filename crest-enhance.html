@@ -3,217 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="钓鱼发烧友刻印模拟器，在线模拟刻印成功率与等级提升">
+    <meta name="keywords" content="钓鱼发烧友,刻印模拟器,游戏工具">
+    <meta name="author" content="海盗毕业">
     <title>刻印模拟器</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/simulator-common.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/simulator-layout.js"></script>
-    <style>
-        body.crest-enhance h2 {
-            font-size: 14px;
-            margin: 4px 0 6px;
-            color: #333;
-        }
-        .crest-select {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .crest-option {
-            padding: 10px 6px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            font-size: 12px;
-            background-color: #fff;
-        }
-        .crest-option:hover {
-            border-color: #007bff;
-            background-color: #e3f2fd;
-        }
-        .crest-option.selected {
-            border-color: #28a745;
-            background-color: #d4edda;
-            box-shadow: 0 0 8px rgba(40,167,69,0.3);
-        }
-        .crest-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-        .crest-name {
-            font-weight: bold;
-            color: #333;
-        }
-        .stage-display {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 12px;
-        }
-        .stage-number {
-            font-size: 42px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        .stage-label {
-            font-size: 14px;
-            margin-top: 4px;
-            opacity: 0.9;
-        }
-        .tier-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-        .tier-1 {
-            background-color: rgba(255,255,255,0.2);
-        }
-        .tier-2 {
-            background-color: rgba(255,193,7,0.3);
-        }
-        .probability-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #fff3cd;
-            border-radius: 6px;
-            margin-bottom: 12px;
-        }
-        .probability-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #dc3545;
-        }
-        .probability-label {
-            font-size: 12px;
-            color: #856404;
-        }
-        .btn {
-            transition: all 0.2s ease;
-            font-size: 14px;
-            padding: 10px 20px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            border: none;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,123,255,0.4);
-        }
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
-            border: none;
-        }
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .result-message {
-            margin-top: 12px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            text-align: center;
-            animation: fadeIn 0.3s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            border: 2px solid #28a745;
-        }
-        .failure-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 2px solid #dc3545;
-        }
-        .max-message {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 2px solid #17a2b8;
-        }
-        .probability-table {
-            margin-top: 12px;
-            font-size: 11px;
-        }
-        .probability-table th,
-        .probability-table td {
-            text-align: center;
-            padding: 4px;
-        }
-        .probability-table .current-stage {
-            font-weight: bold;
-            color: #dc3545;
-        }
-        .probability-table .tier-1-header,
-        .probability-table .tier-2-header {
-            background-color: #e9ecef;
-            color: #495057;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .action-buttons .btn {
-            flex: 1;
-        }
-        .reset-btn {
-            font-size: 11px;
-            padding: 6px 12px;
-        }
-        .collapsible-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-        }
-        .collapsible-header:hover {
-            color: #007bff;
-        }
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-        .collapsible-content.open {
-            max-height: 500px;
-        }
-        .lightning { color: #f39c12; }
-        .star { color: #9b59b6; }
-        .sun { color: #e74c3c; }
-        .moon { color: #3498db; }
-        .cloud { color: #1abc9c; }
-        .flower { color: #e91e63; }
-        .island { color: #34495e; }
-
-    </style>
 </head>
 <body class="crest-enhance">
     <div class="page-wrap">
-        <h2 class="text-center" style="cursor: pointer; text-decoration: underline; color: #007bff;" onclick="confirmGlobalReset()">刻印模拟器</h2>
 
         <div class="top-stats-bar">
-            <span>刻印 <strong id="total-attempts">0</strong></span>
+            <span>一阶消耗刻印券 <strong id="total-attempts">0</strong></span>
             <span class="stat-sep">·</span>
-            <span style="color:#28a745;">成 <strong id="total-success">0</strong></span>
+            <span style="color:#28a745;">二阶成 <strong id="total-success">0</strong></span>
             <span class="stat-sep">·</span>
-            <span style="color:#dc3545;">败 <strong id="total-failure">0</strong></span>
+            <span style="color:#dc3545;">二阶败 <strong id="total-failure">0</strong></span>
         </div>
 
         <div class="card panel-card craft-main">
@@ -251,23 +58,32 @@
         </div>
 
         <div class="card panel-card craft-main">
-            <div class="stage-display">
-                <div class="stage-number" id="stage-number">Ⅰ</div>
-                <div class="stage-label" id="stage-name">闪电刻印</div>
-                <div class="tier-badge tier-1" id="tier-badge">第Ⅰ阶</div>
-            </div>
-
-            <div class="probability-info">
-                <div>
-                    <div class="probability-label">当前成功概率</div>
+            <div class="stage-display-container">
+                <div class="sale-tag" id="sale-tag">概率限时10%</div>
+                
+                <div class="main-content-row">
+                    <div class="left-panel">
+                        <div class="action-buttons">
+                            <button id="enhance-btn" class="btn btn-primary enhance-btn" onclick="enhance()">单点</button>
+                            <div class="tier-badge-container">
+                                <div class="tier-badge" id="tier-badge">剩余刻印: 20次</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons-row">
+                            <button id="enhance-five-btn" class="btn btn-success enhance-btn" onclick="enhanceFiveTimes()">五连</button>
+                            <button class="btn btn-secondary reset-btn" onclick="resetCurrentCrest()">重置</button>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="tier-selector">
+                            <div class="tier-tab tier-1 active" id="tier-tab-1" onclick="selectTier(1)">Ⅰ阶</div>
+                            <div class="tier-tab tier-2" id="tier-tab-2" onclick="selectTier(2)">Ⅱ阶</div>
+                        </div>
+                    </div>
+                    
+                    <div class="right-panel">
+                        <div class="circle-container" id="circle-container"></div>
+                    </div>
                 </div>
-                <div class="probability-value" id="probability-value">96.00%</div>
-            </div>
-
-            <div class="action-buttons">
-                <button id="enhance-btn" class="btn btn-primary" onclick="enhance()">刻印</button>
-                <button class="btn btn-secondary reset-btn" onclick="resetCurrentCrest()">重置当前</button>
-            </div>
 
             <div id="result-message" class="result-message" style="display: none;"></div>
         </div>
@@ -275,7 +91,7 @@
         <div class="card panel-card rules-card">
             <div class="d-flex justify-content-between align-items-center card-toggle-row">
                 <h3 class="mb-0">概率表</h3>
-                <button id="toggle-btn" class="btn btn-outline-secondary btn-sm" type="button" onclick="toggleTable()">表</button>
+                <button id="toggle-btn" class="btn btn-outline-secondary btn-sm sim-toggle-btn" type="button" onclick="toggleTable()">展开</button>
             </div>
             <div class="collapsible-content" id="probability-table-container" data-sim-collapse>
                 <table class="table table-sm probability-table">
@@ -322,7 +138,7 @@
             1.95
         ];
 
-        const TIER2_PROBABILITIES = [5, 5, 5, 5, 5];
+        const TIER2_PROBABILITIES = [10, 10, 10, 10, 10];
 
         const MAX_STAGE = 15;
 
@@ -348,21 +164,50 @@
             return ROMAN_NUMERALS[num] || num;
         }
 
+        const MAX_TIER1_ATTEMPTS = 20;
+        const MESSAGE_DISPLAY_TIME = 10000;
+        const RESET_COST = 4;
+
         let gameState = {
             selectedCrest: 'sun',
             crestStages: {
-                sun: 1,
-                moon: 1,
-                cloud: 1,
-                flower: 1,
-                star: 1,
-                lightning: 1,
-                island: 1
+                sun: 0,
+                moon: 0,
+                cloud: 0,
+                flower: 0,
+                star: 0,
+                lightning: 0,
+                island: 0
+            },
+            tier1Attempts: {
+                sun: 0,
+                moon: 0,
+                cloud: 0,
+                flower: 0,
+                star: 0,
+                lightning: 0,
+                island: 0
             },
             totalAttempts: 0,
             totalSuccess: 0,
-            totalFailure: 0
+            totalFailure: 0,
+            displayTier: 1,
+            tier2Entered: {
+                sun: false,
+                moon: false,
+                cloud: false,
+                flower: false,
+                star: false,
+                lightning: false,
+                island: false
+            },
+            resetTicketCount: 0
         };
+
+        let isEnhancing = false;
+        let cooldownTimer = null;
+        let cooldownRemaining = 0;
+        let resultMessageTimer = null;
 
         function selectCrest(crestId) {
             gameState.selectedCrest = crestId;
@@ -370,12 +215,51 @@
                 opt.classList.remove('selected');
             });
             document.querySelector(`.crest-option[data-crest="${crestId}"]`).classList.add('selected');
+            
+            const newStage = gameState.crestStages[crestId];
+            const hasEnteredTier2 = gameState.tier2Entered[crestId];
+            gameState.displayTier = (newStage > 10 || hasEnteredTier2) ? 2 : 1;
+            
+            updateDisplay();
+            updateTierTabs();
+            saveData();
+        }
+
+        function selectTier(tier) {
+            const crestId = gameState.selectedCrest;
+            const currentStage = gameState.crestStages[crestId];
+            
+            if (tier === 1) {
+                gameState.displayTier = 1;
+            } else {
+                if (currentStage < 10) {
+                    showResult('failure', '请先完成第Ⅰ阶全部刻印！');
+                    return;
+                }
+                gameState.displayTier = 2;
+                if (currentStage >= 10) {
+                    gameState.tier2Entered[crestId] = true;
+                }
+            }
+            
+            updateTierTabs();
             updateDisplay();
             saveData();
         }
 
+        function updateTierTabs() {
+            document.getElementById('tier-tab-1').classList.toggle('active', gameState.displayTier === 1);
+            document.getElementById('tier-tab-2').classList.toggle('active', gameState.displayTier === 2);
+        }
+
         function getStageInfo(stage) {
-            if (stage <= 10) {
+            if (stage <= 0) {
+                return {
+                    tier: 1,
+                    index: 0,
+                    probability: TIER1_PROBABILITIES[0]
+                };
+            } else if (stage <= 10) {
                 return {
                     tier: 1,
                     index: stage - 1,
@@ -390,38 +274,206 @@
             }
         }
 
+        function createOrbs() {
+            const container = document.getElementById('circle-container');
+            container.innerHTML = '';
+
+            const stage = gameState.crestStages[gameState.selectedCrest];
+            const displayTier2 = gameState.displayTier === 2;
+            
+            const containerWidth = container.offsetWidth || 220;
+            const containerHeight = container.offsetHeight || 220;
+            const centerX = containerWidth / 2;
+            const centerY = containerHeight / 2;
+            
+            const baseRadius = 80;
+            const radius = (containerWidth / 220) * baseRadius;
+
+            const crest = CREST_DATA[gameState.selectedCrest];
+            const centerIcon = document.createElement('div');
+            centerIcon.className = `center-icon ${crest.class}`;
+            centerIcon.innerHTML = crest.icon;
+            const iconSize = radius * 2;
+            centerIcon.style.left = `${centerX - iconSize / 2}px`;
+            centerIcon.style.top = `${centerY - iconSize / 2}px`;
+            centerIcon.style.width = `${iconSize}px`;
+            centerIcon.style.height = `${iconSize}px`;
+            container.appendChild(centerIcon);
+
+            if (!displayTier2) {
+                const orbSize = 28 * (containerWidth / 220);
+                const halfSize = orbSize / 2;
+                
+                for (let i = 0; i < 10; i++) {
+                    const orb = document.createElement('div');
+                    orb.className = `orb tier1 ${crest.class} ${stage > 0 && i < stage ? 'visible active' : 'visible'}`;
+                    orb.innerHTML = ROMAN_NUMERALS[i + 1];
+                    
+                    const angle = (i * 36 / 180) * Math.PI - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * radius - halfSize;
+                    const y = centerY + Math.sin(angle) * radius - halfSize;
+                    
+                    orb.style.left = `${x}px`;
+                    orb.style.top = `${y}px`;
+                    orb.style.width = `${orbSize}px`;
+                    orb.style.height = `${orbSize}px`;
+                    orb.style.transitionDelay = `${i * 0.08}s`;
+                    
+                    container.appendChild(orb);
+                }
+            } else {
+                const tier2RomanNumerals = ['ⅩⅠ', 'ⅩⅡ', 'ⅩⅢ', 'ⅩⅣ', 'ⅩⅤ'];
+                for (let i = 0; i < 10; i++) {
+                    const isBig = i % 2 === 0;
+                    const orbSize = isBig ? 34 * (containerWidth / 220) : 18 * (containerWidth / 220);
+                    const halfSize = orbSize / 2;
+                    
+                    const orb = document.createElement('div');
+                    const orbType = isBig ? 'tier2-big' : 'tier2-small';
+                    const orbNumber = isBig ? tier2RomanNumerals[Math.floor(i / 2)] : '';
+                    
+                    let isActive = false;
+                    if (isBig) {
+                        isActive = Math.floor(i / 2) < stage - 10;
+                    } else {
+                        const prevBigIndex = i - 1;
+                        isActive = prevBigIndex >= 0 && Math.floor(prevBigIndex / 2) < stage - 10;
+                    }
+                    
+                    orb.className = `orb ${orbType} ${crest.class} ${isActive ? 'visible active' : 'visible'}`;
+                    orb.innerHTML = orbNumber;
+                    
+                    const angle = (i * 36 / 180) * Math.PI - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * radius - halfSize;
+                    const y = centerY + Math.sin(angle) * radius - halfSize;
+                    
+                    orb.style.left = `${x}px`;
+                    orb.style.top = `${y}px`;
+                    orb.style.width = `${orbSize}px`;
+                    orb.style.height = `${orbSize}px`;
+                    orb.style.transitionDelay = `${i * 0.06}s`;
+                    
+                    container.appendChild(orb);
+                }
+            }
+        }
+
         function updateDisplay() {
             const crestId = gameState.selectedCrest;
             const crest = CREST_DATA[crestId];
             const stage = gameState.crestStages[crestId];
-            const stageInfo = getStageInfo(stage);
+            
+            let displayStage = stage;
+            if (gameState.displayTier === 1 && stage > 10) {
+                displayStage = 10;
+            }
+            
+            const stageInfo = getStageInfo(displayStage);
 
-            document.getElementById('stage-number').textContent = toRoman(stage);
-            document.getElementById('stage-name').textContent = `${crest.name}刻印`;
-            document.getElementById('tier-badge').textContent = `第${toRoman(stageInfo.tier)}阶`;
-            document.getElementById('tier-badge').className = `tier-badge tier-${stageInfo.tier}`;
+            createOrbs();
 
-            if (stage >= MAX_STAGE) {
-                document.getElementById('probability-value').textContent = 'MAX';
-                document.getElementById('enhance-btn').disabled = true;
-                document.getElementById('enhance-btn').textContent = '已满级';
+            const tierBadge = document.getElementById('tier-badge');
+            const saleTag = document.getElementById('sale-tag');
+            if (gameState.displayTier === 2) {
+                tierBadge.style.visibility = 'hidden';
+                saleTag.style.display = 'block';
             } else {
-                document.getElementById('probability-value').textContent = stageInfo.probability.toFixed(2) + '%';
-                document.getElementById('enhance-btn').disabled = false;
-                document.getElementById('enhance-btn').textContent = '刻印';
+                tierBadge.style.visibility = 'visible';
+                saleTag.style.display = 'none';
+                const remainingAttempts = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+                tierBadge.textContent = `剩余刻印: ${remainingAttempts}次`;
+                tierBadge.className = `tier-badge tier-${stageInfo.tier}`;
             }
 
-            document.getElementById('total-attempts').textContent = gameState.totalAttempts;
+            const enhanceBtn = document.getElementById('enhance-btn');
+            const fiveBtn = document.getElementById('enhance-five-btn');
+            const resetBtn = document.querySelector('.reset-btn');
+            
+            if (isEnhancing) {
+                return;
+            }
+            
+            const canReset = !gameState.tier2Entered[crestId] && stage <= 10;
+            
+            if (canReset) {
+                resetBtn.disabled = false;
+                resetBtn.textContent = '重置';
+                resetBtn.classList.remove('btn-max-level');
+            } else {
+                resetBtn.disabled = true;
+                resetBtn.textContent = '第Ⅱ阶禁用';
+                resetBtn.classList.add('btn-max-level');
+            }
+            
+            if (stage >= MAX_STAGE) {
+                enhanceBtn.disabled = true;
+                enhanceBtn.textContent = '已满级';
+                enhanceBtn.classList.add('btn-max-level');
+                
+                fiveBtn.disabled = true;
+                fiveBtn.textContent = '已满级';
+                fiveBtn.classList.add('btn-max-level');
+                fiveBtn.classList.remove('btn-success');
+                fiveBtn.classList.add('btn-secondary');
+            } else if (stage === 10 && gameState.displayTier === 1) {
+                enhanceBtn.disabled = true;
+                enhanceBtn.textContent = '请进入第Ⅱ阶';
+                enhanceBtn.classList.add('btn-max-level');
+                
+                fiveBtn.disabled = true;
+                fiveBtn.textContent = '请进入第Ⅱ阶';
+                fiveBtn.classList.add('btn-max-level');
+                fiveBtn.classList.remove('btn-success');
+                fiveBtn.classList.add('btn-secondary');
+            } else if (gameState.displayTier === 2) {
+                if (cooldownRemaining > 0) {
+                    enhanceBtn.disabled = true;
+                    enhanceBtn.textContent = `冷却 (${cooldownRemaining}s)`;
+                    enhanceBtn.classList.add('btn-max-level');
+                } else {
+                    enhanceBtn.disabled = false;
+                    enhanceBtn.textContent = '刻印';
+                    enhanceBtn.classList.remove('btn-max-level');
+                }
+                
+                fiveBtn.disabled = true;
+                fiveBtn.textContent = '第Ⅱ阶禁用';
+                fiveBtn.classList.add('btn-max-level');
+                fiveBtn.classList.remove('btn-success');
+                fiveBtn.classList.add('btn-secondary');
+            } else {
+                if (cooldownRemaining > 0) {
+                    enhanceBtn.disabled = true;
+                    enhanceBtn.textContent = `冷却 (${cooldownRemaining}s)`;
+                    enhanceBtn.classList.add('btn-max-level');
+                } else {
+                    enhanceBtn.disabled = false;
+                    enhanceBtn.textContent = '单点';
+                    enhanceBtn.classList.remove('btn-max-level');
+                }
+                
+                fiveBtn.disabled = false;
+                fiveBtn.textContent = '五连';
+                fiveBtn.classList.remove('btn-max-level');
+                fiveBtn.classList.remove('btn-secondary');
+                fiveBtn.classList.add('btn-success');
+            }
+
+            document.getElementById('total-attempts').textContent = gameState.resetTicketCount;
             document.getElementById('total-success').textContent = gameState.totalSuccess;
             document.getElementById('total-failure').textContent = gameState.totalFailure;
 
-            document.getElementById('result-message').style.display = 'none';
             updateProbabilityTable();
         }
 
         function updateProbabilityTable() {
             const tbody = document.getElementById('probability-table-body');
             const currentStage = gameState.crestStages[gameState.selectedCrest];
+            
+            let displayStage = currentStage;
+            if (gameState.displayTier === 1 && currentStage > 10) {
+                displayStage = 10;
+            }
             let html = '';
 
             for (let i = 0; i < 10; i++) {
@@ -431,10 +483,10 @@
                 const tier2Info = tier2Stage <= MAX_STAGE ? getStageInfo(tier2Stage) : null;
 
                 html += `<tr>
-                    <td class="${tier1Stage === currentStage ? 'current-stage' : ''}">${toRoman(tier1Stage)}</td>
-                    <td class="${tier1Stage === currentStage ? 'current-stage' : ''}">${tier1Info.probability.toFixed(2)}%</td>
-                    ${tier2Info ? `<td class="${tier2Stage === currentStage ? 'current-stage' : ''}">${toRoman(tier2Stage)}</td>
-                    <td class="${tier2Stage === currentStage ? 'current-stage' : ''}">${tier2Info.probability.toFixed(2)}%</td>` : '<td></td><td></td>'}
+                    <td class="${tier1Stage === displayStage ? 'current-stage' : ''}">${toRoman(tier1Stage)}</td>
+                    <td class="${tier1Stage === displayStage ? 'current-stage' : ''}">${tier1Info.probability.toFixed(2)}%</td>
+                    ${tier2Info ? `<td class="${tier2Stage === displayStage ? 'current-stage' : ''}">${toRoman(tier2Stage)}</td>
+                    <td class="${tier2Stage === displayStage ? 'current-stage' : ''}">${tier2Info.probability.toFixed(2)}%</td>` : '<td></td><td></td>'}
                 </tr>`;
             }
 
@@ -445,9 +497,25 @@
             const crestId = gameState.selectedCrest;
             const currentStage = gameState.crestStages[crestId];
 
+            if (isEnhancing) {
+                return;
+            }
+
+            if (cooldownRemaining > 0) {
+                return;
+            }
+
             if (currentStage >= MAX_STAGE) {
                 showResult('max', '已经到达最高阶段！');
                 return;
+            }
+
+            if (currentStage < 10) {
+                const remainingAttempts = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+                if (remainingAttempts <= 0) {
+                    showResult('failure', `第Ⅰ阶刻印次数已用完！\n剩余次数: 0/${MAX_TIER1_ATTEMPTS}\n请重置后重新刻印`);
+                    return;
+                }
             }
 
             const stageInfo = getStageInfo(currentStage);
@@ -456,17 +524,199 @@
 
             gameState.totalAttempts++;
 
+            if (currentStage < 10) {
+                gameState.tier1Attempts[crestId]++;
+            }
+
             if (success) {
                 gameState.crestStages[crestId]++;
-                gameState.totalSuccess++;
-                showResult('success', `刻印成功！阶段 ${toRoman(currentStage)} → ${toRoman(currentStage + 1)}`);
+                if (currentStage >= 10) {
+                    gameState.totalSuccess++;
+                }
+                
+                const newStage = gameState.crestStages[crestId];
+                
+                if (currentStage === 9 && newStage === 10) {
+                    showResult('success', `刻印成功！阶段 ${toRoman(currentStage)} → ${toRoman(newStage)}`);
+                    setTimeout(() => {
+                        if (confirm('第Ⅰ阶已完成！是否切换到第Ⅱ阶界面查看？\n\n点击【确定】立即进入第Ⅱ阶\n点击【取消】可稍后手动点击「第Ⅱ阶」按钮切换')) {
+                            gameState.displayTier = 2;
+                            gameState.tier2Entered[crestId] = true;
+                            updateTierTabs();
+                            updateDisplay();
+                            saveData();
+                        }
+                    }, 500);
+                } else if (currentStage === 10 && newStage === 11) {
+                    gameState.tier2Entered[crestId] = true;
+                    gameState.displayTier = 2;
+                    showResult('success', `第Ⅰ阶完成！自动进入第Ⅱ阶，阶段 ${toRoman(newStage)}`);
+                    updateTierTabs();
+                } else {
+                    showResult('success', `刻印成功！阶段 ${toRoman(currentStage)} → ${toRoman(newStage)}`);
+                }
             } else {
-                gameState.totalFailure++;
-                showResult('failure', `刻印失败，当前阶段不变`);
+                if (currentStage >= 10) {
+                    gameState.totalFailure++;
+                }
+                
+                if (currentStage < 10) {
+                    const remainingAttempts = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+                    if (remainingAttempts <= 0) {
+                        showResult('failure', `刻印失败！第Ⅰ阶刻印次数已用完\n请重置后重新刻印`);
+                    } else {
+                        showResult('failure', `刻印失败，当前阶段不变\n剩余次数: ${remainingAttempts}/${MAX_TIER1_ATTEMPTS}`);
+                    }
+                } else {
+                    showResult('failure', `刻印失败，当前阶段不变`);
+                }
             }
 
             updateDisplay();
             saveData();
+            
+            // 开始3秒冷却
+            startCooldown(3);
+        }
+        
+        function startCooldown(seconds) {
+            cooldownRemaining = seconds;
+            updateDisplay();
+            
+            cooldownTimer = setInterval(() => {
+                cooldownRemaining--;
+                updateDisplay();
+                
+                if (cooldownRemaining <= 0) {
+                    clearInterval(cooldownTimer);
+                    cooldownTimer = null;
+                }
+            }, 1000);
+        }
+
+        function enhanceFiveTimes() {
+            const crestId = gameState.selectedCrest;
+            const initialStage = gameState.crestStages[crestId];
+            
+            if (initialStage >= MAX_STAGE) {
+                showResult('max', '已经到达最高阶段！');
+                return;
+            }
+            
+            if (gameState.displayTier === 2) {
+                showResult('failure', '第Ⅱ阶不允许五连刻印！');
+                return;
+            }
+            
+            const remainingAttempts = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+            if (remainingAttempts <= 0) {
+                showResult('failure', `第Ⅰ阶刻印次数已用完！\n剩余次数: 0/${MAX_TIER1_ATTEMPTS}\n请重置后重新刻印`);
+                return;
+            }
+            
+            if (isEnhancing || cooldownRemaining > 0) {
+                return;
+            }
+            
+
+            
+            isEnhancing = true;
+            const enhanceBtn = document.getElementById('enhance-btn');
+            const fiveBtn = document.getElementById('enhance-five-btn');
+            enhanceBtn.disabled = true;
+            fiveBtn.disabled = true;
+            fiveBtn.classList.add('btn-max-level');
+            fiveBtn.textContent = '刻印中...';
+            
+            let successCount = 0;
+            let failureCount = 0;
+            let currentStage = initialStage;
+            
+            function performEnhance(index) {
+                if (index >= 5 || currentStage >= MAX_STAGE) {
+                    const finalStage = gameState.crestStages[crestId];
+                    const remaining = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+                    let message = `五连刻印完成！\n`;
+                    message += `成功: ${successCount}次, 失败: ${failureCount}次\n`;
+                    message += `阶段变化: ${toRoman(initialStage)} → ${toRoman(finalStage)}\n`;
+                    message += `剩余刻印次数: ${remaining}/${MAX_TIER1_ATTEMPTS}`;
+                    showResult(successCount > 0 ? 'success' : 'failure', message);
+                    
+                    isEnhancing = false;
+                    updateDisplay();
+                    saveData();
+                    return;
+                }
+                
+                if (currentStage < 10) {
+                    const remaining = MAX_TIER1_ATTEMPTS - gameState.tier1Attempts[crestId];
+                    if (remaining <= 0) {
+                        const finalStage = gameState.crestStages[crestId];
+                        let message = `五连刻印终止！\n`;
+                        message += `成功: ${successCount}次, 失败: ${failureCount}次\n`;
+                        message += `阶段变化: ${toRoman(initialStage)} → ${toRoman(finalStage)}\n`;
+                        message += `刻印次数已用完，请重置后重新刻印`;
+                        showResult('failure', message);
+                        
+                        isEnhancing = false;
+                        updateDisplay();
+                        saveData();
+                        return;
+                    }
+                }
+                
+                const stageInfo = getStageInfo(currentStage);
+                const random = Math.random() * 100;
+                const success = random < stageInfo.probability;
+                
+                gameState.totalAttempts++;
+                
+                if (currentStage < 10) {
+                    gameState.tier1Attempts[crestId]++;
+                }
+                
+                if (success) {
+                    gameState.crestStages[crestId]++;
+                    successCount++;
+                    currentStage = gameState.crestStages[crestId];
+                    
+                    if (currentStage === 10) {
+                        const finalStage = gameState.crestStages[crestId];
+                        let message = `五连刻印完成！\n`;
+                        message += `成功: ${successCount}次, 失败: ${failureCount}次\n`;
+                        message += `阶段变化: ${toRoman(initialStage)} → ${toRoman(finalStage)}\n`;
+                        message += `已达到阶段X，五连终止！`;
+                        showResult('success', message);
+                        
+                        isEnhancing = false;
+                        updateDisplay();
+                        saveData();
+                        
+                        setTimeout(() => {
+                            if (confirm('第Ⅰ阶已完成！是否切换到第Ⅱ阶界面查看？\n\n点击【确定】立即进入第Ⅱ阶\n点击【取消】可稍后手动点击「第Ⅱ阶」按钮切换')) {
+                                gameState.displayTier = 2;
+                                gameState.tier2Entered[crestId] = true;
+                                updateTierTabs();
+                                updateDisplay();
+                                saveData();
+                            }
+                        }, 500);
+                        return;
+                    } else if (currentStage === 11) {
+                        gameState.tier2Entered[crestId] = true;
+                    }
+                } else {
+                    failureCount++;
+                }
+                
+                updateDisplay();
+                
+                setTimeout(() => {
+                    performEnhance(index + 1);
+                }, 200);
+            }
+            
+            performEnhance(0);
         }
 
         function showResult(type, message) {
@@ -474,32 +724,33 @@
             resultDiv.className = `result-message ${type}-message`;
             resultDiv.textContent = message;
             resultDiv.style.display = 'block';
+            
+            if (resultMessageTimer) {
+                clearTimeout(resultMessageTimer);
+            }
+            resultMessageTimer = setTimeout(() => {
+                resultDiv.style.display = 'none';
+                resultMessageTimer = null;
+            }, MESSAGE_DISPLAY_TIME);
         }
 
         function resetCurrentCrest() {
-            if (confirm('确定要重置当前刻印吗？')) {
-                gameState.crestStages[gameState.selectedCrest] = 1;
-                updateDisplay();
-                saveData();
+            const crestId = gameState.selectedCrest;
+            const currentStage = gameState.crestStages[crestId];
+            
+            if (gameState.tier2Entered[crestId] || currentStage > 10) {
+                showResult('failure', '已进入第Ⅱ阶，无法重置当前刻印！');
+                return;
             }
-        }
-
-        function confirmGlobalReset() {
-            if (confirm('确定要重置所有数据吗？')) {
-                gameState.crestStages = {
-                    lightning: 1,
-                    star: 1,
-                    sun: 1,
-                    moon: 1,
-                    cloud: 1,
-                    flower: 1,
-                    island: 1
-                };
-                gameState.totalAttempts = 0;
-                gameState.totalSuccess = 0;
-                gameState.totalFailure = 0;
+            
+            if (confirm(`确定要重置当前刻印吗？\n消耗 ${RESET_COST} 张刻印券`)) {
+                gameState.crestStages[gameState.selectedCrest] = 0;
+                gameState.tier1Attempts[gameState.selectedCrest] = 0;
+                gameState.resetTicketCount += RESET_COST;
+                updateTierTabs();
                 updateDisplay();
                 saveData();
+                showResult('success', `重置成功！消耗 ${RESET_COST} 张刻印券`);
             }
         }
 
@@ -512,17 +763,97 @@
 
         function saveData() {
             localStorage.setItem('crestEnhanceData', JSON.stringify(gameState));
+            window.dispatchEvent(new Event('crestDataUpdated'));
+            if (window.parent) {
+                try {
+                    window.parent.dispatchEvent(new Event('crestDataUpdated'));
+                } catch (e) {
+                    console.log('Failed to dispatch event to parent');
+                }
+                if (window.parent.updateCrestDisplay) {
+                    window.parent.updateCrestDisplay();
+                }
+            }
         }
 
         function loadData() {
             const saved = localStorage.getItem('crestEnhanceData');
             if (saved) {
                 const data = JSON.parse(saved);
-                Object.assign(gameState.crestStages, data.crestStages || {});
-                gameState.totalAttempts = data.totalAttempts || 0;
-                gameState.totalSuccess = data.totalSuccess || 0;
-                gameState.totalFailure = data.totalFailure || 0;
-                gameState.selectedCrest = data.selectedCrest || 'lightning';
+                
+                gameState.crestStages = {
+                    sun: data.crestStages?.sun ?? 0,
+                    moon: data.crestStages?.moon ?? 0,
+                    cloud: data.crestStages?.cloud ?? 0,
+                    flower: data.crestStages?.flower ?? 0,
+                    star: data.crestStages?.star ?? 0,
+                    lightning: data.crestStages?.lightning ?? 0,
+                    island: data.crestStages?.island ?? 0
+                };
+                
+                gameState.tier1Attempts = {
+                    sun: data.tier1Attempts?.sun ?? 0,
+                    moon: data.tier1Attempts?.moon ?? 0,
+                    cloud: data.tier1Attempts?.cloud ?? 0,
+                    flower: data.tier1Attempts?.flower ?? 0,
+                    star: data.tier1Attempts?.star ?? 0,
+                    lightning: data.tier1Attempts?.lightning ?? 0,
+                    island: data.tier1Attempts?.island ?? 0
+                };
+                
+                gameState.tier2Entered = {
+                    sun: data.tier2Entered?.sun ?? false,
+                    moon: data.tier2Entered?.moon ?? false,
+                    cloud: data.tier2Entered?.cloud ?? false,
+                    flower: data.tier2Entered?.flower ?? false,
+                    star: data.tier2Entered?.star ?? false,
+                    lightning: data.tier2Entered?.lightning ?? false,
+                    island: data.tier2Entered?.island ?? false
+                };
+                
+                gameState.totalAttempts = data.totalAttempts ?? 0;
+                gameState.totalSuccess = data.totalSuccess ?? 0;
+                gameState.totalFailure = data.totalFailure ?? 0;
+                gameState.selectedCrest = data.selectedCrest ?? 'sun';
+                gameState.displayTier = data.displayTier ?? 1;
+                gameState.resetTicketCount = data.resetTicketCount ?? 0;
+            } else {
+                gameState.crestStages = {
+                    sun: 0,
+                    moon: 0,
+                    cloud: 0,
+                    flower: 0,
+                    star: 0,
+                    lightning: 0,
+                    island: 0
+                };
+                
+                gameState.tier1Attempts = {
+                    sun: 0,
+                    moon: 0,
+                    cloud: 0,
+                    flower: 0,
+                    star: 0,
+                    lightning: 0,
+                    island: 0
+                };
+                
+                gameState.tier2Entered = {
+                    sun: false,
+                    moon: false,
+                    cloud: false,
+                    flower: false,
+                    star: false,
+                    lightning: false,
+                    island: false
+                };
+                
+                gameState.totalAttempts = 0;
+                gameState.totalSuccess = 0;
+                gameState.totalFailure = 0;
+                gameState.selectedCrest = 'sun';
+                gameState.displayTier = 1;
+                gameState.resetTicketCount = 0;
             }
         }
 
@@ -530,12 +861,13 @@
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
-                updateProbabilityTable();
+                updateDisplay();
             }, 200);
         });
 
         loadData();
         selectCrest(gameState.selectedCrest);
+        updateTierTabs();
         updateDisplay();
     </script>
 </body>

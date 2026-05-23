@@ -163,7 +163,9 @@ const resourceManager = {
             element.style.color = '#dc3545';
             element.style.cursor = 'pointer';
             
-            element.textContent = formatted.display;
+            if (!element.classList.contains('show-full')) {
+                element.textContent = formatted.display;
+            }
         }
 
         updateElement(diamondsEl, resources.diamonds);

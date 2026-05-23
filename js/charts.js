@@ -245,28 +245,36 @@ class ChartManager {
         
         // 更新统计卡片显示
         const statDiamond = document.getElementById('stat-diamond');
-        statDiamond.textContent = formattedDiamond.display;
         statDiamond.title = formattedDiamond.full.toString();
         statDiamond.dataset.fullValue = formattedDiamond.full.toString();
         statDiamond.dataset.displayValue = formattedDiamond.display;
+        if (!statDiamond.classList.contains('show-full')) {
+            statDiamond.textContent = formattedDiamond.display;
+        }
         
         const statBreakthrough = document.getElementById('stat-breakthrough');
-        statBreakthrough.textContent = formattedBreakthrough.display;
         statBreakthrough.title = formattedBreakthrough.full.toString();
         statBreakthrough.dataset.fullValue = formattedBreakthrough.full.toString();
         statBreakthrough.dataset.displayValue = formattedBreakthrough.display;
+        if (!statBreakthrough.classList.contains('show-full')) {
+            statBreakthrough.textContent = formattedBreakthrough.display;
+        }
         
         const statRawstone = document.getElementById('stat-rawstone');
-        statRawstone.textContent = formattedRawstone.display;
         statRawstone.title = formattedRawstone.full.toString();
         statRawstone.dataset.fullValue = formattedRawstone.full.toString();
         statRawstone.dataset.displayValue = formattedRawstone.display;
+        if (!statRawstone.classList.contains('show-full')) {
+            statRawstone.textContent = formattedRawstone.display;
+        }
         
         const statPlatinum = document.getElementById('stat-platinum');
-        statPlatinum.textContent = formattedPlatinum.display;
         statPlatinum.title = formattedPlatinum.full.toString();
         statPlatinum.dataset.fullValue = formattedPlatinum.full.toString();
         statPlatinum.dataset.displayValue = formattedPlatinum.display;
+        if (!statPlatinum.classList.contains('show-full')) {
+            statPlatinum.textContent = formattedPlatinum.display;
+        }
 
         // 计算今天的变化量（使用本地时间，与app.js保持一致）
         const now = new Date();
