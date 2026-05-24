@@ -1012,6 +1012,32 @@ h3 {
     animation: fadeInUp 0.4s ease;
 }
 
+.crest-enhance .hint-message {
+    margin: 4px 0;
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    box-sizing: border-box;
+    overflow: visible;
+}
+
+.crest-enhance .hint-message::before {
+    content: '';
+    width: 3px;
+    height: 32px;
+    border-radius: 2px;
+    background: #667eea;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -1120,6 +1146,11 @@ h3 {
     body {
         padding: 4px 6px;
         padding-bottom: max(4px, env(safe-area-inset-bottom));
+    }
+
+    .crest-enhance .hint-message {
+        height: 26px;
+        padding: 4px 8px;
     }
 
     .equipment-card,

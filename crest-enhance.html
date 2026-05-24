@@ -78,6 +78,7 @@
                             <div class="tier-tab tier-1 active" id="tier-tab-1" onclick="selectTier(1)">Ⅰ阶</div>
                             <div class="tier-tab tier-2" id="tier-tab-2" onclick="selectTier(2)">Ⅱ阶</div>
                         </div>
+                        <div id="hint-message" class="hint-message"></div>
                     </div>
                     
                     <div class="right-panel">
@@ -207,6 +208,7 @@
         let isEnhancing = false;
         let cooldownTimer = null;
         let cooldownRemaining = 0;
+        let cooldownEndTime = 0;
         let resultMessageTimer = null;
 
         function selectCrest(crestId) {
@@ -359,6 +361,16 @@
         }
 
         function updateDisplay() {
+            if (cooldownEndTime > 0) {
+                const now = Date.now();
+                if (cooldownEndTime > now) {
+                    cooldownRemaining = Math.ceil((cooldownEndTime - now) / 1000);
+                } else {
+                    cooldownEndTime = 0;
+                    cooldownRemaining = 0;
+                }
+            }
+            
             const crestId = gameState.selectedCrest;
             const crest = CREST_DATA[crestId];
             const stage = gameState.crestStages[crestId];
@@ -432,7 +444,7 @@
                     enhanceBtn.classList.add('btn-max-level');
                 } else {
                     enhanceBtn.disabled = false;
-                    enhanceBtn.textContent = '刻印';
+                    enhanceBtn.textContent = '单点';
                     enhanceBtn.classList.remove('btn-max-level');
                 }
                 
@@ -580,18 +592,65 @@
         }
         
         function startCooldown(seconds) {
+            if (cooldownTimer) {
+                clearInterval(cooldownTimer);
+            }
+            
+            cooldownEndTime = Date.now() + seconds * 1000;
             cooldownRemaining = seconds;
             updateDisplay();
+            saveData();
             
             cooldownTimer = setInterval(() => {
-                cooldownRemaining--;
-                updateDisplay();
+                const now = Date.now();
+                const remaining = Math.ceil((cooldownEndTime - now) / 1000);
                 
-                if (cooldownRemaining <= 0) {
+                if (remaining > 0) {
+                    cooldownRemaining = remaining;
+                    updateDisplay();
+                } else {
+                    cooldownRemaining = 0;
+                    cooldownEndTime = 0;
                     clearInterval(cooldownTimer);
                     cooldownTimer = null;
+                    updateDisplay();
+                    saveData();
                 }
             }, 1000);
+        }
+        
+        function restoreCooldown() {
+            if (cooldownEndTime > 0) {
+                const now = Date.now();
+                const remaining = Math.ceil((cooldownEndTime - now) / 1000);
+                
+                if (remaining > 0) {
+                    cooldownRemaining = remaining;
+                    updateDisplay();
+                    
+                    cooldownTimer = setInterval(() => {
+                        const currentNow = Date.now();
+                        const currentRemaining = Math.ceil((cooldownEndTime - currentNow) / 1000);
+                        
+                        if (currentRemaining > 0) {
+                            cooldownRemaining = currentRemaining;
+                            updateDisplay();
+                        } else {
+                            cooldownRemaining = 0;
+                            cooldownEndTime = 0;
+                            clearInterval(cooldownTimer);
+                            cooldownTimer = null;
+                            updateDisplay();
+                            saveData();
+                        }
+                    }, 1000);
+                    return true;
+                }
+            }
+            
+            cooldownRemaining = 0;
+            cooldownEndTime = 0;
+            return false;
         }
 
         function enhanceFiveTimes() {
@@ -762,7 +821,11 @@
         }
 
         function saveData() {
-            localStorage.setItem('crestEnhanceData', JSON.stringify(gameState));
+            const dataToSave = {
+                ...gameState,
+                cooldownEndTime: cooldownEndTime
+            };
+            localStorage.setItem('crestEnhanceData', JSON.stringify(dataToSave));
             window.dispatchEvent(new Event('crestDataUpdated'));
             if (window.parent) {
                 try {
@@ -817,6 +880,11 @@
                 gameState.selectedCrest = data.selectedCrest ?? 'sun';
                 gameState.displayTier = data.displayTier ?? 1;
                 gameState.resetTicketCount = data.resetTicketCount ?? 0;
+                
+                if (data.cooldownEndTime && data.cooldownEndTime > Date.now()) {
+                    cooldownEndTime = data.cooldownEndTime;
+                    cooldownRemaining = Math.ceil((cooldownEndTime - Date.now()) / 1000);
+                }
             } else {
                 gameState.crestStages = {
                     sun: 0,
@@ -865,10 +933,74 @@
             }, 200);
         });
 
+        (function() {
+            const messages = [
+                "超越强化失败没关系，下一次一定成功！",
+                "八星进化失败是常态，坚持就是胜利！",
+                "抽勋章没出货？继续抽，神兽在等你！",
+                "附魔勋章失败别灰心，好运就在下一次！",
+                "珍珠合成失败不可怕，积累经验最重要！",
+                "强化失败只是暂时的，成功就在前方！",
+                "八星进化路漫漫，坚持下去就是王者！",
+                "勋章池很深，但总有一天会出奇迹！",
+                "附魔失败是成长的必经之路！",
+                "珍珠合成需要耐心，完美珍珠在等你！",
+                "每一次失败都是成功的垫脚石！",
+                "钓鱼大师从不畏惧失败！",
+                "失败乃成功之母，加油！",
+                "今天的失败是明天的胜利！",
+                "坚持下去，你是最棒的！",
+                "资源会越来越多的，不要放弃！",
+                "相信自己，好运即将来临！",
+                "每一份付出都有回报！"
+            ];
+
+            let currentIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const typeSpeed = 80;
+            const deleteSpeed = 40;
+            const pauseTime = 2000;
+
+            function runTypeEffect() {
+                const hintElement = document.getElementById('hint-message');
+                if (!hintElement) {
+                    setTimeout(runTypeEffect, 100);
+                    return;
+                }
+
+                const currentMessage = messages[currentIndex];
+
+                if (!isDeleting) {
+                    if (charIndex < currentMessage.length) {
+                        hintElement.textContent = currentMessage.substring(0, charIndex + 1);
+                        charIndex++;
+                        setTimeout(runTypeEffect, typeSpeed);
+                    } else {
+                        isDeleting = true;
+                        setTimeout(runTypeEffect, pauseTime);
+                    }
+                } else {
+                    if (charIndex > 0) {
+                        hintElement.textContent = currentMessage.substring(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(runTypeEffect, deleteSpeed);
+                    } else {
+                        isDeleting = false;
+                        currentIndex = (currentIndex + 1) % messages.length;
+                        setTimeout(runTypeEffect, 500);
+                    }
+                }
+            }
+
+            setTimeout(runTypeEffect, 800);
+        })();
+
         loadData();
         selectCrest(gameState.selectedCrest);
         updateTierTabs();
         updateDisplay();
+        restoreCooldown();
     </script>
 </body>
 </html>
