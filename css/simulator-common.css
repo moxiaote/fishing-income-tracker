@@ -391,6 +391,8 @@ h3 {
     display: flex;
     gap: 8px;
     align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .crest-enhance .left-panel {
@@ -399,6 +401,7 @@ h3 {
     flex-direction: column;
     gap: 5px;
     width: 170px;
+    flex-shrink: 0;
 }
 
 .crest-enhance .right-panel {
@@ -406,6 +409,8 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-width: 140px;
+    max-width: 220px;
 }
 
 .crest-enhance .circle-container {
@@ -413,6 +418,7 @@ h3 {
     width: 200px;
     height: 200px;
     margin: 0;
+    max-width: 100%;
 }
 
 .crest-enhance .orb {
@@ -1228,46 +1234,57 @@ h3 {
 
     .crest-enhance .crest-select {
         grid-template-columns: repeat(7, 1fr);
-        gap: 3px;
+        gap: 2px;
     }
 
     .crest-enhance .crest-option {
-        padding: 6px 4px;
-        font-size: 10px;
+        padding: 4px 2px;
+        font-size: 9px;
+        border-width: 1px;
     }
 
     .crest-enhance .crest-icon {
-        font-size: 12px;
+        font-size: 11px;
+        margin-bottom: 0;
+    }
+
+    .crest-enhance .crest-name {
+        font-size: 7px;
     }
 
     .crest-enhance .circle-container {
-        width: 160px;
-        height: 160px;
+        width: 140px;
+        height: 140px;
+        max-width: 100%;
     }
 
     .crest-enhance .orb.tier1 {
-        width: 24px;
-        height: 24px;
-        font-size: 8px;
+        width: 20px;
+        height: 20px;
+        font-size: 7px;
+        border-width: 1.5px;
     }
 
     .crest-enhance .orb.tier2-big {
-        width: 28px;
-        height: 28px;
-        font-size: 8px;
+        width: 24px;
+        height: 24px;
+        font-size: 7px;
+        border-width: 1.5px;
     }
 
     .crest-enhance .orb.tier2-small {
-        width: 15px;
-        height: 15px;
+        width: 12px;
+        height: 12px;
+        border-width: 1px;
     }
 
     .crest-enhance .center-icon {
-        font-size: 48px;
+        font-size: 40px;
+        border-width: 3px;
     }
 
     .crest-enhance .left-panel {
-        width: 150px;
+        width: 130px;
     }
 
     .crest-enhance .action-buttons {
@@ -1429,5 +1446,58 @@ h3 {
 
     .sim-scroll-panel {
         max-height: 96px;
+    }
+
+    .crest-enhance .crest-select {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .crest-enhance .crest-option {
+        padding: 3px 2px;
+        font-size: 8px;
+    }
+
+    .crest-enhance .crest-icon {
+        font-size: 10px;
+    }
+
+    .crest-enhance .crest-name {
+        font-size: 6px;
+    }
+
+    .crest-enhance .circle-container {
+        width: 120px !important;
+        height: 120px !important;
+    }
+
+    .crest-enhance .orb.tier1 {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 6px !important;
+    }
+
+    .crest-enhance .orb.tier2-big {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 6px !important;
+    }
+
+    .crest-enhance .orb.tier2-small {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    .crest-enhance .center-icon {
+        font-size: 32px !important;
+    }
+
+    .crest-enhance .left-panel {
+        width: 115px !important;
+    }
+
+    .crest-enhance .action-buttons .btn {
+        width: 48px !important;
+        font-size: 10px !important;
     }
 }
