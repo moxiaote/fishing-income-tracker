@@ -828,9 +828,9 @@ h3 {
 
 .crest-enhance .tier-tab.tier-1.active,
 .crest-enhance .tier-tab.tier-2.active {
-    background: #007bff;
-    color: #fff;
-    border-color: #007bff;
+    background: #007bff !important;
+    color: #fff !important;
+    border-color: #007bff !important;
 }
 
 .crest-enhance .divider {
@@ -849,17 +849,19 @@ h3 {
 }
 
 .crest-enhance .sale-tag {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    display: none;
     background: #dc3545;
     color: white;
-    padding: 4px 10px;
+    padding: 0 8px;
     font-size: 11px;
     font-weight: bold;
     border-radius: 4px;
-    z-index: 10;
-    display: none;
+    height: 36px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    white-space: nowrap;
 }
 
 
@@ -1002,7 +1004,7 @@ h3 {
 }
 
 .crest-enhance .result-message {
-    margin-top: 8px;
+    margin: 0 0 8px 0;
     padding: 8px 10px;
     border-radius: 6px;
     font-size: 12px;
@@ -1306,6 +1308,13 @@ h3 {
         margin-top: 4px;
     }
 
+    .crest-enhance .sale-tag {
+        height: 32px !important;
+        width: 100% !important;
+        font-size: 10px !important;
+        padding: 0 8px !important;
+    }
+
     .crest-enhance .probability-value {
         font-size: 20px;
     }
@@ -1321,6 +1330,10 @@ h3 {
     .crest-enhance .probability-table th,
     .crest-enhance .probability-table td {
         padding: 3px 1px;
+    }
+
+    .crest-enhance .result-message {
+        margin: 0 0 6px 0;
     }
 
     /* 珍珠 */
