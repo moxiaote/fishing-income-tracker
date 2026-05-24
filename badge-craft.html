@@ -412,6 +412,10 @@
         .result-modal-icon {
             font-size: 48px;
             margin-bottom: 8px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .result-modal-content {
@@ -2861,7 +2865,9 @@
                 btn.textContent = '太棒了';
             } else {
                 modal.className = 'result-modal failure';
+                icon.style.display = 'block';
                 icon.textContent = '';
+                title.style.display = 'block';
                 title.textContent = '💔 制作失败';
                 btn.textContent = '再接再厉';
             }

@@ -66,7 +66,7 @@
 
     <div class="container">
         <!-- 语言选择器和使用提示放在同一行 -->
-        <div class="bg-light border-bottom border-gray-200 p-0 d-flex justify-content-between align-items-center m-0">
+        <div id="header-bar" class="bg-light border-bottom border-gray-200 p-0 d-flex justify-content-between align-items-center m-0">
             <div class="d-flex justify-content-between align-items-center px-3 py-2 cursor-pointer flex-grow-1" data-bs-toggle="collapse" data-bs-target="#usage-tips-section" aria-expanded="false" aria-controls="usage-tips-section" style="cursor: pointer;">
                 <strong data-i18n="appTitle" style="font-size: 14px; font-weight: 500; color: #333;">钓鱼发烧友：财富积累日记</strong>
                 <span data-i18n="usageTips" style="font-size: 12px; color: #666;">使用提示</span>
@@ -318,9 +318,9 @@
                                     <button class="btn btn-outline-primary btn-sm simulator-btn" data-target="beyond-enhancement.html" data-i18n="beyondEnhance">超越强化</button>
                                     <button class="btn btn-outline-primary btn-sm simulator-btn" data-target="evolve-gaia.html" data-i18n="evolveGaia">进化八星</button>
 									<button class="btn btn-outline-primary btn-sm simulator-btn" data-target="enchant-medal.html" data-i18n="enchantMedal">附魔勋章</button>
+									<button class="btn btn-outline-primary btn-sm simulator-btn" data-target="crest-enhance.html">刻印模拟</button>
 									<button class="btn btn-outline-primary btn-sm simulator-btn" data-target="badge-box.html" data-i18n="badgeBox">勋章宝箱</button>
 									<button class="btn btn-outline-primary btn-sm simulator-btn" data-target="badge-craft.html" data-i18n="badgeCraft">勋章制作</button>
-                                    <button class="btn btn-outline-primary btn-sm simulator-btn" data-target="crest-enhance.html">刻印模拟</button>
 									<button class="btn btn-outline-danger btn-sm simulator-btn" data-target="evolve-pearl.html" data-i18n="pearlGrowth">珍珠组合</button>
 									<button class="btn btn-outline-secondary btn-sm simulator-btn" data-target="">关闭</button>
                                 </div>
@@ -390,12 +390,23 @@
                             <!-- 刻印信息 -->
                             <div id="crest-display" style="display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; margin-top: 6px;">
                             </div>
-							
-							<div style="display: flex; align-items: center; margin: 10px 0;">
-                                <span style="font-size: 12px; font-weight: bold; color: #666;">狗托榜（开发中...）</span>
-                                <hr style="flex: 1; border: none; border-top: 1px solid #dee2e6; margin-left: 6px;">
+                            
+                            <!-- 狗托榜 -->
+                            <div style="margin-top: 10px;">
+                                <div id="dogtor-header" style="display: flex; align-items: center; justify-content: center; margin-bottom: 0px; cursor: pointer; user-select: none;">
+                                    <span class="rainbow-shimmer" style="font-size: 12px; font-weight: bold;">狗托榜 🏆 当发烧友渐入佳境时，欧气与热爱在此碰撞【请点击】</span><span id="dogtor-toggle-icon" style="font-size: 10px; font-weight: normal;"></span>
+                                </div>
+                                
+                                <div id="dogtor-content" style="display: none;">
+                                    <iframe 
+                                        id="dogtor-leaderboard-iframe" 
+                                        src="dogtor-leaderboard.html" 
+                                        style="width: 100%; height: 160px; border: none; border-radius: 6px; background-color: #f8f9fa;"
+                                        sandbox="allow-same-origin allow-scripts allow-modals allow-forms"
+                                    ></iframe>
+                                </div>
                             </div>
-							
+                            
                         </div>
                     </div>
                 </div>
@@ -837,6 +848,78 @@
             location.reload();
         }
     }
+    
+    function toggleDogtorLeaderboard() {
+        const header = document.getElementById('dogtor-header');
+        const content = document.getElementById('dogtor-content');
+        const toggleIcon = document.getElementById('dogtor-toggle-icon');
+        const iframe = document.getElementById('dogtor-leaderboard-iframe');
+        
+        if (!header || !content || !toggleIcon) return;
+        
+        const isCollapsed = content.style.display === 'none';
+        
+        // 获取页眉元素
+        const fixedTotal = document.getElementById('fixedTotal');
+        const headerBar = document.getElementById('header-bar');
+        
+        if (isCollapsed) {
+                content.style.display = 'block';
+                toggleIcon.textContent = '';  //▼
+                header.style.marginBottom = '8px';
+                
+                // 隐藏页眉（使用 opacity 保持布局）
+                if (fixedTotal) {
+                    fixedTotal.style.opacity = '0';
+                    fixedTotal.style.pointerEvents = 'none';
+                }
+                if (headerBar) {
+                    headerBar.style.opacity = '0';
+                    headerBar.style.pointerEvents = 'none';
+                }
+                
+                if (iframe) {
+                    iframe.style.height = '420px';
+                }
+                
+                setTimeout(function() {
+                    if (header.scrollIntoView) {
+                        header.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'start' // 这里调整狗托榜按钮滚动高度：start | center | end
+                        });
+                    } else {
+                        const offset = header.offsetTop - 60;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
+            } else {
+                content.style.display = 'none';
+                toggleIcon.textContent = '';  //▶
+                header.style.marginBottom = '0px';
+                
+                // 恢复页眉显示
+                if (fixedTotal) {
+                    fixedTotal.style.opacity = '1';
+                    fixedTotal.style.pointerEvents = 'auto';
+                }
+                if (headerBar) {
+                    headerBar.style.opacity = '1';
+                    headerBar.style.pointerEvents = 'auto';
+                }
+                
+                if (iframe) {
+                    iframe.style.height = '160px';
+                }
+            }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.getElementById('dogtor-header');
+        if (header) {
+            header.addEventListener('click', toggleDogtorLeaderboard);
+        }
+    });
     </script>
     
     <!-- 版权信息 -->
