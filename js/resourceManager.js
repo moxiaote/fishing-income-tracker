@@ -200,9 +200,11 @@ const resourceManager = {
             if (reelLevelEl) reelLevelEl.textContent = equipment.reel.level;
             
             const getSkillInfo = (badgeType, badgeLevel) => {
-                if (!badgeType || badgeLevel <= 0) return null;
+                if (!badgeType) return null;
                 
-                const level = Math.min(badgeLevel, 10);
+                let level = badgeLevel;
+                if (level <= 0) level = 10;
+                if (level > 10) level = 10;
                 
                 if (badgeType === 'pirate') {
                     const duration = Math.round(12 - (level - 1) * (4 / 9));
@@ -223,7 +225,7 @@ const resourceManager = {
             };
             
             if (rodSkillEl) {
-                if (equipment.rod.badgeType && equipment.rod.badgeLevel > 0) {
+                if (equipment.rod.badgeType) {
                     const skillInfo = getSkillInfo(equipment.rod.badgeType, equipment.rod.badgeLevel);
                     if (skillInfo) {
                         rodSkillEl.innerHTML = `<strong>${skillInfo.name}</strong><br>${skillInfo.effect}`;
@@ -237,7 +239,7 @@ const resourceManager = {
             }
             
             if (reelSkillEl) {
-                if (equipment.reel.badgeType && equipment.reel.badgeLevel > 0) {
+                if (equipment.reel.badgeType) {
                     const skillInfo = getSkillInfo(equipment.reel.badgeType, equipment.reel.badgeLevel);
                     if (skillInfo) {
                         reelSkillEl.innerHTML = `<strong>${skillInfo.name}</strong><br>${skillInfo.effect}`;
