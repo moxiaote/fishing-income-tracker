@@ -10,7 +10,7 @@ html {
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
-    font-size: 14px;
+    font-size: 16px;
     min-height: 100%;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -90,8 +90,10 @@ h1 {
 }
 
 .btn {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 16px;
+    padding: 10px 16px;
+    min-height: 44px;
+    min-width: 44px;
 }
 
 .alert {
@@ -709,16 +711,16 @@ h1 {
 }
 
 .resource-label {
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
     flex-shrink: 0;
 }
 
 .resource-value {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: bold;
     color: #dc3545;
-    min-width: 40px;
+    min-width: 50px;
     text-align: left;
     cursor: pointer;
     user-select: none;
@@ -753,8 +755,9 @@ h1 {
 .simulator-btn {
     transition: all 0.3s ease;
     border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 13px;
+    padding: 10px 12px;
+    font-size: 16px;
+    min-height: 46px;
 }
 
 .simulator-btn:hover {
@@ -791,7 +794,7 @@ h1 {
     white-space: nowrap;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 992px) {
     .donation-callout {
         align-items: stretch;
         flex-direction: column;
