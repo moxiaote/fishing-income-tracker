@@ -1353,14 +1353,10 @@
             return;
         }
         
-        const confirmed = confirm(`即将重置所有模拟器数据，还剩 ${remaining} 次免费机会，此操作不可撤销，确定继续吗？`);
-        if (confirmed) {
-            freeResetCount++;
-            localStorage.setItem(FREE_RESET_COUNT_KEY, freeResetCount.toString());
-            resetAllSimulators();
-            updateActivationUI();
-            alert(`数据重置成功！您还剩 ${FREE_RESET_LIMIT - freeResetCount} 次免费重置机会。`);
-        }
+        freeResetCount++;
+        localStorage.setItem(FREE_RESET_COUNT_KEY, freeResetCount.toString());
+        resetAllSimulators();
+        updateActivationUI();
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
