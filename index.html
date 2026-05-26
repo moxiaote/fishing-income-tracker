@@ -1083,7 +1083,15 @@
                     alert('卡密验证成功！您已解锁数据重置功能，可以随时使用。');
                 }, 1000);
             } else {
-                showCardError(result.message || '卡密验证失败', 'verify');
+                if (result.data && result.data.need_restore) {
+                    showCardError(result.message || '卡密已被使用', 'verify');
+                    document.getElementById('restore-tab').click();
+                    if (result.data.qq) {
+                        document.getElementById('restore-qq').value = result.data.qq;
+                    }
+                } else {
+                    showCardError(result.message || '卡密验证失败', 'verify');
+                }
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = '验证卡密';
             }
