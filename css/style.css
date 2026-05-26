@@ -953,51 +953,51 @@ h1 {
     font-size: 14px;
 }
 
-.payment-modal-overlay {
+.card-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    padding: 10px;
+    padding: 20px;
     animation: fadeIn 0.2s ease;
     pointer-events: none;
 }
 
-.payment-modal-overlay.show {
+.card-modal-overlay.show {
     display: flex;
+    pointer-events: auto;
 }
 
-.payment-modal {
+.card-modal {
     background-color: white;
     border-radius: 16px;
-    padding: 16px;
-    max-width: 320px;
+    padding: 24px;
+    max-width: 400px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
     animation: scaleIn 0.3s ease;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     position: relative;
-    pointer-events: auto;
-    border-top: 4px solid #ff6b6b;
+    border-top: 4px solid #6366f1;
 }
 
-.payment-modal-close {
+.card-modal-close {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
     border: none;
     background: #f1f3f4;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     color: #666;
     display: flex;
@@ -1006,79 +1006,204 @@ h1 {
     transition: all 0.2s ease;
 }
 
-.payment-modal-close:hover {
+.card-modal-close:hover {
     background: #e9ecef;
     color: #333;
 }
 
-.payment-modal-header {
+.card-modal-header {
     text-align: center;
+    margin-bottom: 20px;
+    padding-top: 8px;
+}
+
+.card-modal-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #1e293b;
+}
+
+.card-modal-subtitle {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.card-modal-content {
+    margin-bottom: 16px;
+}
+
+.card-input-group {
+    margin-bottom: 16px;
+}
+
+.card-input-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
     margin-bottom: 8px;
 }
 
-.payment-modal-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 6px;
-    color: #ff6b6b;
+.card-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: monospace;
+    letter-spacing: 1px;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    text-align: center;
+    text-transform: uppercase;
 }
 
-.payment-modal-content {
+.card-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.card-input::placeholder {
+    color: #94a3b8;
+    text-transform: none;
+}
+
+.card-error-message {
+    display: none;
+    margin-top: 8px;
+    padding: 10px 12px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #dc2626;
     text-align: center;
 }
 
-.payment-qrcode {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 12px;
-    border: 3px solid #f0f0f0;
-    margin: 8px 0;
+.card-tips {
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid #e2e8f0;
 }
 
-.payment-hint {
-    font-size: 12px;
-    color: #666;
-    margin-top: 8px;
-    line-height: 1.4;
-}
-
-.payment-modal-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 14px;
-}
-
-.payment-modal-btn {
-    flex: 1;
-    padding: 10px;
+.card-tips p {
+    margin: 0 0 8px 0;
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 600;
+    color: #475569;
+}
+
+.card-tips ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.card-tips li {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.card-tips li:last-child {
+    margin-bottom: 0;
+}
+
+.card-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.card-modal-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.payment-modal-btn-close {
+.card-modal-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.card-modal-btn-close {
     background: #e9ecef;
     color: #495057;
 }
 
-.payment-modal-btn-close:hover {
+.card-modal-btn-close:hover:not(:disabled) {
     background: #dee2e6;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
-.payment-modal-btn-confirm {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+.card-modal-btn-confirm {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     color: white;
 }
 
-.payment-modal-btn-confirm:hover {
-    background: linear-gradient(135deg, #ee5a5a 0%, #ff7a7a 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+.card-modal-btn-confirm:hover:not(:disabled) {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.card-modal-tabs {
+    display: flex;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 20px;
+}
+
+.card-tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    background-color: transparent;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-tab-btn:hover {
+    color: #475569;
+}
+
+.card-tab-btn.active {
+    background-color: white;
+    color: #6366f1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-modal-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.card-modal-link {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.card-modal-link:hover {
+    text-decoration: underline;
 }
 
 .rainbow-shimmer {

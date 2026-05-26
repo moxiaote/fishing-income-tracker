@@ -277,20 +277,60 @@
             </div>
         </div>
 
-        <!-- 支付弹窗 -->
-        <div id="payment-modal-overlay" class="payment-modal-overlay" onclick="closePaymentModal()">
-            <div class="payment-modal" onclick="event.stopPropagation()">
-                <button class="payment-modal-close" onclick="closePaymentModal()">&times;</button>
-                <div class="payment-modal-header">
-                    <div class="payment-modal-title">感谢支持</div>
+        <!-- 卡密验证弹窗 -->
+        <div id="card-modal-overlay" class="card-modal-overlay" onclick="closeCardModal()">
+            <div class="card-modal" onclick="event.stopPropagation()">
+                <button class="card-modal-close" onclick="closeCardModal()">&times;</button>
+                <div class="card-modal-header">
+                    <div class="card-modal-title">卡密兑换</div>
+                    <div class="card-modal-subtitle">请输入您在发卡平台购买的卡密</div>
                 </div>
-                <div class="payment-modal-content">
-                    <img src="images/ScreenShot_2026-04-28_012031_152.jpg" alt="收款码" class="payment-qrcode">
-                    <p class="payment-hint">请扫码支付，支付完成后点击下方按钮重置数据</p>
+                <div class="card-modal-tabs">
+                    <button class="card-tab-btn active" data-tab="verify" onclick="switchTab('verify')">输入卡密</button>
+                    <button class="card-tab-btn" data-tab="restore" onclick="switchTab('restore')">恢复激活</button>
                 </div>
-                <div class="payment-modal-actions">
-                    <button class="payment-modal-btn payment-modal-btn-close" onclick="closePaymentModal()">稍后再说</button>
-                    <button class="payment-modal-btn payment-modal-btn-confirm" onclick="confirmResetAll()">已支付，重置数据</button>
+                <div class="card-modal-content" id="tab-verify">
+                    <div class="card-input-group">
+                        <label for="card-code" class="card-input-label">卡密</label>
+                        <input type="text" id="card-code" class="card-input" placeholder="请输入卡密（如：ABC123-XYZ789）" autocomplete="off">
+                        <div class="card-error-message" id="card-error-message"></div>
+                    </div>
+                    <div class="card-tips">
+                        <p>📌 卡密使用说明：</p>
+                        <ul>
+                            <li>卡密只能使用一次，验证后立即失效</li>
+                            <li>验证成功后将解锁数据重置功能</li>
+                            <li>激活状态会与您购卡时的QQ号绑定</li>
+                            <li>更换设备或清除缓存后可用QQ号恢复</li>
+                        </ul>
+                    </div>
+                    <div class="card-modal-actions">
+                        <button class="card-modal-btn card-modal-btn-close" onclick="closeCardModal()">取消</button>
+                        <button class="card-modal-btn card-modal-btn-confirm" id="verify-card-btn" onclick="verifyCard()">验证卡密</button>
+                    </div>
+                </div>
+                <div class="card-modal-content" id="tab-restore" style="display:none;">
+                    <div class="card-input-group">
+                        <label for="restore-qq" class="card-input-label">购卡时填写的QQ号</label>
+                        <input type="text" id="restore-qq" class="card-input" placeholder="请输入购卡时填写的QQ号" autocomplete="off">
+                        <div class="card-error-message" id="restore-error-message"></div>
+                    </div>
+                    <div class="card-tips">
+                        <p>💡 恢复说明：</p>
+                        <ul>
+                            <li>输入您购卡时填写的QQ号即可恢复激活状态</li>
+                            <li>适用于更换设备、清除浏览器缓存等情况</li>
+                            <li>如忘记QQ号请联系发卡平台客服</li>
+                        </ul>
+                    </div>
+                    <div class="card-modal-actions">
+                        <button class="card-modal-btn card-modal-btn-close" onclick="closeCardModal()">取消</button>
+                        <button class="card-modal-btn card-modal-btn-confirm" id="restore-btn" onclick="restoreByQQ()">恢复激活</button>
+                    </div>
+                </div>
+                <div class="card-modal-footer">
+                    <span>还没有卡密？</span>
+                    <a href="/" target="_blank" class="card-modal-link">前往发卡平台购买</a>
                 </div>
             </div>
         </div>
@@ -432,7 +472,7 @@
                                     <strong data-i18n="donation">☕ 请我喝一杯咖啡</strong>
                                     <span data-i18n="donationNote">请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~</span>
                                 </div>
-                                <button class="btn btn-danger donation-callout-btn" data-i18n="donationBtn" onclick="openPaymentModal()">来杯咖啡续命，数据一键清零</button>
+                                <button class="btn btn-danger donation-callout-btn" data-i18n="donationBtn" onclick="openCardModal()">输入卡密，数据一键清零</button>
                             </div>
                             <hr class="my-4">
                             <div class="mb-4">
@@ -799,27 +839,257 @@
         });
     }
 
-    function openPaymentModal() {
-        const overlay = document.getElementById('payment-modal-overlay');
-        if (overlay) {
-            overlay.classList.add('show');
+    const ACTIVATION_STORAGE_KEY = 'activation_qq';
+    let currentActivationQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
+
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const CARD_API_BASE_URL = isLocalhost ? 'api' : 'https://ka.chenxiaofei.cn/api';
+
+    const SECURITY_CONFIG = {
+        signSecret: 'moxiaote-sign-secret-v1',
+        appKey: 'moxiaote-app-key-2024'
+    };
+
+    async function sha256Hash(message) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function buildQueryString(obj) {
+        return Object.keys(obj)
+            .sort()
+            .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(obj[key] || ''))
+            .join('&');
+    }
+
+    async function generateRequestSignature(action, timestamp, extraData = {}) {
+        const dataToSign = {
+            action: action,
+            timestamp: timestamp,
+            card: extraData.card || '',
+            qq: extraData.qq || ''
+        };
+        const secret = SECURITY_CONFIG.signSecret + SECURITY_CONFIG.appKey;
+        const signStr = buildQueryString(dataToSign) + secret;
+        return await sha256Hash(signStr);
+    }
+
+    function getCurrentTimestamp() {
+        return Math.floor(Date.now() / 1000);
+    }
+
+    function switchTab(tabName) {
+        document.querySelectorAll('.card-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.tab === tabName) {
+                btn.classList.add('active');
+            }
+        });
+        document.getElementById('tab-verify').style.display = tabName === 'verify' ? 'block' : 'none';
+        document.getElementById('tab-restore').style.display = tabName === 'restore' ? 'block' : 'none';
+        
+        if (tabName === 'verify') {
+            document.getElementById('card-code').focus();
+        } else {
+            document.getElementById('restore-qq').focus();
         }
     }
 
-    function closePaymentModal() {
-        const overlay = document.getElementById('payment-modal-overlay');
+    function openCardModal() {
+        const overlay = document.getElementById('card-modal-overlay');
+        if (overlay) {
+            overlay.classList.add('show');
+            switchTab('verify');
+            document.getElementById('card-code').value = '';
+            document.getElementById('restore-qq').value = '';
+            document.getElementById('card-error-message').textContent = '';
+            document.getElementById('restore-error-message').textContent = '';
+            document.getElementById('card-error-message').style.display = 'none';
+            document.getElementById('restore-error-message').style.display = 'none';
+            document.getElementById('card-code').focus();
+        }
+    }
+
+    function closeCardModal() {
+        const overlay = document.getElementById('card-modal-overlay');
         if (overlay) {
             overlay.classList.remove('show');
         }
     }
 
-    function confirmResetAll() {
-        closePaymentModal();
-        resetAllSimulators();
+    function showCardError(message, tabName) {
+        const errorElId = tabName === 'restore' ? 'restore-error-message' : 'card-error-message';
+        const errorEl = document.getElementById(errorElId);
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+    }
+
+    function clearCardError() {
+        ['card-error-message', 'restore-error-message'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = '';
+                el.style.display = 'none';
+            }
+        });
+    }
+
+    async function verifyCard() {
+        const cardInput = document.getElementById('card-code');
+        const verifyBtn = document.getElementById('verify-card-btn');
+        const card = cardInput.value.trim();
+
+        if (!card) {
+            showCardError('请输入卡密', 'verify');
+            return;
+        }
+
+        clearCardError();
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = '验证中...';
+
+        try {
+            const timestamp = getCurrentTimestamp();
+            const signature = await generateRequestSignature('verify', timestamp, { card: card });
+
+            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Request-Time': timestamp.toString(),
+                    'X-Signature': signature
+                },
+                body: JSON.stringify({ card: card })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                verifyBtn.textContent = '验证成功';
+                verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+                
+                if (result.data && result.data.qq) {
+                    localStorage.setItem(ACTIVATION_STORAGE_KEY, result.data.qq);
+                    currentActivationQQ = result.data.qq;
+                }
+                
+                setTimeout(() => {
+                    closeCardModal();
+                    verifyBtn.disabled = false;
+                    verifyBtn.textContent = '验证卡密';
+                    verifyBtn.style.background = '';
+                    resetAllSimulators();
+                }, 1000);
+            } else {
+                showCardError(result.message || '卡密验证失败', 'verify');
+                verifyBtn.disabled = false;
+                verifyBtn.textContent = '验证卡密';
+            }
+        } catch (error) {
+            console.error('卡密验证出错:', error);
+            showCardError('网络错误，请稍后重试', 'verify');
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = '验证卡密';
+        }
+    }
+
+    async function restoreByQQ() {
+        const qqInput = document.getElementById('restore-qq');
+        const restoreBtn = document.getElementById('restore-btn');
+        const qq = qqInput.value.trim();
+
+        if (!qq) {
+            showCardError('请输入QQ号', 'restore');
+            return;
+        }
+
+        if (!/^\d{5,15}$/.test(qq)) {
+            showCardError('请输入有效的QQ号', 'restore');
+            return;
+        }
+
+        clearCardError();
+        restoreBtn.disabled = true;
+        restoreBtn.textContent = '恢复中...';
+
+        try {
+            const timestamp = getCurrentTimestamp();
+            const signature = await generateRequestSignature('restore_by_qq', timestamp, { qq: qq });
+
+            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Request-Time': timestamp.toString(),
+                    'X-Signature': signature
+                },
+                body: JSON.stringify({ qq: qq })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                restoreBtn.textContent = '恢复成功';
+                restoreBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+                
+                localStorage.setItem(ACTIVATION_STORAGE_KEY, qq);
+                currentActivationQQ = qq;
+                
+                setTimeout(() => {
+                    closeCardModal();
+                    restoreBtn.disabled = false;
+                    restoreBtn.textContent = '恢复激活';
+                    restoreBtn.style.background = '';
+                    resetAllSimulators();
+                }, 1000);
+            } else {
+                showCardError(result.message || '恢复失败', 'restore');
+                restoreBtn.disabled = false;
+                restoreBtn.textContent = '恢复激活';
+            }
+        } catch (error) {
+            console.error('恢复激活出错:', error);
+            showCardError('网络错误，请稍后重试', 'restore');
+            restoreBtn.disabled = false;
+            restoreBtn.textContent = '恢复激活';
+        }
+    }
+
+    async function checkServerActivation() {
+        const savedQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
+        if (!savedQQ) {
+            return false;
+        }
+
+        try {
+            const timestamp = getCurrentTimestamp();
+            const signature = await generateRequestSignature('check_activation', timestamp, { qq: savedQQ });
+
+            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=check_activation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Request-Time': timestamp.toString(),
+                    'X-Signature': signature
+                },
+                body: JSON.stringify({ qq: savedQQ })
+            });
+
+            const result = await response.json();
+            return result.success && result.data && result.data.activated;
+        } catch (error) {
+            console.error('检查激活状态出错:', error);
+            return false;
+        }
     }
 
     function resetAllSimulators() {
-        if (confirm('咖啡喝到了吗？不管怎样，感谢您的支持！即将为您重置所有模拟器数据，此操作不可撤销，确定继续吗？')) {
+        if (confirm('即将为您重置所有模拟器数据，此操作不可撤销，确定继续吗？')) {
             const allKeys = [
                 'enchantMedalData',
                 'badgeCraftData',
@@ -848,6 +1118,30 @@
             location.reload();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+        const savedQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
+        if (savedQQ) {
+            currentActivationQQ = savedQQ;
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const overlay = document.getElementById('card-modal-overlay');
+            if (overlay && overlay.classList.contains('show')) {
+                const verifyTab = document.querySelector('.card-tab-btn.active');
+                if (verifyTab && verifyTab.dataset.tab === 'restore') {
+                    restoreByQQ();
+                } else {
+                    verifyCard();
+                }
+            }
+        }
+        if (e.key === 'Escape') {
+            closeCardModal();
+        }
+    });
     
     function toggleDogtorLeaderboard() {
         const header = document.getElementById('dogtor-header');
