@@ -488,31 +488,28 @@
                             <div class="mb-4">
                                 <h6 data-i18n="fileOperations">文件操作</h6>
                                 <div class="d-flex gap-2 align-items-center">
-                                    <button id="add-record-btn-main" class="btn btn-primary" onclick="toggleAddRecordModal()">
+                                    <button id="add-record-btn-main" class="btn btn-primary action-btn" onclick="toggleAddRecordModal()">
                                         <span>+</span>
                                         <span class="ms-1" data-i18n="addRecord">添加记录</span>
                                     </button>
                                     <div class="vr mx-2"></div>
-                                    <button id="save-to-file" class="btn btn-success" data-i18n="saveToFile">保存到文件</button>
-                                    <button id="load-from-file" class="btn btn-info" data-i18n="loadFromFile">从文件加载</button>
+                                    <button id="save-to-file" class="btn btn-success action-btn" data-i18n="saveToFile">保存到文件</button>
+                                    <button id="load-from-file" class="btn btn-info action-btn" data-i18n="loadFromFile">从文件加载</button>
                                     <input type="file" id="file-input" style="display: none;" accept=".txt">
                                 </div>
                             </div>
                             
                             <div class="border-top border-secondary pt-4 mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6>
+                                    <h6 class="d-flex items-center gap-2">
                                         <span class="lang-zh">云端同步功能</span>
                                         <span class="lang-zh-TW">雲端同步功能</span>
                                         <span class="lang-en">Cloud Sync</span>
                                         <span class="lang-ko">클라우드 동기화</span>
                                         <span class="lang-vi">Đồng bộ đám mây</span>
-                                        <span class="text-muted small">
-                                            <span class="lang-zh">(会员专享)</span>
-                                            <span class="lang-zh-TW">(會員專享)</span>
-                                            <span class="lang-en">(Member Only)</span>
-                                            <span class="lang-ko">(회원 전용)</span>
-                                            <span class="lang-vi">(Chỉ cho thành viên)</span>
+                                        <span class="pro-badge-sm">
+                                            <span class="pro-star">★</span>
+                                            <span class="pro-text">PRO</span>
                                         </span>
                                     </h6>
                                     <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#cloud-sync-section" aria-expanded="false" aria-controls="cloud-sync-section">
@@ -525,14 +522,14 @@
                                 </div>
                                 <div class="collapse" id="cloud-sync-section">
                                     <div class="d-flex gap-2 mb-3">
-                                        <button id="load-from-cloud" class="btn btn-outline-primary">
+                                        <button id="load-from-cloud" class="btn btn-outline-primary action-btn">
                                             <span class="lang-zh">从云端恢复</span>
                                             <span class="lang-zh-TW">從雲端恢復</span>
                                             <span class="lang-en">Restore from Cloud</span>
                                             <span class="lang-ko">클라우드에서 복원</span>
                                             <span class="lang-vi">Khôi phục từ đám mây</span>
                                         </button>
-                                        <button id="sync-to-cloud" class="btn btn-outline-primary">
+                                        <button id="sync-to-cloud" class="btn btn-outline-primary action-btn">
                                             <span class="lang-zh">备份到云端</span>
                                             <span class="lang-zh-TW">備份到雲端</span>
                                             <span class="lang-en">Backup to Cloud</span>
