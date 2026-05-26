@@ -1088,9 +1088,12 @@
             } else {
                 if (result.data && result.data.need_restore) {
                     showCardError(result.message || '卡密已被使用', 'verify');
-                    document.getElementById('restore-tab').click();
+                    switchTab('restore');
                     if (result.data.qq) {
                         document.getElementById('restore-qq').value = result.data.qq;
+                    }
+                    if (result.data.card) {
+                        document.getElementById('restore-card').value = result.data.card;
                     }
                 } else {
                     showCardError(result.message || '卡密验证失败', 'verify');
