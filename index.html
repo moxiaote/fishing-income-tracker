@@ -1314,7 +1314,7 @@
                 donationText.style.opacity = '0.8';
             }
             if (donationNote) {
-                donationNote.textContent = '🎖️ 感谢您的支持！尊贵的 PRO 会员，数据重置功能已为您无限次解锁！';
+                donationNote.textContent = i18n.getText('donationNotePro') || '🎖️ 感谢您的支持！尊贵的 PRO 会员，数据重置功能已为您无限次解锁！';
             }
         } else if (remainingFreeResets > 0) {
             if (proBadge) {

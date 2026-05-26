@@ -141,6 +141,7 @@ class I18n {
                     dogtorFull: '狗托榜 🏆 当发烧友渐入佳境时，欧气与热爱在此碰撞【请点击】',
                     simulatorNote: '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。',
                     donationNote: '立即解锁尊贵会员特权，享受无限次数据重置功能！',
+                    donationNotePro: '🎖️ 感谢您的支持！尊贵的 PRO 会员，数据重置功能已为您无限次解锁！',
                     donationBtn: '💎 立即解锁特权'
                 },
                 'zh-TW': {
@@ -213,8 +214,9 @@ class I18n {
                     dogtorDesc: '當發燒友漸入佳境時，歐氣與熱愛在此碰撞【請點擊】',
                     dogtorFull: '狗托榜 🏆 當發燒友漸入佳境時，歐氣與熱愛在此碰撞【請點擊】',
                     simulatorNote: '說明：本項目僅供娛樂，實際遊戲中的概率可能會有所不同。',
-                    donationNote: '請我喝杯咖啡，既能支持這個小工具的開發，又能解鎖數據重置功能！碼農的能量全靠咖啡~',
-                    donationBtn: '來杯咖啡續命，數據一鍵清零'
+                    donationNote: '立即解鎖尊貴會員特權，享受無限次數據重置功能！',
+                    donationNotePro: '🎖️ 感謝您的支持！尊貴的 PRO 會員，數據重置功能已為您無限次解鎖！',
+                    donationBtn: '💎 立即解鎖特權'
                 },
                 en: {
                     appTitle: 'Ace Fishing : Wealth Accumulation Diary',
@@ -287,6 +289,7 @@ class I18n {
                     dogtorFull: 'Dogtor Rank 🏆 When fishing enthusiasts excel, luck and passion collide here [Click]',
                     simulatorNote: 'Note: This project is for entertainment only. Actual game probabilities may vary.',
                     donationNote: 'Unlock premium member privileges and enjoy unlimited data resets!',
+                    donationNotePro: '🎖️ Thank you for your support! Dear PRO Member, the data reset feature has been unlocked for unlimited use!',
                     donationBtn: '💎 Unlock Now'
                 },
                 ko: {
@@ -360,6 +363,7 @@ class I18n {
                     dogtorFull: 'Dogtor 순위 🏆 낚시 애호가가 뛰어나면, 운과 열정이 여기서 충돌합니다 [클릭]',
                     simulatorNote: '참고: 이 프로젝트는 오락용으로만 사용됩니다. 실제 게임 확률은 다를 수 있습니다.',
                     donationNote: '프리미엄 회원 특권을 잠금 해제하고 무제한 데이터 리셋을 즐기세요!',
+                    donationNotePro: '🎖️ 지원해주셔서 감사합니다! 소중한 PRO 회원님, 데이터 리셋 기능이 무제한으로 해제되었습니다!',
                     donationBtn: '💎 지금 잠금 해제'
                 },
                 vi: {
@@ -433,6 +437,7 @@ class I18n {
                     dogtorFull: 'Bảng xếp hạng Dogtor 🏆 Khi những người đam mê câu cá xuất sắc, may mắn và đam mê va chạm tại đây [Nhấn]',
                     simulatorNote: 'Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.',
                     donationNote: 'Mở khóa đặc quyền thành viên cao cấp và tận hưởng đặt lại dữ liệu không giới hạn!',
+                    donationNotePro: '🎖️ Cảm ơn sự ủng hộ của bạn! Kính chào Thành viên PRO, chức năng đặt lại dữ liệu đã được mở khóa không giới hạn!',
                     donationBtn: '💎 Mở khóa ngay'
                 }
             };
