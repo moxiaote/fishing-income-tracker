@@ -4,7 +4,8 @@ class StorageManager {
         this.db = null;
         this.useLocalStorage = false;
         this.deviceId = this.getDeviceId();
-        this.apiBaseUrl = '../data_sync.php';
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        this.apiBaseUrl = isLocalhost ? '../data_sync.php' : 'https://ka.chenxiaofei.cn/api/data_sync.php';
         this.signSecret = 'moxiaote-sign-secret-v1';
         this.appKey = 'moxiaote-app-key-2024';
     }
