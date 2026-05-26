@@ -317,6 +317,10 @@
                 </div>
                 <div class="card-modal-content" id="tab-restore" style="display:none;">
                     <div class="card-input-group">
+                        <label for="restore-card" class="card-input-label">卡密</label>
+                        <input type="text" id="restore-card" class="card-input" placeholder="请输入您的卡密" autocomplete="off">
+                    </div>
+                    <div class="card-input-group">
                         <label for="restore-qq" class="card-input-label">购卡时填写的QQ号</label>
                         <input type="text" id="restore-qq" class="card-input" placeholder="请输入购卡时填写的QQ号" autocomplete="off">
                         <div class="card-error-message" id="restore-error-message"></div>
@@ -324,7 +328,7 @@
                     <div class="card-tips">
                         <p>💡 恢复说明：</p>
                         <ul>
-                            <li>输入您购卡时填写的QQ号即可恢复激活状态</li>
+                            <li>请同时输入卡密和购卡时填写的QQ号</li>
                             <li>适用于更换设备、清除浏览器缓存等情况</li>
                             <li>如忘记QQ号请联系发卡平台客服</li>
                         </ul>
@@ -984,6 +988,10 @@
         if (tabName === 'verify') {
             document.getElementById('card-code').focus();
         } else {
+            const cardCode = document.getElementById('card-code').value.trim();
+            if (cardCode) {
+                document.getElementById('restore-card').value = cardCode;
+            }
             document.getElementById('restore-qq').focus();
         }
     }
@@ -1116,9 +1124,16 @@
     }
 
     async function restoreByQQ() {
+        const cardInput = document.getElementById('restore-card');
         const qqInput = document.getElementById('restore-qq');
         const restoreBtn = document.getElementById('restore-btn');
+        const card = cardInput.value.trim();
         const qq = qqInput.value.trim();
+
+        if (!card) {
+            showCardError('请输入卡密', 'restore');
+            return;
+        }
 
         if (!qq) {
             showCardError('请输入QQ号', 'restore');
@@ -1136,7 +1151,7 @@
 
         try {
             const timestamp = getCurrentTimestamp();
-            const signature = await generateRequestSignature('restore_by_qq', timestamp, { qq: qq });
+            const signature = await generateRequestSignature('restore_by_qq', timestamp, { qq: qq, card: card });
 
             const response = await fetchWithCorsProxy(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
                 method: 'POST',
@@ -1145,7 +1160,7 @@
                     'X-Request-Time': timestamp.toString(),
                     'X-Signature': signature
                 },
-                body: JSON.stringify({ qq: qq })
+                body: JSON.stringify({ qq: qq, card: card })
             }, 8000);
 
             if (!response.ok) {

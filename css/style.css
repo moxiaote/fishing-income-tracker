@@ -1029,7 +1029,7 @@ h1 {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.15);
     display: none;
     align-items: center;
     justify-content: center;
@@ -1273,6 +1273,114 @@ h1 {
 
 .card-modal-link:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .card-modal-overlay {
+        padding: 12px;
+    }
+
+    .card-modal {
+        padding: 16px;
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: 12px;
+        border-top-width: 3px;
+    }
+
+    .card-modal-close {
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+
+    .card-modal-header {
+        margin-bottom: 14px;
+        padding-top: 4px;
+    }
+
+    .card-modal-title {
+        font-size: 18px;
+        margin-bottom: 6px;
+    }
+
+    .card-modal-subtitle {
+        font-size: 12px;
+    }
+
+    .card-modal-content {
+        margin-bottom: 12px;
+    }
+
+    .card-input-group {
+        margin-bottom: 12px;
+    }
+
+    .card-input-label {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .card-input {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 8px;
+        border-width: 1.5px;
+    }
+
+    .card-error-message {
+        margin-top: 6px;
+        padding: 8px 10px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+
+    .card-tips {
+        padding: 10px 12px;
+        border-radius: 8px;
+    }
+
+    .card-tips p {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .card-tips li {
+        font-size: 11px;
+        margin-bottom: 3px;
+    }
+
+    .card-tips ul {
+        padding-left: 14px;
+    }
+
+    .card-modal-actions {
+        gap: 8px;
+        margin-top: 14px;
+    }
+
+    .card-modal-btn {
+        padding: 10px;
+        font-size: 13px;
+        border-radius: 8px;
+    }
+
+    .card-modal-footer {
+        margin-top: 14px;
+        font-size: 11px;
+    }
+
+    .card-modal-tabs {
+        gap: 6px;
+    }
+
+    .card-tab-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
 }
 
 .rainbow-shimmer {
