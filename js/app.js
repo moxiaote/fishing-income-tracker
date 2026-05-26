@@ -55,8 +55,8 @@ class App {
             this.statsCard = document.getElementById('statsCard');
             this.fixedTotal = document.getElementById('fixedTotal');
             
-            // 显示Gist ID
-            this.displayGistId();
+            // 显示云端同步状态
+            this.displayCloudSyncStatus();
             
             // 添加滚动监听
             this.addScrollListener();
@@ -121,27 +121,19 @@ class App {
             });
         }
 
-        // 从Gist ID加载按钮事件
-        const loadFromGistButton = document.getElementById('load-from-gist');
-        if (loadFromGistButton) {
-            loadFromGistButton.addEventListener('click', () => {
-                this.loadFromGist();
+        // 从云端恢复按钮事件
+        const loadFromCloudButton = document.getElementById('load-from-cloud');
+        if (loadFromCloudButton) {
+            loadFromCloudButton.addEventListener('click', () => {
+                this.loadFromCloud();
             });
         }
 
-        // 上传备份按钮事件
+        // 备份到云端按钮事件
         const syncToCloudButton = document.getElementById('sync-to-cloud');
         if (syncToCloudButton) {
             syncToCloudButton.addEventListener('click', () => {
                 this.syncToCloud();
-            });
-        }
-
-        // GitHub登录按钮事件
-        const githubLoginButton = document.getElementById('github-login');
-        if (githubLoginButton) {
-            githubLoginButton.addEventListener('click', () => {
-                this.githubLogin();
             });
         }
 
@@ -764,280 +756,51 @@ class App {
         this.displayRecords();
     }
 
-    // 显示Gist ID
-    displayGistId() {
-        const gistIdElement = document.getElementById('gist-id');
-        if (gistIdElement) {
-            const gistId = storageManager.getGistId();
-            gistIdElement.value = gistId || i18n.getText('autoGenerate');
-            gistIdElement.readOnly = true;
+    // 显示云端同步状态
+    displayCloudSyncStatus() {
+        const memberStatus = storageManager.checkMemberStatus();
+        const qqElement = document.getElementById('cloud-qq');
+        const statusElement = document.getElementById('cloud-status');
+        const lastSyncElement = document.getElementById('last-sync-time');
+        
+        if (qqElement) {
+            qqElement.value = memberStatus.activated ? memberStatus.qq : '';
+            qqElement.readOnly = true;
         }
         
-        // 显示登录状态
-        this.displayLoginStatus();
-        
-        // 绑定复制按钮事件
-        const copyGistIdButton = document.getElementById('copy-gist-id');
-        if (copyGistIdButton) {
-            copyGistIdButton.addEventListener('click', () => {
-                if (gistIdElement) {
-                    gistIdElement.select();
-                    document.execCommand('copy');
-                    // 显示复制成功提示
-                    const originalText = copyGistIdButton.textContent;
-                    copyGistIdButton.textContent = '已复制';
-                    setTimeout(() => {
-                        copyGistIdButton.textContent = originalText;
-                    }, 1000);
-                }
-            });
-        }
-    }
-    
-    // 显示登录状态
-    displayLoginStatus() {
-        const githubLoginButton = document.getElementById('github-login');
-        const loginStatusElement = document.getElementById('login-status');
-        const accessToken = localStorage.getItem('github_access_token');
-        
-        if (githubLoginButton) {
-            if (accessToken) {
-                // 已登录
-                githubLoginButton.style.display = 'none';
-                
-                // 创建或更新登录状态显示
-                if (!loginStatusElement) {
-                    const statusDiv = document.createElement('div');
-                    statusDiv.id = 'login-status';
-                    statusDiv.className = 'mt-2 text-center';
-                    statusDiv.innerHTML = '<span class="text-success">已登录GitHub</span> <a href="#" id="logout-link" class="text-danger ms-2">[退出登录]</a>';
-                    githubLoginButton.parentNode.appendChild(statusDiv);
-                    
-                    // 绑定退出登录事件
-                    const logoutLink = document.getElementById('logout-link');
-                    if (logoutLink) {
-                        logoutLink.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            this.logoutGitHub();
-                        });
-                    }
-                }
+        if (statusElement) {
+            if (memberStatus.activated) {
+                statusElement.textContent = '会员已激活';
+                statusElement.className = 'text-success';
             } else {
-                // 未登录
-                githubLoginButton.style.display = 'inline-block';
-                githubLoginButton.textContent = 'GitHub登录';
-                githubLoginButton.disabled = false;
-                
-                // 移除登录状态显示
-                if (loginStatusElement) {
-                    loginStatusElement.remove();
-                }
+                statusElement.textContent = '未激活会员';
+                statusElement.className = 'text-danger';
             }
         }
-    }
-
-    // 退出GitHub登录
-    logoutGitHub() {
-        // 清除访问令牌
-        localStorage.removeItem('github_access_token');
         
-        // 清除Gist ID
-        localStorage.removeItem('gistId');
-        
-        // 更新UI
-        this.displayLoginStatus();
-        
-        // 清空Gist ID显示
-        const gistIdElement = document.getElementById('gist-id');
-        if (gistIdElement) {
-            gistIdElement.value = '';
+        if (lastSyncElement) {
+            const lastSyncTime = localStorage.getItem('lastSyncTime');
+            lastSyncElement.textContent = lastSyncTime ? '上次同步: ' + lastSyncTime : '尚未同步';
         }
-        
-        alert('已退出GitHub登录');
     }
 
-    // GitHub登录
-    githubLogin() {
-        // GitHub OAuth应用信息
-        const clientId = 'Ov23lifBgFyews6nSXI0';
-        const redirectUri = encodeURIComponent('https://moxiaote.github.io/fishing-income-tracker/');
-        const scope = 'gist';
-        
-        // 生成随机状态
-        const state = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem('github_oauth_state', state);
-        
-        // 重定向到GitHub登录页面
-        const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
-        window.location.href = githubAuthUrl;
-    }
-
-    // 处理GitHub登录回调
+    // 处理GitHub登录回调（保留空实现，防止报错）
     handleGitHubCallback() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const state = urlParams.get('state');
-        const storedState = localStorage.getItem('github_oauth_state');
-        
-        if (code && state && state === storedState) {
-            // 清除存储的状态
-            localStorage.removeItem('github_oauth_state');
-            
-            // 交换代码获取访问令牌
-            this.exchangeCodeForToken(code);
-        }
     }
 
-    // 交换代码获取访问令牌
-    async exchangeCodeForToken(code) {
-        const clientId = 'Ov23lifBgFyews6nSXI0';
-        const clientSecret = '1837ff34155e1755e7a24e9e3cb2bc0831580aeb';
-        const redirectUri = 'https://moxiaote.github.io/fishing-income-tracker/';
-        
+    // 从云端加载数据
+    async loadFromCloud() {
         try {
-            console.log('开始交换访问令牌...');
-            console.log('Code:', code);
-            
-            // 使用单个主要CORS代理，带较短超时
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const apiUrl = corsProxy + 'https://github.com/login/oauth/access_token';
-            
-            // 添加超时处理 - 5秒超时，避免长时间等待
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            let response;
-            try {
-                console.log('尝试使用代理:', corsProxy);
-                response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        client_id: clientId,
-                        client_secret: clientSecret,
-                        code: code,
-                        redirect_uri: redirectUri
-                    }),
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                console.log('代理请求成功:', corsProxy);
-            } catch (proxyError) {
-                clearTimeout(timeoutId);
-                console.error('CORS代理请求失败:', proxyError);
-                alert('网络请求超时，请检查网络连接后重试。');
-                return;
-            }
-            
-            if (!response) {
-                alert('网络请求失败，请检查网络连接后重试。');
-                return;
-            }
-            
-            console.log('响应状态:', response.status);
-            console.log('响应头:', response.headers);
-            
-            const responseText = await response.text();
-            console.log('响应文本:', responseText);
-            
-            // 检查响应是否为JSON格式
-            if (!responseText.trim()) {
-                throw new Error('响应为空');
-            }
-            
-            // 尝试解析响应
-            let data;
-            try {
-                // 检查是否是CORS代理的访问限制消息
-                if (responseText.includes('See /corsdemo for more info')) {
-                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
-                }
-                
-                // 尝试直接解析
-                data = JSON.parse(responseText);
-                console.log('解析后的响应数据:', data);
-            } catch (parseError) {
-                console.error('直接解析响应失败:', parseError);
-                
-                // 尝试处理可能的CORS代理包装响应
-                try {
-                    // 检查是否是allorigins.win的包装格式
-                    if (responseText.includes('"contents":')) {
-                        const wrappedData = JSON.parse(responseText);
-                        if (wrappedData.contents) {
-                            data = JSON.parse(wrappedData.contents);
-                            console.log('解析包装响应成功:', data);
-                        } else {
-                            throw new Error('包装响应中没有contents字段');
-                        }
-                    } else {
-                        throw new Error('响应不是有效的JSON格式');
-                    }
-                } catch (wrapError) {
-                    console.error('解析包装响应失败:', wrapError);
-                    throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
-                }
-            }
-            
-            if (data.access_token) {
-                // 存储访问令牌
-                localStorage.setItem('github_access_token', data.access_token);
-                console.log('访问令牌存储成功');
-                alert('GitHub登录成功！');
-                
-                // 更新UI
-                this.displayLoginStatus();
-                
-                // 关闭自动同步到Gist
-                // console.log('自动同步到Gist...');
-                // const success = await storageManager.syncToGist();
-                // if (success) {
-                //     // 更新Gist ID显示
-                //     this.displayGistId();
-                // }
-                
-                // 更新Gist ID显示（不自动同步）
-                this.displayGistId();
-            } else {
-                console.error('登录失败:', data);
-                alert('GitHub登录失败: ' + (data.error || '未知错误'));
-            }
-        } catch (error) {
-            console.error('交换令牌失败:', error);
-            alert('GitHub登录失败，请稍后重试。\n\n错误详情: ' + error.message);
-        }
-    }
-
-    // 从Gist ID加载数据
-    async loadFromGist() {
-        try {
-            const success = await storageManager.loadFromGist();
+            const success = await storageManager.downloadFromCloud();
             if (success) {
-                // 重新加载记录
                 this.records = await storageManager.loadRecords();
-                
-                // 重新排序
                 sorting.sortRecords(this.records);
-                
-                // 重置加载记录数
                 this.loadedRecords = 30;
-                
-                // 显示记录
                 this.displayRecords();
-                
-                // 计算总量
                 this.calculateTotal();
-                
-                // 更新图表
                 chartManager.updateCharts(this.records);
                 chartManager.updateStatCards(this.records);
-                
-                alert('数据加载成功！');
-            } else {
-                alert('数据加载失败，请检查Gist ID是否正确。');
+                this.displayCloudSyncStatus();
             }
         } catch (error) {
             console.error('加载失败:', error);
@@ -1045,16 +808,17 @@ class App {
         }
     }
 
+    // 从Gist ID加载数据（兼容旧方法）
+    async loadFromGist() {
+        await this.loadFromCloud();
+    }
+
     // 上传备份到云端
     async syncToCloud() {
         try {
-            const success = await storageManager.syncToGist();
+            const success = await storageManager.uploadToCloud();
             if (success) {
-                // 更新Gist ID显示
-                this.displayGistId();
-                alert('数据备份成功！');
-            } else {
-                alert('数据备份失败，请稍后重试。');
+                this.displayCloudSyncStatus();
             }
         } catch (error) {
             console.error('备份失败:', error);

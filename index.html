@@ -502,20 +502,20 @@
                             <div class="border-top border-secondary pt-4 mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h6>
-                                        <span class="lang-zh">Gist 同步功能</span>
-                                        <span class="lang-zh-TW">Gist 同步功能</span>
-                                        <span class="lang-en">Gist Sync</span>
-                                        <span class="lang-ko">Gist 동기화 기능</span>
-                                        <span class="lang-vi">Chức năng đồng bộ Gist</span>
+                                        <span class="lang-zh">云端同步功能</span>
+                                        <span class="lang-zh-TW">雲端同步功能</span>
+                                        <span class="lang-en">Cloud Sync</span>
+                                        <span class="lang-ko">클라우드 동기화</span>
+                                        <span class="lang-vi">Đồng bộ đám mây</span>
                                         <span class="text-muted small">
-                                            <span class="lang-zh">(实验室)</span>
-                                            <span class="lang-zh-TW">(實驗室)</span>
-                                            <span class="lang-en">(Laboratory)</span>
-                                            <span class="lang-ko">(실험실)</span>
-                                            <span class="lang-vi">(Phòng thí nghiệm)</span>
+                                            <span class="lang-zh">(会员专享)</span>
+                                            <span class="lang-zh-TW">(會員專享)</span>
+                                            <span class="lang-en">(Member Only)</span>
+                                            <span class="lang-ko">(회원 전용)</span>
+                                            <span class="lang-vi">(Chỉ cho thành viên)</span>
                                         </span>
                                     </h6>
-                                    <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#gist-sync-section" aria-expanded="false" aria-controls="gist-sync-section">
+                                    <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#cloud-sync-section" aria-expanded="false" aria-controls="cloud-sync-section">
                                             <span class="collapse-icon">
                                                 <span class="line horizontal"></span>
                                                 <span class="line vertical"></span>
@@ -523,61 +523,53 @@
                                             </span>
                                         </button>
                                 </div>
-                                <div class="collapse" id="gist-sync-section">
+                                <div class="collapse" id="cloud-sync-section">
                                     <div class="d-flex gap-2 mb-3">
-                                        <button id="github-login" class="btn btn-outline-secondary">
-                                            <span class="lang-zh">GitHub登录</span>
-                                            <span class="lang-zh-TW">GitHub登錄</span>
-                                            <span class="lang-en">GitHub Login</span>
-                                            <span class="lang-ko">GitHub 로그인</span>
-                                            <span class="lang-vi">Đăng nhập GitHub</span>
-                                        </button>
-                                        <button id="load-from-gist" class="btn btn-outline-primary">
-                                            <span class="lang-zh">从Gist ID加载</span>
-                                            <span class="lang-zh-TW">從Gist ID加載</span>
-                                            <span class="lang-en">Load from Gist ID</span>
-                                            <span class="lang-ko">Gist ID에서 로드</span>
-                                            <span class="lang-vi">Tải từ Gist ID</span>
+                                        <button id="load-from-cloud" class="btn btn-outline-primary">
+                                            <span class="lang-zh">从云端恢复</span>
+                                            <span class="lang-zh-TW">從雲端恢復</span>
+                                            <span class="lang-en">Restore from Cloud</span>
+                                            <span class="lang-ko">클라우드에서 복원</span>
+                                            <span class="lang-vi">Khôi phục từ đám mây</span>
                                         </button>
                                         <button id="sync-to-cloud" class="btn btn-outline-primary">
-                                            <span class="lang-zh">上传备份</span>
-                                            <span class="lang-zh-TW">上傳備份</span>
-                                            <span class="lang-en">Upload Backup</span>
-                                            <span class="lang-ko">백업 업로드</span>
-                                            <span class="lang-vi">Tải lên sao lưu</span>
+                                            <span class="lang-zh">备份到云端</span>
+                                            <span class="lang-zh-TW">備份到雲端</span>
+                                            <span class="lang-en">Backup to Cloud</span>
+                                            <span class="lang-ko">클라우드에 백업</span>
+                                            <span class="lang-vi">Sao lưu lên đám mây</span>
                                         </button>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <label for="gist-id" class="form-label mb-0">
-                                            <span class="lang-zh">Gist ID</span>
-                                            <span class="lang-zh-TW">Gist ID</span>
-                                            <span class="lang-en">Gist ID</span>
-                                            <span class="lang-ko">Gist ID</span>
-                                            <span class="lang-vi">Gist ID</span>
-                                        </label>
-                                        <input type="text" id="gist-id" class="form-control" readonly style="flex: 1;">
-                                        <button id="copy-gist-id" class="btn btn-outline-secondary btn-sm">
-                                            <span class="lang-zh">复制</span>
-                                            <span class="lang-zh-TW">複製</span>
-                                            <span class="lang-en">Copy</span>
-                                            <span class="lang-ko">복사</span>
-                                            <span class="lang-vi">Sao chép</span>
-                                        </button>
+                                    <div class="mb-2">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <label for="cloud-qq" class="form-label mb-0" style="min-width: 60px;">
+                                                <span class="lang-zh">会员QQ</span>
+                                                <span class="lang-zh-TW">會員QQ</span>
+                                                <span class="lang-en">Member QQ</span>
+                                                <span class="lang-ko">회원 QQ</span>
+                                                <span class="lang-vi">QQ Thành viên</span>
+                                            </label>
+                                            <input type="text" id="cloud-qq" class="form-control" readonly style="flex: 1;">
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span id="cloud-status" class="text-muted">未激活会员</span>
+                                            <span id="last-sync-time" class="text-muted small">尚未同步</span>
+                                        </div>
                                     </div>
                                     <div class="mt-2 text-sm text-muted">
                                         <p>
-                                            <span class="lang-zh">此功能处于测试阶段，可能会遇到同步失败的情况。</span>
-                                            <span class="lang-zh-TW">此功能處於測試階段，可能會遇到同步失敗的情況。</span>
-                                            <span class="lang-en">This feature is in testing phase and may encounter sync failures.</span>
-                                            <span class="lang-ko">이 기능은 테스트 단계에 있으며 동기화 실패가 발생할 수 있습니다.</span>
-                                            <span class="lang-vi">Chức năng này đang trong giai đoạn thử nghiệm và có thể gặp lỗi đồng bộ.</span>
+                                            <span class="lang-zh">此功能仅对已激活会员开放，请先验证卡密后使用。</span>
+                                            <span class="lang-zh-TW">此功能僅對已激活會員開放，請先驗證卡密後使用。</span>
+                                            <span class="lang-en">This feature is only available to activated members. Please verify your card first.</span>
+                                            <span class="lang-ko">이 기능은 활성화된 회원만 사용할 수 있습니다. 먼저 카드를 인증하세요.</span>
+                                            <span class="lang-vi">Chức năng này chỉ dành cho thành viên đã kích hoạt. Vui lòng xác minh thẻ của bạn trước.</span>
                                         </p>
                                         <p>
-                                            <span class="lang-zh">如遇网络失败，请访问 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示页面</a> 获取临时权限。</span>
-                                            <span class="lang-zh-TW">如遇網路失敗，請訪問 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS代理演示頁面</a> 獲取臨時許可權。</span>
-                                            <span class="lang-en">If network fails, please visit <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS proxy demo page</a> to get temporary access.</span>
-                                            <span class="lang-ko">네트워크가 실패하면 <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">CORS 프록시 데모 페이지</a>에 방문하여 임시 액세스를 얻으세요.</span>
-                                            <span class="lang-vi">Nếu mạng lỗi, hãy truy cập <a href="https://cors-anywhere.herokuapp.com/corsdemo" target="_blank">trang demo proxy CORS</a> để lấy quyền truy cập tạm thời.</span>
+                                            <span class="lang-zh">数据将安全存储在服务器数据库中，支持多设备间同步。</span>
+                                            <span class="lang-zh-TW">數據將安全存儲在服務器數據庫中，支持多設備間同步。</span>
+                                            <span class="lang-en">Data is securely stored in the server database, supporting multi-device synchronization.</span>
+                                            <span class="lang-ko">데이터는 서버 데이터베이스에 안전하게 저장되며 여러 기기 간 동기화를 지원합니다.</span>
+                                            <span class="lang-vi">Dữ liệu được lưu trữ an toàn trong cơ sở dữ liệu máy chủ, hỗ trợ đồng bộ hóa giữa nhiều thiết bị.</span>
                                         </p>
                                     </div>
                                 </div>
@@ -1075,9 +1067,12 @@
                 verifyBtn.textContent = '验证成功';
                 verifyBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
                 
-                if (result.data && result.data.qq) {
-                    localStorage.setItem(ACTIVATION_STORAGE_KEY, result.data.qq);
-                    currentActivationQQ = result.data.qq;
+                if (result.data) {
+                    result.data.card = card;
+                    if (result.data.qq) {
+                        localStorage.setItem(ACTIVATION_STORAGE_KEY, result.data.qq);
+                        currentActivationQQ = result.data.qq;
+                    }
                 }
                 
                 saveActivationStatus(result.data);
@@ -1175,6 +1170,11 @@
                 
                 localStorage.setItem(ACTIVATION_STORAGE_KEY, qq);
                 currentActivationQQ = qq;
+                
+                if (result.data) {
+                    result.data.card = card;
+                    result.data.qq = qq;
+                }
                 
                 saveActivationStatus(result.data);
                 
@@ -1285,8 +1285,14 @@
         localStorage.setItem(ACTIVATION_EXPIRE_KEY, (Date.now() + 365 * 24 * 60 * 60 * 1000).toString());
         if (data) {
             localStorage.setItem(ACTIVATION_DATA_KEY, JSON.stringify(data));
+            if (typeof storageManager !== 'undefined') {
+                storageManager.saveActivationData(data);
+            }
         }
         isActivated = true;
+        if (typeof app !== 'undefined' && app.displayCloudSyncStatus) {
+            app.displayCloudSyncStatus();
+        }
         console.log('激活状态已保存');
     }
 
@@ -1311,8 +1317,14 @@
         localStorage.removeItem(ACTIVATED_FLAG_KEY);
         localStorage.removeItem(ACTIVATION_EXPIRE_KEY);
         localStorage.removeItem(ACTIVATION_DATA_KEY);
+        if (typeof storageManager !== 'undefined') {
+            storageManager.clearActivationData();
+        }
         isActivated = false;
         updateActivationUI();
+        if (typeof app !== 'undefined' && app.displayCloudSyncStatus) {
+            app.displayCloudSyncStatus();
+        }
         console.log('激活状态已清除');
     }
 

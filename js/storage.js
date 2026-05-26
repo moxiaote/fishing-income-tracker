@@ -4,12 +4,9 @@ class StorageManager {
         this.db = null;
         this.useLocalStorage = false;
         this.deviceId = this.getDeviceId();
-        this.gistId = localStorage.getItem('gistId');
-    }
-
-    // 获取Gist ID（公共方法）
-    getGistId() {
-        return this.gistId;
+        this.apiBaseUrl = '../data_sync.php';
+        this.signSecret = 'moxiaote-sign-secret-v1';
+        this.appKey = 'moxiaote-app-key-2024';
     }
 
     // 获取设备ID（公共方法）
@@ -24,6 +21,93 @@ class StorageManager {
             localStorage.setItem('deviceId', deviceId);
         }
         return deviceId;
+    }
+
+    // 生成签名
+    generateSignature(data) {
+        const sortedData = {};
+        Object.keys(data).sort().forEach(key => {
+            sortedData[key] = data[key];
+        });
+        const signStr = new URLSearchParams(sortedData).toString() + this.signSecret + this.appKey;
+        return this.sha256(signStr);
+    }
+
+    // SHA256哈希
+    async sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // 发送API请求
+    async sendApiRequest(action, postData) {
+        const timestamp = Math.floor(Date.now() / 1000);
+        const signData = {
+            action: action,
+            timestamp: timestamp,
+            qq: postData.qq || '',
+            card: postData.card || ''
+        };
+        
+        const signature = await this.generateSignature(signData);
+        
+        try {
+            const response = await fetch(`${this.apiBaseUrl}?action=${action}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Request-Time': timestamp.toString(),
+                    'X-Signature': signature
+                },
+                body: JSON.stringify(postData)
+            });
+            
+            return await response.json();
+        } catch (error) {
+            console.error('API请求失败:', error);
+            return {
+                success: false,
+                message: '网络请求失败，请检查网络连接后重试'
+            };
+        }
+    }
+
+    // 检查会员状态
+    checkMemberStatus() {
+        let activationData = localStorage.getItem('activationData');
+        if (!activationData) {
+            activationData = localStorage.getItem('activation_data');
+        }
+        
+        if (!activationData) {
+            return { activated: false };
+        }
+        
+        try {
+            const data = JSON.parse(activationData);
+            return {
+                activated: data.activated === true || localStorage.getItem('activated_flag') === 'true',
+                qq: data.qq || localStorage.getItem('activation_qq') || '',
+                card: data.card || '',
+                productId: data.product_id || 0,
+                productName: data.product_name || ''
+            };
+        } catch (error) {
+            const qq = localStorage.getItem('activation_qq');
+            const activated = localStorage.getItem('activated_flag') === 'true';
+            if (qq && activated) {
+                return {
+                    activated: true,
+                    qq: qq,
+                    card: '',
+                    productId: 0,
+                    productName: ''
+                };
+            }
+            return { activated: false };
+        }
     }
 
     // 检查浏览器是否支持IndexedDB
@@ -197,447 +281,179 @@ class StorageManager {
         });
     }
 
-    // 同步到GitHub Gist
-    async syncToGist() {
+    // 上传数据到云端
+    async uploadToCloud() {
         try {
-            console.log('开始同步到Gist...');
+            console.log('开始上传数据到云端...');
             
-            // 检查访问令牌
-            const accessToken = localStorage.getItem('github_access_token');
-            console.log('访问令牌:', accessToken ? '存在' : '不存在');
-            
-            if (!accessToken) {
-                console.log('没有GitHub访问令牌，跳过同步');
-                return false; // 没有令牌，直接返回，不尝试网络请求
+            const memberStatus = this.checkMemberStatus();
+            if (!memberStatus.activated) {
+                alert('请先验证卡密，成为会员后才能使用云端同步功能。');
+                return false;
             }
             
             const records = await this.loadRecords();
             console.log('加载记录成功:', records.length, '条');
             
-            const data = {
-                deviceId: this.deviceId,
+            const postData = {
+                qq: memberStatus.qq,
+                card: memberStatus.card,
                 records: records,
-                timestamp: new Date().toISOString()
+                deviceId: this.deviceId
             };
-
-            // 使用单个主要CORS代理，带较短超时
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const githubApiBase = 'https://api.github.com';
-
-            // 构建请求选项
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Authorization': `token ${accessToken}`
-                },
-                mode: 'cors',
-                cache: 'no-cache'
-            };
-
-            console.log('使用GitHub访问令牌进行认证');
-
-            let response;
             
-            if (!this.gistId) {
-                console.log('创建新Gist...');
-                const apiUrl = corsProxy + githubApiBase + '/gists';
-                // 添加超时处理 - 5秒超时
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                
-                try {
-                    console.log('尝试使用代理:', corsProxy);
-                    response = await fetch(apiUrl, {
-                        ...requestOptions,
-                        body: JSON.stringify({
-                            description: 'Fishing Income Data',
-                            public: false,
-                            files: {
-                                'data.json': {
-                                    content: JSON.stringify(data, null, 2)
-                                }
-                            }
-                        }),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                    console.log('代理请求成功:', corsProxy);
-                } catch (proxyError) {
-                    clearTimeout(timeoutId);
-                    console.error('CORS代理请求失败:', proxyError);
-                    alert('同步失败：网络请求超时，请检查网络连接后重试。');
-                    return false;
-                }
-                
-                if (!response) {
-                    alert('同步失败：网络请求失败，请检查网络连接后重试。');
-                    return false;
-                }
-
-                console.log('创建Gist响应状态:', response.status);
-                
-                const responseText = await response.text();
-                console.log('创建Gist响应文本:', responseText);
-                
-                // 检查是否是CORS代理的访问限制消息
-                if (responseText.includes('See /corsdemo for more info')) {
-                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
-                }
-                
-                if (!response.ok) {
-                    throw new Error(`创建Gist失败: ${response.status} - ${responseText}`);
-                }
-
-                let gistData;
-                try {
-                    // 尝试直接解析
-                    gistData = JSON.parse(responseText);
-                    console.log('Gist创建成功:', gistData);
-                } catch (parseError) {
-                    console.error('直接解析响应失败:', parseError);
-                    
-                    // 尝试处理可能的CORS代理包装响应
-                    try {
-                        // 检查是否是allorigins.win的包装格式
-                        if (responseText.includes('"contents":')) {
-                            const wrappedData = JSON.parse(responseText);
-                            if (wrappedData.contents) {
-                                gistData = JSON.parse(wrappedData.contents);
-                                console.log('解析包装响应成功:', gistData);
-                            } else {
-                                throw new Error('包装响应中没有contents字段');
-                            }
-                        } else {
-                            throw new Error('响应不是有效的JSON格式');
-                        }
-                    } catch (wrapError) {
-                        console.error('解析包装响应失败:', wrapError);
-                        throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
-                    }
-                }
-                
-                this.gistId = gistData.id;
-                localStorage.setItem('gistId', this.gistId);
-                console.log('Gist ID保存成功:', this.gistId);
-                
-                // 显示成功提示
-                alert('Gist创建成功！Gist ID: ' + this.gistId);
+            const result = await this.sendApiRequest('upload', postData);
+            
+            if (result.success) {
+                const updateTime = result.data && result.data.update_time ? result.data.update_time : '';
+                localStorage.setItem('lastSyncTime', updateTime);
+                alert('数据上传成功！' + (updateTime ? '更新时间: ' + updateTime : ''));
+                return true;
             } else {
-                console.log('更新现有Gist:', this.gistId);
-                const apiUrl = corsProxy + githubApiBase + `/gists/${this.gistId}`;
-                // 添加超时处理 - 5秒超时
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                
-                try {
-                    console.log('尝试使用代理:', corsProxy);
-                    response = await fetch(apiUrl, {
-                        ...requestOptions,
-                        method: 'PATCH',
-                        body: JSON.stringify({
-                            files: {
-                                'data.json': {
-                                    content: JSON.stringify(data, null, 2)
-                                }
-                            }
-                        }),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                    console.log('代理请求成功:', corsProxy);
-                } catch (proxyError) {
-                    clearTimeout(timeoutId);
-                    console.error('CORS代理请求失败:', proxyError);
-                    alert('同步失败：网络请求超时，请检查网络连接后重试。');
-                    return false;
-                }
-
-                if (!response) {
-                    throw new Error('所有CORS代理都失败了');
-                }
-
-                console.log('更新Gist响应状态:', response.status);
-                
-                const responseText = await response.text();
-                console.log('更新Gist响应文本:', responseText);
-                
-                // 检查是否是CORS代理的访问限制消息
-                if (responseText.includes('See /corsdemo for more info')) {
-                    throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
-                }
-                
-                if (!response.ok) {
-                    throw new Error(`更新Gist失败: ${response.status} - ${responseText}`);
-                }
-
-                let gistData;
-                try {
-                    // 尝试直接解析
-                    gistData = JSON.parse(responseText);
-                    console.log('Gist更新成功:', gistData);
-                } catch (parseError) {
-                    console.error('直接解析响应失败:', parseError);
-                    
-                    // 尝试处理可能的CORS代理包装响应
-                    try {
-                        // 检查是否是allorigins.win的包装格式
-                        if (responseText.includes('"contents":')) {
-                            const wrappedData = JSON.parse(responseText);
-                            if (wrappedData.contents) {
-                                gistData = JSON.parse(wrappedData.contents);
-                                console.log('解析包装响应成功:', gistData);
-                            } else {
-                                throw new Error('包装响应中没有contents字段');
-                            }
-                        } else {
-                            throw new Error('响应不是有效的JSON格式');
-                        }
-                    } catch (wrapError) {
-                        console.error('解析包装响应失败:', wrapError);
-                        throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
-                    }
-                }
-                
-                console.log('Gist更新成功:', this.gistId);
-                
-                // 显示成功提示
-                alert('Gist更新成功！Gist ID: ' + this.gistId);
+                alert('上传失败: ' + (result.message || '未知错误'));
+                return false;
             }
-
-            return true;
         } catch (error) {
-            console.error('同步到Gist失败:', error);
-            // 检查错误类型并提供详细的用户友好提示
-            if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
-                console.error('跨域错误或网络错误');
-                alert('同步失败: 浏览器阻止了跨域请求或网络连接问题。\n\n建议：\n1. 使用"保存到文件"功能作为备用\n2. 在本地服务器中打开应用\n3. 检查网络连接');
-            } else if (error.message.includes('403')) {
-                console.error('GitHub API速率限制');
-                alert('同步失败: GitHub API速率限制，请稍后再试。\n\n建议：\n1. 等待60分钟后再试\n2. 使用"保存到文件"功能作为备用');
-            } else if (error.message.includes('404')) {
-                console.error('Gist不存在');
-                alert('同步失败: Gist不存在，请检查Gist ID是否正确。');
-            } else if (error.message.includes('401')) {
-                console.error('GitHub API认证错误');
-                alert('同步失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"保存到文件"功能作为备用');
-            } else if (error.message.includes('未找到GitHub访问令牌')) {
-                console.error('访问令牌缺失');
-                alert('同步失败: 未找到GitHub访问令牌，请先登录GitHub。');
-            } else {
-                console.error('其他错误:', error);
-                alert('同步失败: ' + error.message + '\n\n建议使用"保存到文件"功能作为备用。');
-            }
+            console.error('上传到云端失败:', error);
+            alert('上传失败: ' + error.message);
             return false;
         }
     }
 
-    // 从GitHub Gist同步
-    async syncFromGist() {
+    // 从云端下载数据
+    async downloadFromCloud() {
         try {
-            if (!this.gistId) {
-                console.log('未找到Gist ID，跳过同步');
+            console.log('开始从云端下载数据...');
+            
+            const memberStatus = this.checkMemberStatus();
+            if (!memberStatus.activated) {
+                alert('请先验证卡密，成为会员后才能使用云端同步功能。');
                 return false;
             }
-
-            // 检查访问令牌
-            const accessToken = localStorage.getItem('github_access_token');
-            console.log('访问令牌:', accessToken ? '存在' : '不存在');
             
-            if (!accessToken) {
-                console.log('没有GitHub访问令牌，跳过同步');
-                return false; // 没有令牌，直接返回，不尝试网络请求
-            }
-
-            // 使用单个主要CORS代理，带较短超时
-            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
-            const githubApiBase = 'https://api.github.com';
-
-            // 构建请求选项
-            const requestOptions = {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Authorization': `token ${accessToken}`
-                },
-                mode: 'cors',
-                cache: 'no-cache'
+            const postData = {
+                qq: memberStatus.qq,
+                card: memberStatus.card
             };
-
-            console.log('使用GitHub访问令牌进行认证');
-
-            let response;
             
-            // 尝试使用单个主要CORS代理，带较短超时
-            const apiUrl = corsProxy + githubApiBase + `/gists/${this.gistId}`;
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
+            const result = await this.sendApiRequest('download', postData);
             
-            try {
-                console.log('尝试使用代理:', corsProxy);
-                response = await fetch(apiUrl, {
-                    ...requestOptions,
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                console.log('代理请求成功:', corsProxy);
-            } catch (proxyError) {
-                clearTimeout(timeoutId);
-                console.error('CORS代理请求失败:', proxyError);
-                alert('加载失败：网络请求超时，请检查网络连接后重试。');
-                return false;
-            }
-            
-            if (!response) {
-                alert('加载失败：网络请求失败，请检查网络连接后重试。');
-                return false;
-            }
-
-            console.log('获取Gist响应状态:', response.status);
-            
-            const responseText = await response.text();
-            console.log('获取Gist响应文本:', responseText);
-            
-            // 检查是否是CORS代理的访问限制消息
-            if (responseText.includes('See /corsdemo for more info')) {
-                throw new Error('CORS代理需要访问权限，请先访问 https://cors-anywhere.herokuapp.com/corsdemo 以获取临时访问权限');
-            }
-            
-            if (!response.ok) {
-                throw new Error(`获取Gist失败: ${response.status} - ${responseText}`);
-            }
-
-            let gistData;
-            try {
-                // 尝试直接解析
-                gistData = JSON.parse(responseText);
-                console.log('Gist数据获取成功:', gistData);
-            } catch (parseError) {
-                console.error('直接解析响应失败:', parseError);
+            if (result.success && result.data && result.data.records) {
+                const records = result.data.records;
+                console.log('找到记录:', records.length, '条');
+                await this.saveRecords(records);
                 
-                // 尝试处理可能的CORS代理包装响应
-                try {
-                    // 检查是否是allorigins.win的包装格式
-                    if (responseText.includes('"contents":')) {
-                        const wrappedData = JSON.parse(responseText);
-                        if (wrappedData.contents) {
-                            gistData = JSON.parse(wrappedData.contents);
-                            console.log('解析包装响应成功:', gistData);
-                        } else {
-                            throw new Error('包装响应中没有contents字段');
-                        }
-                    } else {
-                        throw new Error('响应不是有效的JSON格式');
-                    }
-                } catch (wrapError) {
-                    console.error('解析包装响应失败:', wrapError);
-                    throw new Error('解析响应失败: ' + parseError.message + '\n响应内容: ' + responseText.substring(0, 200) + '...');
-                }
-            }
-
-            if (!gistData.files || !gistData.files['data.json']) {
-                throw new Error('Gist中不存在data.json文件');
-            }
-
-            const content = gistData.files['data.json'].content;
-            console.log('data.json内容:', content);
-            
-            let parsedData;
-            try {
-                parsedData = JSON.parse(content);
-                console.log('解析data.json成功:', parsedData);
-            } catch (parseError) {
-                throw new Error('解析data.json失败: ' + parseError.message);
-            }
-
-            if (parsedData.records) {
-                console.log('找到记录:', parsedData.records.length, '条');
-                await this.saveRecords(parsedData.records);
-                console.log('从Gist同步成功');
-                
-                // 显示成功提示
-                alert('从Gist同步成功！加载了 ' + parsedData.records.length + ' 条记录。');
+                const updateTime = result.data.update_time || '';
+                localStorage.setItem('lastSyncTime', updateTime);
+                alert('从云端下载成功！加载了 ' + records.length + ' 条记录。' + (updateTime ? '更新时间: ' + updateTime : ''));
                 
                 return true;
             } else {
-                throw new Error('Gist中没有找到records数据');
+                if (result.data && result.data.no_data) {
+                    alert('未找到云端备份数据，请先上传数据。');
+                } else {
+                    alert('下载失败: ' + (result.message || '未知错误'));
+                }
+                return false;
             }
-
-            return false;
         } catch (error) {
-            console.error('从Gist同步失败:', error);
-            // 检查错误类型并提供详细的用户友好提示
-            if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
-                console.error('跨域错误或网络错误');
-                alert('同步失败: 浏览器阻止了跨域请求或网络连接问题。\n\n建议：\n1. 检查网络连接\n2. 确保Gist ID正确');
-            } else if (error.message.includes('403')) {
-                console.error('GitHub API速率限制');
-                alert('同步失败: GitHub API速率限制，请稍后再试。');
-            } else if (error.message.includes('404')) {
-                console.error('Gist不存在');
-                alert('加载失败: Gist不存在，请检查Gist ID是否正确。');
-            } else if (error.message.includes('401')) {
-                console.error('GitHub API认证错误');
-                alert('加载失败: GitHub API要求身份认证。\n\n建议：\n1. 点击"GitHub登录"按钮进行认证\n2. 使用"从文件加载"功能作为备用');
-            } else if (error.message.includes('未找到GitHub访问令牌')) {
-                console.error('访问令牌缺失');
-                alert('同步失败: 未找到GitHub访问令牌，请先登录GitHub。');
-            } else {
-                console.error('其他错误:', error);
-                alert('加载失败: ' + error.message);
-            }
+            console.error('从云端下载失败:', error);
+            alert('下载失败: ' + error.message);
             return false;
         }
     }
 
-    // 从Gist ID加载数据
-    async loadFromGist() {
+    // 检查云端同步状态
+    async checkCloudStatus() {
         try {
-            console.log('开始从Gist ID加载数据...');
-            
-            // 提示用户输入目标设备的Gist ID
-            const gistId = prompt('请输入Gist ID:');
-            if (!gistId) {
-                console.log('用户取消输入Gist ID');
-                return false;
+            const memberStatus = this.checkMemberStatus();
+            if (!memberStatus.activated) {
+                return { has_backup: false, need_activation: true };
             }
             
-            console.log('用户输入的Gist ID:', gistId);
+            const postData = {
+                qq: memberStatus.qq,
+                card: memberStatus.card
+            };
             
-            // 检查访问令牌
-            const accessToken = localStorage.getItem('github_access_token');
-            console.log('访问令牌:', accessToken ? '存在' : '不存在');
+            const result = await this.sendApiRequest('check', postData);
             
-            if (!accessToken) {
-                console.log('没有GitHub访问令牌，跳过加载');
-                alert('加载失败：请先登录GitHub。');
-                return false;
+            if (result.success && result.data) {
+                return result.data;
             }
             
-            // 临时保存当前Gist ID
-            const originalGistId = this.gistId;
-            console.log('原始Gist ID:', originalGistId);
-            
-            // 临时设置为目标设备的Gist ID
-            this.gistId = gistId;
-            console.log('临时设置的Gist ID:', this.gistId);
-            
-            // 尝试从Gist同步数据
-            console.log('开始同步数据...');
-            const synced = await this.syncFromGist();
-            console.log('同步结果:', synced);
-            
-            // 恢复原始Gist ID
-            this.gistId = originalGistId;
-            console.log('恢复原始Gist ID:', this.gistId);
-            
-            return synced;
+            return { has_backup: false };
         } catch (error) {
-            console.error('从Gist ID加载失败:', error);
-            alert('加载失败: ' + error.message);
-            return false;
+            console.error('检查云端状态失败:', error);
+            return { has_backup: false, error: error.message };
         }
+    }
+
+    // 显示云端同步状态
+    async displayCloudStatus() {
+        const statusElement = document.getElementById('cloud-status');
+        const lastSyncElement = document.getElementById('last-sync-time');
+        const memberStatus = this.checkMemberStatus();
+        
+        if (!memberStatus.activated) {
+            if (statusElement) {
+                statusElement.textContent = '未激活会员';
+                statusElement.className = 'text-danger';
+            }
+            if (lastSyncElement) {
+                lastSyncElement.textContent = '请先验证卡密';
+            }
+            return;
+        }
+        
+        const lastSyncTime = localStorage.getItem('lastSyncTime');
+        if (lastSyncElement) {
+            lastSyncElement.textContent = lastSyncTime ? '上次同步: ' + lastSyncTime : '尚未同步';
+        }
+        
+        if (statusElement) {
+            statusElement.textContent = '会员已激活';
+            statusElement.className = 'text-success';
+        }
+    }
+
+    // 保存会员激活数据
+    saveActivationData(data) {
+        localStorage.setItem('activationData', JSON.stringify({
+            activated: true,
+            qq: data.qq || '',
+            card: data.card || '',
+            product_id: data.product_id || 0,
+            product_name: data.product_name || '',
+            activation_time: new Date().toISOString()
+        }));
+    }
+
+    // 清除会员激活数据
+    clearActivationData() {
+        localStorage.removeItem('activationData');
+        localStorage.removeItem('lastSyncTime');
+    }
+
+    // 兼容旧方法：syncToGist
+    async syncToGist() {
+        return await this.uploadToCloud();
+    }
+
+    // 兼容旧方法：syncFromGist
+    async syncFromGist() {
+        return await this.downloadFromCloud();
+    }
+
+    // 兼容旧方法：loadFromGist
+    async loadFromGist() {
+        return await this.downloadFromCloud();
+    }
+
+    // 兼容旧方法：getGistId
+    getGistId() {
+        const memberStatus = this.checkMemberStatus();
+        return memberStatus.activated ? memberStatus.qq : '';
     }
 }
 
