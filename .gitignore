@@ -28,6 +28,7 @@ dist-ssr
 api/config.php
 api/card_verify.php
 api/install.sql
+api/test_cdk.php
 .env
 .env.local
 .htpasswd

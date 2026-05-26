@@ -127,7 +127,7 @@ class I18n {
                     simulator: '上头模拟器',
                     beyondEnhance: '超越强化',
                     evolveGaia: '进化八星',
-                    donation: '☕ 请我喝一杯咖啡',
+                    donation: '👑 尊贵会员特权',
                     badgeCraft: '勋章制作',
                     badgeBox: '勋章宝箱',
                     enchantMedal: '附魔勋章',
@@ -140,8 +140,8 @@ class I18n {
                     dogtorDesc: '当发烧友渐入佳境时，欧气与热爱在此碰撞【请点击】',
                     dogtorFull: '狗托榜 🏆 当发烧友渐入佳境时，欧气与热爱在此碰撞【请点击】',
                     simulatorNote: '说明：本项目仅供娱乐，实际游戏中的概率可能会有所不同。',
-                    donationNote: '请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~',
-                    donationBtn: '来杯咖啡续命，数据一键清零'
+                    donationNote: '立即解锁尊贵会员特权，享受无限次数据重置功能！',
+                    donationBtn: '💎 立即解锁特权'
                 },
                 'zh-TW': {
                     appTitle: '釣魚發燒友：財富積累日記',
@@ -200,7 +200,7 @@ class I18n {
                     simulator: '上頭模擬器',
                     beyondEnhance: '超越強化',
                     evolveGaia: '進化八星',
-                    donation: '☕ 請我喝一杯咖啡',
+                    donation: '👑 尊貴會員特權',
                     badgeCraft: '勳章製作',
                     badgeBox: '勳章寶箱',
                     enchantMedal: '附魔勳章',
@@ -273,7 +273,7 @@ class I18n {
                     simulator: 'Simulator',
                     beyondEnhance: 'Beyond Enhancement',
                     evolveGaia: 'Gaia Evolution',
-                    donation: '☕ Buy Me A Coffee',
+                    donation: '👑 Premium Member',
                     badgeCraft: 'Badge Craft',
                     badgeBox: 'Badge Box',
                     enchantMedal: 'Enchant Medal',
@@ -286,8 +286,8 @@ class I18n {
                     dogtorDesc: 'When fishing enthusiasts excel, luck and passion collide here [Click]',
                     dogtorFull: 'Dogtor Rank 🏆 When fishing enthusiasts excel, luck and passion collide here [Click]',
                     simulatorNote: 'Note: This project is for entertainment only. Actual game probabilities may vary.',
-                    donationNote: 'Buy me a coffee to support this tool\'s development and unlock data reset! Developers run on coffee~',
-                    donationBtn: 'Coffee + Reset Data'
+                    donationNote: 'Unlock premium member privileges and enjoy unlimited data resets!',
+                    donationBtn: '💎 Unlock Now'
                 },
                 ko: {
                     appTitle: '낚시의 신 : 재산 축적 일기',
@@ -346,7 +346,7 @@ class I18n {
                     simulator: '시뮬레이터',
                     beyondEnhance: '초월 강화',
                     evolveGaia: '가이아 진화',
-                    donation: '☕ 커피 한 잔 사주세요',
+                    donation: '👑 프리미엄 회원',
                     badgeCraft: '배지 제작',
                     badgeBox: '배지 상자',
                     enchantMedal: '인챈트 메달',
@@ -359,8 +359,8 @@ class I18n {
                     dogtorDesc: '낚시 애호가가 뛰어나면, 운과 열정이 여기서 충돌합니다 [클릭]',
                     dogtorFull: 'Dogtor 순위 🏆 낚시 애호가가 뛰어나면, 운과 열정이 여기서 충돌합니다 [클릭]',
                     simulatorNote: '참고: 이 프로젝트는 오락용으로만 사용됩니다. 실제 게임 확률은 다를 수 있습니다.',
-                    donationNote: '커피 한 잔 사주시면 이 도구 개발을 지원하시고 데이터 리셋 기능도 잠금 해제할 수 있습니다! 개발자는 커피로 살아갑니다~',
-                    donationBtn: '커피 + 데이터 리셋'
+                    donationNote: '프리미엄 회원 특권을 잠금 해제하고 무제한 데이터 리셋을 즐기세요!',
+                    donationBtn: '💎 지금 잠금 해제'
                 },
                 vi: {
                     appTitle: 'Người yêu câu cá: Nhật ký tích luỹ tài sản',
@@ -419,7 +419,7 @@ class I18n {
                     simulator: 'Bộ mô phỏng',
                     beyondEnhance: 'Tăng cường siêu việt',
                     evolveGaia: 'Tiến hóa Gaia',
-                    donation: '☕ Mua cho tôi một ly cà phê',
+                    donation: '👑 Thành viên Cao cấp',
                     badgeCraft: 'Chế tạo huy hiệu',
                     badgeBox: 'Hộp huy hiệu',
                     enchantMedal: 'Phù phép huy hiệu',
@@ -432,8 +432,8 @@ class I18n {
                     dogtorDesc: 'Khi những người đam mê câu cá xuất sắc, may mắn và đam mê va chạm tại đây [Nhấn]',
                     dogtorFull: 'Bảng xếp hạng Dogtor 🏆 Khi những người đam mê câu cá xuất sắc, may mắn và đam mê va chạm tại đây [Nhấn]',
                     simulatorNote: 'Lưu ý: Dự án này chỉ mang tính giải trí. Xác suất trong game thực tế có thể khác nhau.',
-                    donationNote: 'Mua cho tôi một ly cà phê để ủng hộ phát triển công cụ này và mở khóa đặt lại dữ liệu! Lập trình viên sống bằng cà phê~',
-                    donationBtn: 'Cà phê + Đặt lại dữ liệu'
+                    donationNote: 'Mở khóa đặc quyền thành viên cao cấp và tận hưởng đặt lại dữ liệu không giới hạn!',
+                    donationBtn: '💎 Mở khóa ngay'
                 }
             };
         }

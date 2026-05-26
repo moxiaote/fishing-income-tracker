@@ -475,7 +475,7 @@
                         <div class="card-body">
                             <div class="donation-callout mb-4">
                                 <div class="donation-callout-text">
-                                    <strong data-i18n="donation">☕ 请我喝一杯咖啡</strong>
+                                    <strong data-i18n="donation">👑 尊贵会员特权</strong>
                                     <span data-i18n="donationNote">请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~</span>
                                 </div>
                                 <button class="btn btn-danger donation-callout-btn" data-i18n="donationBtn" onclick="openCardModal()">输入卡密，数据一键清零</button>
@@ -849,8 +849,11 @@
     const ACTIVATED_FLAG_KEY = 'activated_flag';
     const ACTIVATION_EXPIRE_KEY = 'activation_expire';
     const ACTIVATION_DATA_KEY = 'activation_data';
+    const FREE_RESET_COUNT_KEY = 'free_reset_count';
+    const FREE_RESET_LIMIT = 7;
     let currentActivationQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
     let isActivated = localStorage.getItem(ACTIVATED_FLAG_KEY) === 'true';
+    let freeResetCount = parseInt(localStorage.getItem(FREE_RESET_COUNT_KEY) || '0');
 
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const CARD_API_BASE_URL = isLocalhost ? 'api' : 'https://ka.chenxiaofei.cn/api';
@@ -1295,6 +1298,7 @@
         const donationText = document.querySelector('.donation-callout-text');
         const donationNote = document.querySelector('.donation-callout-text span[data-i18n="donationNote"]');
         const proBadge = document.getElementById('pro-badge');
+        const remainingFreeResets = FREE_RESET_LIMIT - freeResetCount;
         
         if (isActivated) {
             if (proBadge) {
@@ -1302,7 +1306,7 @@
             }
             if (donationBtn) {
                 donationBtn.textContent = '🔄 重置所有模拟器数据';
-                donationBtn.classList.remove('btn-danger');
+                donationBtn.classList.remove('btn-danger', 'btn-warning');
                 donationBtn.classList.add('btn-success', 'pro-btn');
                 donationBtn.onclick = resetAllSimulators;
             }
@@ -1310,7 +1314,20 @@
                 donationText.style.opacity = '0.8';
             }
             if (donationNote) {
-                donationNote.textContent = '⭐ PRO会员专属：您已解锁数据重置功能，可无限次使用！';
+                donationNote.textContent = '🎖️ 感谢您的支持！尊贵的 PRO 会员，数据重置功能已为您无限次解锁！';
+            }
+        } else if (remainingFreeResets > 0) {
+            if (proBadge) {
+                proBadge.style.display = 'none';
+            }
+            if (donationBtn) {
+                donationBtn.textContent = `🔄 免费重置 (${remainingFreeResets}/${FREE_RESET_LIMIT})`;
+                donationBtn.classList.remove('btn-danger', 'btn-success', 'pro-btn');
+                donationBtn.classList.add('btn-warning');
+                donationBtn.onclick = handleFreeReset;
+            }
+            if (donationNote) {
+                donationNote.textContent = `🎁 您还有 ${remainingFreeResets} 次免费重置机会，用完后可升级为 PRO 会员享受无限次重置！`;
             }
         } else {
             if (proBadge) {
@@ -1318,13 +1335,31 @@
             }
             if (donationBtn) {
                 donationBtn.textContent = i18n.getText('donationBtn') || '输入卡密，数据一键清零';
-                donationBtn.classList.remove('btn-success', 'pro-btn');
+                donationBtn.classList.remove('btn-success', 'pro-btn', 'btn-warning');
                 donationBtn.classList.add('btn-danger');
                 donationBtn.onclick = openCardModal;
             }
             if (donationNote) {
-                donationNote.textContent = i18n.getText('donationNote') || '请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~';
+                donationNote.textContent = '⏰ 免费重置次数已用完，升级为 PRO 会员享受无限次数据重置！';
             }
+        }
+    }
+
+    function handleFreeReset() {
+        const remaining = FREE_RESET_LIMIT - freeResetCount;
+        if (remaining <= 0) {
+            alert('免费重置次数已用完，请升级为 PRO 会员享受无限次数据重置！');
+            openCardModal();
+            return;
+        }
+        
+        const confirmed = confirm(`即将重置所有模拟器数据，还剩 ${remaining} 次免费机会，此操作不可撤销，确定继续吗？`);
+        if (confirmed) {
+            freeResetCount++;
+            localStorage.setItem(FREE_RESET_COUNT_KEY, freeResetCount.toString());
+            resetAllSimulators();
+            updateActivationUI();
+            alert(`数据重置成功！您还剩 ${FREE_RESET_LIMIT - freeResetCount} 次免费重置机会。`);
         }
     }
 
