@@ -840,7 +840,11 @@
     }
 
     const ACTIVATION_STORAGE_KEY = 'activation_qq';
+    const ACTIVATED_FLAG_KEY = 'activated_flag';
+    const ACTIVATION_EXPIRE_KEY = 'activation_expire';
+    const ACTIVATION_DATA_KEY = 'activation_data';
     let currentActivationQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
+    let isActivated = localStorage.getItem(ACTIVATED_FLAG_KEY) === 'true';
 
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const CARD_API_BASE_URL = isLocalhost ? 'api' : 'https://ka.chenxiaofei.cn/api';
@@ -1059,11 +1063,14 @@
                     currentActivationQQ = result.data.qq;
                 }
                 
+                saveActivationStatus(result.data);
+                
                 setTimeout(() => {
                     closeCardModal();
                     verifyBtn.disabled = false;
                     verifyBtn.textContent = '验证卡密';
                     verifyBtn.style.background = '';
+                    updateActivationUI();
                     resetAllSimulators();
                 }, 1000);
             } else {
@@ -1137,11 +1144,14 @@
                 localStorage.setItem(ACTIVATION_STORAGE_KEY, qq);
                 currentActivationQQ = qq;
                 
+                saveActivationStatus(result.data);
+                
                 setTimeout(() => {
                     closeCardModal();
                     restoreBtn.disabled = false;
                     restoreBtn.textContent = '恢复激活';
                     restoreBtn.style.background = '';
+                    updateActivationUI();
                     resetAllSimulators();
                 }, 1000);
             } else {
@@ -1238,11 +1248,81 @@
         }
     }
 
+    function saveActivationStatus(data) {
+        localStorage.setItem(ACTIVATED_FLAG_KEY, 'true');
+        localStorage.setItem(ACTIVATION_EXPIRE_KEY, (Date.now() + 365 * 24 * 60 * 60 * 1000).toString());
+        if (data) {
+            localStorage.setItem(ACTIVATION_DATA_KEY, JSON.stringify(data));
+        }
+        isActivated = true;
+        console.log('激活状态已保存');
+    }
+
+    function checkActivationStatus() {
+        const flag = localStorage.getItem(ACTIVATED_FLAG_KEY);
+        const expire = localStorage.getItem(ACTIVATION_EXPIRE_KEY);
+        
+        if (flag === 'true' && expire) {
+            const expireTime = parseInt(expire);
+            if (Date.now() < expireTime) {
+                isActivated = true;
+                return true;
+            } else {
+                clearActivationStatus();
+            }
+        }
+        isActivated = false;
+        return false;
+    }
+
+    function clearActivationStatus() {
+        localStorage.removeItem(ACTIVATED_FLAG_KEY);
+        localStorage.removeItem(ACTIVATION_EXPIRE_KEY);
+        localStorage.removeItem(ACTIVATION_DATA_KEY);
+        isActivated = false;
+        updateActivationUI();
+        console.log('激活状态已清除');
+    }
+
+    function updateActivationUI() {
+        const donationBtn = document.querySelector('.donation-callout-btn');
+        const donationText = document.querySelector('.donation-callout-text');
+        const donationNote = document.querySelector('.donation-callout-text span[data-i18n="donationNote"]');
+        
+        if (isActivated) {
+            if (donationBtn) {
+                donationBtn.textContent = '🔄 重置所有模拟器数据';
+                donationBtn.classList.remove('btn-danger');
+                donationBtn.classList.add('btn-success');
+                donationBtn.onclick = resetAllSimulators;
+            }
+            if (donationText) {
+                donationText.style.opacity = '0.8';
+            }
+            if (donationNote) {
+                donationNote.textContent = '您已解锁数据重置功能，可无限次使用！';
+            }
+        } else {
+            if (donationBtn) {
+                donationBtn.textContent = i18n.getText('donationBtn') || '输入卡密，数据一键清零';
+                donationBtn.classList.remove('btn-success');
+                donationBtn.classList.add('btn-danger');
+                donationBtn.onclick = openCardModal;
+            }
+            if (donationNote) {
+                donationNote.textContent = i18n.getText('donationNote') || '请我喝杯咖啡，既能支持这个小工具的开发，又能解锁数据重置功能！码农的能量全靠咖啡~';
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', async function() {
         const savedQQ = localStorage.getItem(ACTIVATION_STORAGE_KEY);
         if (savedQQ) {
             currentActivationQQ = savedQQ;
         }
+        
+        checkActivationStatus();
+        updateActivationUI();
     });
 
     document.addEventListener('keydown', function(e) {
