@@ -1071,7 +1071,7 @@
                     verifyBtn.textContent = '验证卡密';
                     verifyBtn.style.background = '';
                     updateActivationUI();
-                    resetAllSimulators();
+                    alert('卡密验证成功！您已解锁数据重置功能，可以随时使用。');
                 }, 1000);
             } else {
                 showCardError(result.message || '卡密验证失败', 'verify');
@@ -1152,7 +1152,7 @@
                     restoreBtn.textContent = '恢复激活';
                     restoreBtn.style.background = '';
                     updateActivationUI();
-                    resetAllSimulators();
+                    alert('激活状态恢复成功！您已解锁数据重置功能，可以随时使用。');
                 }, 1000);
             } else {
                 showCardError(result.message || '恢复失败', 'restore');
