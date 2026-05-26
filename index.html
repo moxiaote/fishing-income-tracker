@@ -850,6 +850,28 @@
         appKey: 'moxiaote-app-key-2024'
     };
 
+    async function fetchWithTimeout(url, options, timeout = 5000) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, timeout);
+
+        try {
+            const response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+            return response;
+        } catch (error) {
+            clearTimeout(timeoutId);
+            if (error.name === 'AbortError') {
+                throw new Error('Request timeout');
+            }
+            throw error;
+        }
+    }
+
     async function sha256Hash(message) {
         const encoder = new TextEncoder();
         const data = encoder.encode(message);
@@ -957,7 +979,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('verify', timestamp, { card: card });
 
-            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=verify', {
+            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -965,7 +987,11 @@
                     'X-Signature': signature
                 },
                 body: JSON.stringify({ card: card })
-            });
+            }, 8000);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const result = await response.json();
 
@@ -992,7 +1018,19 @@
             }
         } catch (error) {
             console.error('卡密验证出错:', error);
-            showCardError('网络错误，请稍后重试', 'verify');
+            let errorMessage = '网络错误，请稍后重试';
+            if (error.message.includes('timeout')) {
+                errorMessage = '请求超时，请检查网络连接后重试';
+            } else if (error.message.includes('CORS')) {
+                errorMessage = '跨域请求被阻止，请尝试刷新页面';
+            } else if (error.message.includes('404')) {
+                errorMessage = '服务器接口不存在，请联系管理员';
+            } else if (error.message.includes('500')) {
+                errorMessage = '服务器内部错误，请稍后重试';
+            } else if (error.message.includes('NetworkError')) {
+                errorMessage = '网络连接失败，请检查网络设置';
+            }
+            showCardError(errorMessage, 'verify');
             verifyBtn.disabled = false;
             verifyBtn.textContent = '验证卡密';
         }
@@ -1021,7 +1059,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('restore_by_qq', timestamp, { qq: qq });
 
-            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
+            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1029,7 +1067,11 @@
                     'X-Signature': signature
                 },
                 body: JSON.stringify({ qq: qq })
-            });
+            }, 8000);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
             const result = await response.json();
 
@@ -1054,7 +1096,19 @@
             }
         } catch (error) {
             console.error('恢复激活出错:', error);
-            showCardError('网络错误，请稍后重试', 'restore');
+            let errorMessage = '网络错误，请稍后重试';
+            if (error.message.includes('timeout')) {
+                errorMessage = '请求超时，请检查网络连接后重试';
+            } else if (error.message.includes('CORS')) {
+                errorMessage = '跨域请求被阻止，请尝试刷新页面';
+            } else if (error.message.includes('404')) {
+                errorMessage = '服务器接口不存在，请联系管理员';
+            } else if (error.message.includes('500')) {
+                errorMessage = '服务器内部错误，请稍后重试';
+            } else if (error.message.includes('NetworkError')) {
+                errorMessage = '网络连接失败，请检查网络设置';
+            }
+            showCardError(errorMessage, 'restore');
             restoreBtn.disabled = false;
             restoreBtn.textContent = '恢复激活';
         }
@@ -1070,7 +1124,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('check_activation', timestamp, { qq: savedQQ });
 
-            const response = await fetch(CARD_API_BASE_URL + '/card_verify.php?action=check_activation', {
+            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=check_activation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1078,12 +1132,22 @@
                     'X-Signature': signature
                 },
                 body: JSON.stringify({ qq: savedQQ })
-            });
+            }, 8000);
+
+            if (!response.ok) {
+                console.error('检查激活状态失败:', response.status);
+                return false;
+            }
 
             const result = await response.json();
             return result.success && result.data && result.data.activated;
         } catch (error) {
             console.error('检查激活状态出错:', error);
+            if (error.message.includes('timeout')) {
+                console.warn('检查激活状态超时，跳过服务器验证');
+            } else if (error.message.includes('CORS')) {
+                console.warn('跨域请求被阻止，跳过服务器验证');
+            }
             return false;
         }
     }
