@@ -68,7 +68,13 @@
         <!-- 语言选择器和使用提示放在同一行 -->
         <div id="header-bar" class="bg-light border-bottom border-gray-200 p-0 d-flex justify-content-between align-items-center m-0">
             <div class="d-flex justify-content-between align-items-center px-3 py-2 cursor-pointer flex-grow-1" data-bs-toggle="collapse" data-bs-target="#usage-tips-section" aria-expanded="false" aria-controls="usage-tips-section" style="cursor: pointer;">
-                <strong data-i18n="appTitle" style="font-size: 14px; font-weight: 500; color: #333;">钓鱼发烧友：财富积累日记</strong>
+                <div class="d-flex align-items-center gap-2">
+                    <strong data-i18n="appTitle" style="font-size: 14px; font-weight: 500; color: #333;">钓鱼发烧友：财富积累日记</strong>
+                    <span id="pro-badge" class="pro-badge" style="display: none;">
+                        <span class="pro-star">★</span>
+                        <span class="pro-text">PRO</span>
+                    </span>
+                </div>
                 <span data-i18n="usageTips" style="font-size: 12px; color: #666;">使用提示</span>
             </div>
             <div class="language-selector px-3 py-2 border-left border-gray-200">
@@ -1288,24 +1294,31 @@
         const donationBtn = document.querySelector('.donation-callout-btn');
         const donationText = document.querySelector('.donation-callout-text');
         const donationNote = document.querySelector('.donation-callout-text span[data-i18n="donationNote"]');
+        const proBadge = document.getElementById('pro-badge');
         
         if (isActivated) {
+            if (proBadge) {
+                proBadge.style.display = 'inline-flex';
+            }
             if (donationBtn) {
                 donationBtn.textContent = '🔄 重置所有模拟器数据';
                 donationBtn.classList.remove('btn-danger');
-                donationBtn.classList.add('btn-success');
+                donationBtn.classList.add('btn-success', 'pro-btn');
                 donationBtn.onclick = resetAllSimulators;
             }
             if (donationText) {
                 donationText.style.opacity = '0.8';
             }
             if (donationNote) {
-                donationNote.textContent = '您已解锁数据重置功能，可无限次使用！';
+                donationNote.textContent = '⭐ PRO会员专属：您已解锁数据重置功能，可无限次使用！';
             }
         } else {
+            if (proBadge) {
+                proBadge.style.display = 'none';
+            }
             if (donationBtn) {
                 donationBtn.textContent = i18n.getText('donationBtn') || '输入卡密，数据一键清零';
-                donationBtn.classList.remove('btn-success');
+                donationBtn.classList.remove('btn-success', 'pro-btn');
                 donationBtn.classList.add('btn-danger');
                 donationBtn.onclick = openCardModal;
             }
