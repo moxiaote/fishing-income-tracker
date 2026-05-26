@@ -850,6 +850,61 @@
         appKey: 'moxiaote-app-key-2024'
     };
 
+    const CORS_PROXIES = [
+        'https://api.allorigins.win/raw?url=',
+        'https://corsproxy.io/?',
+        'https://cors-anywhere.herokuapp.com/'
+    ];
+
+    async function fetchWithCorsProxy(url, options, timeout = 8000) {
+        const errors = [];
+        const proxiesToTry = [null, ...CORS_PROXIES];
+
+        for (const proxy of proxiesToTry) {
+            const requestUrl = proxy ? proxy + encodeURIComponent(url) : url;
+            const proxyName = proxy ? (proxy.match(/:\/\/([^/]+)/) || [])[1] : 'direct';
+            console.log(`尝试 ${proxyName} 请求:`, proxy ? requestUrl : url);
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+                try {
+                    const response = await fetch(requestUrl, {
+                        ...options,
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    if (response.ok) {
+                        console.log(`${proxyName} 请求成功`);
+                        return response;
+                    } else {
+                        const text = await response.text().catch(() => '');
+                        if (text.includes('See /corsdemo for more info')) {
+                            throw new Error('CORS proxy requires demo access');
+                        }
+                        errors.push(`${proxyName} failed: HTTP ${response.status}`);
+                        console.warn(`${proxyName} 请求失败: HTTP ${response.status}`);
+                    }
+                } catch (error) {
+                    clearTimeout(timeoutId);
+                    if (error.name === 'AbortError') {
+                        errors.push(`${proxyName} timeout`);
+                        console.warn(`${proxyName} 请求超时`);
+                    } else {
+                        errors.push(`${proxyName} error: ${error.message}`);
+                        console.warn(`${proxyName} 请求错误:`, error.message);
+                    }
+                }
+            } catch (error) {
+                errors.push(`${proxyName} setup error: ${error.message}`);
+            }
+        }
+
+        throw new Error('所有请求方式都失败: ' + errors.join('; '));
+    }
+
     async function fetchWithTimeout(url, options, timeout = 5000) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
@@ -979,7 +1034,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('verify', timestamp, { card: card });
 
-            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=verify', {
+            const response = await fetchWithCorsProxy(CARD_API_BASE_URL + '/card_verify.php?action=verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1021,8 +1076,8 @@
             let errorMessage = '网络错误，请稍后重试';
             if (error.message.includes('timeout')) {
                 errorMessage = '请求超时，请检查网络连接后重试';
-            } else if (error.message.includes('CORS')) {
-                errorMessage = '跨域请求被阻止，请尝试刷新页面';
+            } else if (error.message.includes('所有请求方式都失败')) {
+                errorMessage = '服务器响应异常，已尝试多种连接方式均失败，请稍后重试或联系开发者';
             } else if (error.message.includes('404')) {
                 errorMessage = '服务器接口不存在，请联系管理员';
             } else if (error.message.includes('500')) {
@@ -1059,7 +1114,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('restore_by_qq', timestamp, { qq: qq });
 
-            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
+            const response = await fetchWithCorsProxy(CARD_API_BASE_URL + '/card_verify.php?action=restore_by_qq', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1099,8 +1154,8 @@
             let errorMessage = '网络错误，请稍后重试';
             if (error.message.includes('timeout')) {
                 errorMessage = '请求超时，请检查网络连接后重试';
-            } else if (error.message.includes('CORS')) {
-                errorMessage = '跨域请求被阻止，请尝试刷新页面';
+            } else if (error.message.includes('所有请求方式都失败')) {
+                errorMessage = '服务器响应异常，已尝试多种连接方式均失败，请稍后重试或联系开发者';
             } else if (error.message.includes('404')) {
                 errorMessage = '服务器接口不存在，请联系管理员';
             } else if (error.message.includes('500')) {
@@ -1124,7 +1179,7 @@
             const timestamp = getCurrentTimestamp();
             const signature = await generateRequestSignature('check_activation', timestamp, { qq: savedQQ });
 
-            const response = await fetchWithTimeout(CARD_API_BASE_URL + '/card_verify.php?action=check_activation', {
+            const response = await fetchWithCorsProxy(CARD_API_BASE_URL + '/card_verify.php?action=check_activation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1145,8 +1200,8 @@
             console.error('检查激活状态出错:', error);
             if (error.message.includes('timeout')) {
                 console.warn('检查激活状态超时，跳过服务器验证');
-            } else if (error.message.includes('CORS')) {
-                console.warn('跨域请求被阻止，跳过服务器验证');
+            } else if (error.message.includes('所有请求方式都失败')) {
+                console.warn('所有请求方式都失败，跳过服务器验证');
             }
             return false;
         }
