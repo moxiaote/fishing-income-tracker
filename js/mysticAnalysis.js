@@ -151,7 +151,9 @@ const mysticAnalysis = {
         if (equipment.reel.badgeLevel > 0 && equipment.reel.badgeLevel <= 3) baseScore += 10;
         
         const crestData = this.getCrestData();
-        const maxCrest = Math.max(...Object.values(crestData.crestStages || {}));
+        const crestStages = crestData.crestStages || {};
+        const crestValues = Object.values(crestStages);
+        const maxCrest = crestValues.length > 0 ? Math.max(...crestValues) : 0;
         if (maxCrest >= 12) baseScore += 15;
         if (maxCrest >= 15) baseScore += 25;
         
@@ -276,7 +278,7 @@ const mysticAnalysis = {
     },
     
     getDogtorScore() {
-        if (typeof dogtorLeaderboard === 'undefined') return 30;
+        if (typeof dogtorLeaderboard === 'undefined' || typeof dogtorLeaderboard.calculateTotalScore !== 'function') return 30;
         
         const { totalScore, breakdown } = dogtorLeaderboard.calculateTotalScore();
         
@@ -325,7 +327,9 @@ const mysticAnalysis = {
         if (resources.breakthrough > 500) score -= 5;
         
         const crestData = this.getCrestData();
-        const maxCrest = Math.max(...Object.values(crestData.crestStages || {}));
+        const crestStages = crestData.crestStages || {};
+        const crestValues = Object.values(crestStages);
+        const maxCrest = crestValues.length > 0 ? Math.max(...crestValues) : 0;
         if (maxCrest >= 15) score += 20;
         else if (maxCrest >= 12) score += 10;
         
