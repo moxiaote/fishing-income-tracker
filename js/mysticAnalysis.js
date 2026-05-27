@@ -67,10 +67,20 @@ const mysticAnalysis = {
     },
     
     analyze() {
-        const memberStatus = storageManager.checkMemberStatus();
         const contentEl = document.getElementById('mystic-analysis-content');
         const proRequiredEl = document.getElementById('mystic-pro-required');
         const loadingEl = document.getElementById('mystic-loading');
+        
+        // 检查必要的依赖
+        if (typeof storageManager === 'undefined') {
+            console.error('错误: storageManager 未定义');
+            if (contentEl) {
+                contentEl.innerHTML = '<p class="text-center text-muted">系统初始化失败，请刷新页面</p>';
+            }
+            return;
+        }
+        
+        const memberStatus = storageManager.checkMemberStatus();
         
         if (!memberStatus.activated) {
             if (contentEl) contentEl.style.display = 'none';
@@ -87,10 +97,46 @@ const mysticAnalysis = {
         
         setTimeout(() => {
             try {
-                const analysis = this.generateAnalysis();
+                console.log('开始玄学分析...');
+                
+                console.log('步骤1: 计算占卜');
+                const divination = this.calculateDivination(new Date());
+                console.log('占卜结果:', divination);
+                
+                console.log('步骤2: 计算运气分数');
+                const luckScore = this.calculateLuckScore();
+                console.log('运气分数:', luckScore);
+                
+                console.log('步骤3: 分析资源');
+                const resourceAnalysis = this.analyzeResources();
+                console.log('资源分析:', resourceAnalysis);
+                
+                console.log('步骤4: 分析模拟器');
+                const simulatorAnalysis = this.analyzeSimulators();
+                console.log('模拟器分析:', simulatorAnalysis);
+                
+                console.log('步骤5: 生成运势预测');
+                const luckyPrediction = this.generateLuckyPrediction(divination, luckScore);
+                console.log('运势预测:', luckyPrediction);
+                
+                console.log('步骤6: 生成分析结果');
+                const analysis = {
+                    date: new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+                    lunarInfo: this.getLunarInfo(new Date()),
+                    divination,
+                    luckScore,
+                    resourceAnalysis,
+                    simulatorAnalysis,
+                    luckyPrediction,
+                    timestamp: new Date().getTime()
+                };
+                
+                console.log('分析完成:', analysis);
                 this.renderAnalysis(analysis);
             } catch (error) {
                 console.error('玄学分析出错:', error);
+                console.error('错误堆栈:', error.stack);
+                
                 // 隐藏加载动画
                 if (loadingEl) {
                     loadingEl.parentElement.style.display = 'none';
@@ -100,7 +146,8 @@ const mysticAnalysis = {
                     contentEl.innerHTML = `
                         <div class="text-center py-4">
                             <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
-                            <p class="text-muted">分析过程中遇到问题，请刷新页面重试</p>
+                            <p class="text-muted">分析过程中遇到问题</p>
+                            <p class="text-muted small">${error.message || '未知错误'}</p>
                             <button class="btn btn-primary mt-3" onclick="mysticAnalysis.analyze()">重新分析</button>
                         </div>
                     `;
@@ -183,13 +230,16 @@ const mysticAnalysis = {
         else if (baseScore >= 15) resultIndex = 6;
         else resultIndex = 7;
         
+        const jiShenStart = (dayOfWeek + dayOfMonth) % 10;
+        const xiongShenStart = (dayOfWeek + hours) % 8;
+        
         return {
             ...this.divinationResults[resultIndex],
             score: baseScore,
             luckyDirection: this.luckyDirection[(dayOfMonth + hours) % 8],
             luckyEmoji: this.luckyEmojis[(dayOfMonth + month) % 10],
-            jiShen: this.jiShen.slice((dayOfWeek + dayOfMonth) % 10, 3),
-            xiongShen: this.xiongShen.slice((dayOfWeek + hours) % 8, 2),
+            jiShen: this.jiShen.slice(jiShenStart, jiShenStart + 3),
+            xiongShen: this.xiongShen.slice(xiongShenStart, xiongShenStart + 2),
             hourSegment,
             weekDayBonus,
             hourBonus

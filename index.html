@@ -1397,19 +1397,23 @@
     const SIMULATOR_KEYS = {
         'beyondEnhancement': {
             key: 'beyondEnhancementData',
-            name: '超越强化'
+            name: '超越强化',
+            relatedKeys: ['beyondEnhancementData', 'sharedEquipmentData']
         },
         'evolveGaia': {
             key: 'evolveGaiaData',
-            name: '进化八星'
+            name: '进化八星',
+            relatedKeys: ['evolveGaiaData', 'sharedEquipmentData']
         },
         'enchantMedal': {
             key: 'enchantMedalData',
-            name: '附魔勋章'
+            name: '附魔勋章',
+            relatedKeys: ['enchantMedalData', 'sharedEquipmentData']
         },
         'crestEnhance': {
             key: 'crestEnhanceData',
-            name: '刻印模拟'
+            name: '刻印模拟',
+            relatedKeys: ['crestEnhanceData']
         }
     };
 
@@ -1507,10 +1511,12 @@
             return;
         }
 
-        if (confirm(`即将为您重置【${sim.name}】数据，此操作不可撤销，确定继续吗？\n\n💡 提示：其他模拟器数据将被保留，记账更精准！`)) {
+        if (confirm(`即将为您重置【${sim.name}】数据（包括等级、消耗记录等），此操作不可撤销，确定继续吗？\n\n💡 提示：其他模拟器数据将被保留，记账更精准！`)) {
             try {
-                localStorage.removeItem(sim.key);
-                alert(`已为您重置【${sim.name}】数据！\n\n✅ 记账更干净，狗托榜评分更可控~`);
+                sim.relatedKeys.forEach(key => {
+                    localStorage.removeItem(key);
+                });
+                alert(`已为您重置【${sim.name}】数据！\n\n✅ 等级和消耗记录已清除，狗托榜评分更可控~`);
                 const iframe = document.getElementById('simulator-iframe');
                 if (iframe && iframe.src) {
                     iframe.contentWindow.location.reload();
