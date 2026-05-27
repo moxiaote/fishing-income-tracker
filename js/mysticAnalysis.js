@@ -40,6 +40,21 @@ const mysticAnalysis = {
     
     init() {
         this.bindEvents();
+        this.updateDescription();
+    },
+    
+    updateDescription() {
+        const memberStatus = storageManager.checkMemberStatus();
+        const memberDescEl = document.getElementById('mystic-analysis-desc-member');
+        const nonMemberDescEl = document.getElementById('mystic-analysis-desc-non-member');
+        
+        if (memberStatus.activated) {
+            if (memberDescEl) memberDescEl.style.display = 'block';
+            if (nonMemberDescEl) nonMemberDescEl.style.display = 'none';
+        } else {
+            if (memberDescEl) memberDescEl.style.display = 'none';
+            if (nonMemberDescEl) nonMemberDescEl.style.display = 'block';
+        }
     },
     
     bindEvents() {
@@ -71,8 +86,26 @@ const mysticAnalysis = {
         }
         
         setTimeout(() => {
-            const analysis = this.generateAnalysis();
-            this.renderAnalysis(analysis);
+            try {
+                const analysis = this.generateAnalysis();
+                this.renderAnalysis(analysis);
+            } catch (error) {
+                console.error('玄学分析出错:', error);
+                // 隐藏加载动画
+                if (loadingEl) {
+                    loadingEl.parentElement.style.display = 'none';
+                }
+                // 显示错误信息
+                if (contentEl) {
+                    contentEl.innerHTML = `
+                        <div class="text-center py-4">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
+                            <p class="text-muted">分析过程中遇到问题，请刷新页面重试</p>
+                            <button class="btn btn-primary mt-3" onclick="mysticAnalysis.analyze()">重新分析</button>
+                        </div>
+                    `;
+                }
+            }
         }, 800);
     },
     
