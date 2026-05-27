@@ -1627,6 +1627,34 @@
             header.addEventListener('click', toggleDogtorLeaderboard);
         }
     });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, false);
+
+    let lastTouch = null;
+    document.addEventListener('touchstart', function(event) {
+        const currentTouch = event.touches[0];
+        if (lastTouch) {
+            const deltaX = Math.abs(currentTouch.clientX - lastTouch.clientX);
+            const deltaY = Math.abs(currentTouch.clientY - lastTouch.clientY);
+            if (deltaX < 10 && deltaY < 10) {
+                event.preventDefault();
+            }
+        }
+        lastTouch = currentTouch;
+    }, false);
     </script>
     
     <!-- 版权信息 -->
