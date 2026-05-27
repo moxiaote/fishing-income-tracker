@@ -68,6 +68,11 @@ class App {
             chartManager.updateCharts(this.records);
             chartManager.updateStatCards(this.records);
             
+            // 初始化玄学分析
+            if (window.mysticAnalysis) {
+                window.mysticAnalysis.init();
+            }
+            
             // 绑定统计卡片点击事件（支持触摸设备）
             this.bindStatCardClickEvents();
 

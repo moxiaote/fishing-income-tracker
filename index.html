@@ -594,6 +594,45 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="border-top border-secondary pt-4 mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="d-flex items-center gap-2">
+                                        <span>🔮 玄学分析</span>
+                                        <span class="pro-badge-sm">
+                                            <span class="pro-star">★</span>
+                                            <span class="pro-text">PRO</span>
+                                        </span>
+                                    </h6>
+                                    <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#mystic-analysis-section" aria-expanded="false" aria-controls="mystic-analysis-section">
+                                        <span class="collapse-icon">
+                                            <span class="line horizontal"></span>
+                                            <span class="line vertical"></span>
+                                            <span class="line diagonal"></span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <p class="text-muted small mb-3" id="mystic-analysis-desc">🔒 PRO：基于您的上头模拟器历史数据，提供运势分析和精神指导!</p>
+                                <div class="collapse" id="mystic-analysis-section">
+                                    <div id="mystic-analysis-content">
+                                        <div class="text-center py-4">
+                                            <div class="spinner-border text-primary" role="status" id="mystic-loading">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                            <p class="mt-2 text-muted" data-i18n="mysticAnalyzing">正在分析您的运势数据...</p>
+                                        </div>
+                                    </div>
+                                    <div id="mystic-pro-required" class="text-center py-4" style="display:none;">
+                                        <div class="mb-3">
+                                            <span style="font-size: 48px;">🔐</span>
+                                        </div>
+                                        <p class="text-muted mb-3" data-i18n="mysticProRequired">此功能仅对PRO会员开放</p>
+                                        <button class="btn btn-primary" onclick="openCardModal()">
+                                            <span data-i18n="becomeProMember">成为PRO会员</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -680,6 +719,7 @@
     <script src="js/formatUtils.js"></script>
     <script src="js/equipmentSync.js"></script>
     <script src="js/resourceManager.js"></script>
+    <script src="js/mysticAnalysis.js"></script>
     <script src="js/app.js"></script>
     
     <!-- 鼓励功能脚本 - 鱼儿吐泡泡 -->
@@ -1422,10 +1462,10 @@
                 selectiveResetSection.style.display = 'block';
             }
             if (selectiveResetDesc) {
-                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！</span>';
             }
             if (cloudSyncDesc) {
-                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：数据安全存储在服务器，支持多设备间同步！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：数据安全存储在服务器，支持多设备间同步</span>';
             }
         } else {
             if (proBadge) {
@@ -1444,10 +1484,10 @@
                 selectiveResetSection.style.display = 'block';
             }
             if (selectiveResetDesc) {
-                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！</span>';
             }
             if (cloudSyncDesc) {
-                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：数据安全存储在服务器，支持多设备间同步！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO</strong>：数据安全存储在服务器，支持多设备间同步</span>';
             }
         }
     }
