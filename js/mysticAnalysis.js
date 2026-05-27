@@ -681,9 +681,9 @@ class MysticAnalysis {
             <div class="mystic-container">
                 <div class="mystic-header text-center mb-4">
                     <div class="mystic-date text-muted small mb-2">${analysis.date} · ${analysis.lunarInfo.lunarDate}</div>
-                    <div class="mystic-divination d-flex align-items-center justify-content-center gap-3">
+                    <div class="mystic-divination d-flex flex-column align-items-center justify-content-center">
                         <span style="font-size: 48px;">${divination.icon}</span>
-                        <div class="text-start">
+                        <div class="text-center mt-2">
                             <div style="color: ${divination.color}; font-size: 28px; font-weight: bold;">${divination.level}</div>
                             <div class="text-muted mt-1">${divination.message}</div>
                         </div>
