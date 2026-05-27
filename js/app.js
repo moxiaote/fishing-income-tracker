@@ -141,37 +141,57 @@ class App {
         this.bindSimulatorEvents();
     }
 
+    // 播放音符
+    playNote(frequency) {
+        if (!frequency || frequency <= 0) return;
+        
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = parseFloat(frequency);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.error('Audio play error:', e);
+        }
+    }
+
     // 绑定上头模拟器事件
     bindSimulatorEvents() {
-        // 获取所有模拟器按钮
-        const simulatorButtons = document.querySelectorAll('.simulator-btn');
+        const simulatorButtons = document.querySelectorAll('.simulator-panel-btn');
         if (simulatorButtons.length > 0) {
             simulatorButtons.forEach(button => {
                 button.addEventListener('click', () => {
+                    const note = button.getAttribute('data-note');
+                    this.playNote(note);
+                    
                     const target = button.getAttribute('data-target');
                     const i18nKey = button.getAttribute('data-i18n');
                     
-                    // 如果没有指定目标（备用按钮），则关闭嵌套窗口
                     if (!target || target === '') {
                         this.closeSimulator();
                         return;
                     }
                     
-                    // 检查是否是当前打开的模拟器
                     if (this.currentSimulator === target) {
-                        // 如果是当前打开的模拟器，则关闭
                         this.closeSimulator();
                     } else {
-                        // 如果不是当前打开的模拟器，则关闭当前的并打开新的
-                        // 先移除显示类
                         const container = document.getElementById('simulator-iframe-container');
                         if (container) {
                             container.classList.remove('show');
                         }
                         
-                        // 检查是否是打赏按钮
                         if (i18nKey === 'donation') {
-                            // 显示打赏图片，隐藏iframe
                             const iframe = document.getElementById('simulator-iframe');
                             if (iframe) {
                                 iframe.style.display = 'none';
@@ -181,7 +201,6 @@ class App {
                                 donationImg.style.display = 'block';
                             }
                         } else {
-                            // 隐藏打赏图片，显示iframe
                             const iframe = document.getElementById('simulator-iframe');
                             if (iframe) {
                                 iframe.style.display = 'block';
@@ -193,14 +212,12 @@ class App {
                             }
                         }
                         
-                        // 延迟添加显示类，确保iframe源已设置
                         setTimeout(() => {
                             if (container) {
                                 container.classList.add('show');
                             }
                         }, 50);
                         
-                        // 更新当前模拟器状态
                         this.currentSimulator = target;
                     }
                 });

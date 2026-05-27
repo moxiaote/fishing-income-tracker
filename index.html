@@ -364,15 +364,15 @@
                         <div class="card-body">
                             <!-- 上头模拟器内容 -->
                             <div class="simulator-content">
-                                <div class="d-flex flex-wrap gap-1">
-                                    <button class="btn btn-outline-primary simulator-btn" data-target="beyond-enhancement.html" data-i18n="beyondEnhance">超越强化</button>
-                                    <button class="btn btn-outline-primary simulator-btn" data-target="evolve-gaia.html" data-i18n="evolveGaia">进化八星</button>
-									<button class="btn btn-outline-primary simulator-btn" data-target="enchant-medal.html" data-i18n="enchantMedal">附魔勋章</button>
-									<button class="btn btn-outline-primary simulator-btn" data-target="crest-enhance.html" data-i18n="crestEnhance">刻印模拟</button>
-									<button class="btn btn-outline-primary simulator-btn" data-target="badge-box.html" data-i18n="badgeBox">勋章宝箱</button>
-									<button class="btn btn-outline-primary simulator-btn" data-target="badge-craft.html" data-i18n="badgeCraft">勋章制作</button>
-									<button class="btn btn-outline-danger simulator-btn" data-target="evolve-pearl.html" data-i18n="pearlGrowth">珍珠组合</button>
-									<button class="btn btn-outline-secondary simulator-btn" data-target="" data-i18n="close">关闭</button>
+                                <div class="simulator-panel">
+                                    <button class="simulator-panel-btn" data-target="beyond-enhancement.html" data-i18n="beyondEnhance" data-note="261.63">🎯 超越强化</button>
+                                    <button class="simulator-panel-btn" data-target="evolve-gaia.html" data-i18n="evolveGaia" data-note="293.66">⭐ 进化八星</button>
+                                    <button class="simulator-panel-btn" data-target="enchant-medal.html" data-i18n="enchantMedal" data-note="329.63">✨ 附魔勋章</button>
+                                    <button class="simulator-panel-btn" data-target="crest-enhance.html" data-i18n="crestEnhance" data-note="349.23">🔥 刻印模拟</button>
+                                    <button class="simulator-panel-btn" data-target="badge-box.html" data-i18n="badgeBox" data-note="392.00">📦 勋章宝箱</button>
+                                    <button class="simulator-panel-btn" data-target="badge-craft.html" data-i18n="badgeCraft" data-note="440.00">🎖️ 勋章制作</button>
+                                    <button class="simulator-panel-btn simulator-panel-btn-danger" data-target="evolve-pearl.html" data-i18n="pearlGrowth" data-note="493.88">🐟 珍珠组合</button>
+                                    <button class="simulator-panel-btn simulator-panel-btn-close" data-target="" data-i18n="close" data-note="523.25">✕ 关闭</button>
                                 </div>
                             </div>
                             
@@ -484,25 +484,74 @@
                                 </div>
                                 <button class="btn btn-danger donation-callout-btn" onclick="openCardModal()">输入卡密，数据一键清零</button>
                             </div>
-                            <hr class="my-4">
+
                             <div class="mb-4">
-                                <h6 data-i18n="fileOperations">文件操作</h6>
-                                <div class="d-flex gap-2 align-items-center">
-                                    <button id="add-record-btn-main" class="btn btn-primary action-btn" onclick="toggleAddRecordModal()">
+                                <h6>📝 数据管理</h6>
+                                <div class="data-panel">
+                                    <button id="add-record-btn-main" class="data-panel-btn data-panel-btn-primary" onclick="toggleAddRecordModal()">
                                         <span>+</span>
-                                        <span class="ms-1" data-i18n="addRecord">添加记录</span>
+                                        <span class="data-panel-btn-text">添加记录</span>
                                     </button>
-                                    <div class="vr mx-2"></div>
-                                    <button id="save-to-file" class="btn btn-success action-btn" data-i18n="saveToFile">保存到文件</button>
-                                    <button id="load-from-file" class="btn btn-info action-btn" data-i18n="loadFromFile">从文件加载</button>
-                                    <input type="file" id="file-input" style="display: none;" accept=".txt">
+                                    <div class="data-panel-divider"></div>
+                                    <button id="save-to-file" class="data-panel-btn">
+                                        <span>📥</span>
+                                        <span class="data-panel-btn-text">保存</span>
+                                    </button>
+                                    <div class="data-panel-divider"></div>
+                                    <button id="load-from-file" class="data-panel-btn">
+                                        <span>📤</span>
+                                        <span class="data-panel-btn-text">加载</span>
+                                    </button>
                                 </div>
+                                <input type="file" id="file-input" style="display: none;" accept=".txt">
                             </div>
-                            
-                            <div class="border-top border-secondary pt-4 mb-4">
+
+                            <div class="border-top border-secondary pt-4 mb-4" id="selective-reset-section">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h6 class="d-flex items-center gap-2">
-                                        <span>云端同步功能</span>
+                                        <span>🗑️ 数据清理</span>
+                                        <span class="pro-badge-sm">
+                                            <span class="pro-star">★</span>
+                                            <span class="pro-text">PRO</span>
+                                        </span>
+                                    </h6>
+                                    <button class="btn btn-sm px-2 py-0 border border-secondary rounded collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#data-clean-section" aria-expanded="false" aria-controls="data-clean-section">
+                                        <span class="collapse-icon">
+                                            <span class="line horizontal"></span>
+                                            <span class="line vertical"></span>
+                                            <span class="line diagonal"></span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <p class="text-muted small mb-3" id="selective-reset-desc">
+                                    <span>💡 重置特定模拟器，保留其他模拟器数据。让记账更精准，狗托榜评分更可控！</span>
+                                </p>
+                                <div class="collapse" id="data-clean-section">
+                                    <div class="clean-panel" id="selective-reset-panel">
+                                        <button class="clean-panel-btn" data-simulator="beyondEnhancement">
+                                            <span>🎯</span>
+                                            <span class="clean-panel-btn-text">超越强化</span>
+                                        </button>
+                                        <button class="clean-panel-btn" data-simulator="evolveGaia">
+                                            <span>⭐</span>
+                                            <span class="clean-panel-btn-text">进化八星</span>
+                                        </button>
+                                        <button class="clean-panel-btn" data-simulator="enchantMedal">
+                                            <span>✨</span>
+                                            <span class="clean-panel-btn-text">附魔勋章</span>
+                                        </button>
+                                        <button class="clean-panel-btn" data-simulator="crestEnhance">
+                                            <span>🔥</span>
+                                            <span class="clean-panel-btn-text">刻印模拟</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-top border-secondary pt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="d-flex items-center gap-2">
+                                        <span>☁️ 云端同步</span>
                                         <span class="pro-badge-sm">
                                             <span class="pro-star">★</span>
                                             <span class="pro-text">PRO</span>
@@ -516,13 +565,14 @@
                                             </span>
                                         </button>
                                 </div>
+                                <p class="text-muted small mb-3" id="cloud-sync-desc">数据安全存储在服务器，支持多设备间同步</p>
                                 <div class="collapse" id="cloud-sync-section">
-                                    <div class="d-flex gap-2 mb-3">
-                                        <button id="load-from-cloud" class="btn btn-outline-primary action-btn">
-                                            <span>从云端恢复</span>
+                                    <div class="cloud-panel mb-3">
+                                        <button id="load-from-cloud" class="cloud-panel-btn">
+                                            <span>📥 从云端恢复</span>
                                         </button>
-                                        <button id="sync-to-cloud" class="btn btn-outline-primary action-btn">
-                                            <span>备份到云端</span>
+                                        <button id="sync-to-cloud" class="cloud-panel-btn">
+                                            <span>📤 备份到云端</span>
                                         </button>
                                     </div>
                                     <div class="mb-2">
@@ -540,9 +590,6 @@
                                     <div class="mt-2 text-sm text-muted">
                                         <p>
                                             <span>此功能仅对已激活会员开放，请先验证卡密后使用。</span>
-                                        </p>
-                                        <p>
-                                            <span>数据将安全存储在服务器数据库中，支持多设备间同步。</span>
                                         </p>
                                     </div>
                                 </div>
@@ -1304,11 +1351,33 @@
         console.log('激活状态已清除');
     }
 
+    const SIMULATOR_KEYS = {
+        'beyondEnhancement': {
+            key: 'beyondEnhancementData',
+            name: '超越强化'
+        },
+        'evolveGaia': {
+            key: 'evolveGaiaData',
+            name: '进化八星'
+        },
+        'enchantMedal': {
+            key: 'enchantMedalData',
+            name: '附魔勋章'
+        },
+        'crestEnhance': {
+            key: 'crestEnhanceData',
+            name: '刻印模拟'
+        }
+    };
+
     function updateActivationUI() {
         const donationBtn = document.querySelector('.donation-callout-btn');
         const donationText = document.querySelector('.donation-callout-text');
         const donationNote = document.querySelector('.donation-callout-text span[data-i18n="donationNote"]');
         const proBadge = document.getElementById('pro-badge');
+        const selectiveResetSection = document.getElementById('selective-reset-section');
+        const selectiveResetDesc = document.getElementById('selective-reset-desc');
+        const cloudSyncDesc = document.getElementById('cloud-sync-desc');
         const remainingFreeResets = FREE_RESET_LIMIT - freeResetCount;
         
         if (isActivated) {
@@ -1327,6 +1396,15 @@
             if (donationNote) {
                 donationNote.textContent = i18n.getText('donationNotePro') || '🎖️ 感谢您的支持！尊贵的 PRO 会员，数据重置功能已为您无限次解锁！';
             }
+            if (selectiveResetSection) {
+                selectiveResetSection.style.display = 'block';
+            }
+            if (selectiveResetDesc) {
+                selectiveResetDesc.innerHTML = '<span>💡 重置特定模拟器，保留其他模拟器数据。让记账更精准，狗托榜评分更可控！</span>';
+            }
+            if (cloudSyncDesc) {
+                cloudSyncDesc.innerHTML = '<span>☁️ 数据安全存储在服务器，支持多设备间同步</span>';
+            }
         } else if (remainingFreeResets > 0) {
             if (proBadge) {
                 proBadge.style.display = 'none';
@@ -1340,6 +1418,15 @@
             if (donationNote) {
                 donationNote.textContent = `🎁 您还有 ${remainingFreeResets} 次免费重置机会，用完后可升级为 PRO 会员享受无限次重置！`;
             }
+            if (selectiveResetSection) {
+                selectiveResetSection.style.display = 'block';
+            }
+            if (selectiveResetDesc) {
+                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO会员专享</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+            }
+            if (cloudSyncDesc) {
+                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO会员专享</strong>：数据安全存储在服务器，支持多设备间同步！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+            }
         } else {
             if (proBadge) {
                 proBadge.style.display = 'none';
@@ -1352,6 +1439,43 @@
             }
             if (donationNote) {
                 donationNote.textContent = '⏰ 免费重置次数已用完，升级为 PRO 会员享受无限次数据重置！';
+            }
+            if (selectiveResetSection) {
+                selectiveResetSection.style.display = 'block';
+            }
+            if (selectiveResetDesc) {
+                selectiveResetDesc.innerHTML = '<span>🔒 <strong>PRO会员专享</strong>：重置特定模拟器，让记账更精准，狗托榜评分更高！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+            }
+            if (cloudSyncDesc) {
+                cloudSyncDesc.innerHTML = '<span>🔒 <strong>PRO会员专享</strong>：数据安全存储在服务器，支持多设备间同步！<a href="javascript:void(0)" onclick="openCardModal()" style="color: #f59e0b; text-decoration: underline; margin-left: 4px;">立即升级 →</a></span>';
+            }
+        }
+    }
+
+    function resetSingleSimulator(simulatorKey) {
+        const sim = SIMULATOR_KEYS[simulatorKey];
+        if (!sim) {
+            alert('未知的模拟器类型');
+            return;
+        }
+
+        if (!isActivated) {
+            alert('请先验证卡密，成为会员后才能使用数据清理功能。');
+            return;
+        }
+
+        if (confirm(`即将为您重置【${sim.name}】数据，此操作不可撤销，确定继续吗？\n\n💡 提示：其他模拟器数据将被保留，记账更精准！`)) {
+            try {
+                localStorage.removeItem(sim.key);
+                alert(`已为您重置【${sim.name}】数据！\n\n✅ 记账更干净，狗托榜评分更可控~`);
+                const iframe = document.getElementById('simulator-iframe');
+                if (iframe && iframe.src) {
+                    iframe.contentWindow.location.reload();
+                }
+                location.reload();
+            } catch (e) {
+                console.error(`Error resetting ${sim.name}:`, e);
+                alert(`重置【${sim.name}】失败: ${e.message}`);
             }
         }
     }
@@ -1402,7 +1526,15 @@
         if (savedQQ) {
             currentActivationQQ = savedQQ;
         }
-        
+
+        const cleanButtons = document.querySelectorAll('.clean-panel-btn');
+        cleanButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const simulatorKey = this.getAttribute('data-simulator');
+                resetSingleSimulator(simulatorKey);
+            });
+        });
+
         checkActivationStatus();
         updateActivationUI();
     });
