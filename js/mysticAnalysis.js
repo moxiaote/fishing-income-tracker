@@ -397,7 +397,7 @@ const mysticAnalysis = {
     },
     
     analyzeSimulators() {
-        const data = dogtorLeaderboard ? dogtorLeaderboard.loadSimulatorData() : {};
+        const data = (dogtorLeaderboard && typeof dogtorLeaderboard.loadSimulatorData === 'function') ? dogtorLeaderboard.loadSimulatorData() : {};
         const equipment = data.equipment || this.getEquipmentData();
         
         const analysis = [];
