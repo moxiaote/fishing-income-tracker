@@ -311,7 +311,15 @@ class StorageManager {
                 alert('数据上传成功！' + (updateTime ? '更新时间: ' + updateTime : ''));
                 return true;
             } else {
-                alert('上传失败: ' + (result.message || '未知错误'));
+                if (result.data && result.data.rate_limited) {
+                    const remaining = result.data.remaining_seconds;
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    const waitTime = minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
+                    alert(`云端同步操作过于频繁，请${waitTime}后再试。`);
+                } else {
+                    alert('上传失败: ' + (result.message || '未知错误'));
+                }
                 return false;
             }
         } catch (error) {
@@ -350,7 +358,13 @@ class StorageManager {
                 
                 return true;
             } else {
-                if (result.data && result.data.no_data) {
+                if (result.data && result.data.rate_limited) {
+                    const remaining = result.data.remaining_seconds;
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    const waitTime = minutes > 0 ? `${minutes}分${seconds}秒` : `${seconds}秒`;
+                    alert(`云端同步操作过于频繁，请${waitTime}后再试。`);
+                } else if (result.data && result.data.no_data) {
                     alert('未找到云端备份数据，请先上传数据。');
                 } else {
                     alert('下载失败: ' + (result.message || '未知错误'));
