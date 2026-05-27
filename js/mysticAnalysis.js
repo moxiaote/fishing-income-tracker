@@ -1,265 +1,227 @@
-// 全局函数，供HTML按钮调用 - 提前定义确保可用
-window.runMysticAnalysis = function() {
-    console.log('=== 手动触发玄学分析 ===');
-    try {
-        const contentEl = document.getElementById('mystic-analysis-content');
-        if (contentEl) {
-            contentEl.innerHTML = `
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">正在分析您的运势数据...</p>
-                </div>
-            `;
-        }
+// 玄学分析模块 - 重构版本
+class MysticAnalysis {
+    constructor() {
+        this.STORAGE_KEY = 'mysticAnalysisData';
         
-        setTimeout(() => {
-            console.log('开始执行分析...');
-            if (window.mysticAnalysis && typeof window.mysticAnalysis.analyze === 'function') {
-                window.mysticAnalysis.analyze();
-            } else {
-                console.error('mysticAnalysis 或 analyze 方法未定义');
-                const contentEl = document.getElementById('mystic-analysis-content');
-                if (contentEl) {
-                    contentEl.innerHTML = `
-                        <div class="text-center py-4">
-                            <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
-                            <p class="text-muted">玄学分析模块未初始化</p>
-                            <button class="btn btn-primary mt-3" onclick="window.runMysticAnalysis()">🔮 重新分析</button>
-                        </div>
-                    `;
-                }
+        this.luckyDirection = ['北方', '东北', '东方', '东南', '南方', '西南', '西方', '西北'];
+        this.luckyEmojis = ['🌟', '🎋', '🍀', '🦋', '🌈', '💎', '🎯', '🐟', '✨', '🔥'];
+        this.jiShen = ['天德', '月德', '天恩', '三合', '时德', '民日', '敬安', '玉堂', '四相', '五富'];
+        this.xiongShen = ['天罡', '地贼', '五虚', '大耗', '五墓', '九空', '小耗', '天刑'];
+        
+        this.divinationResults = [
+            { 
+                level: '大吉', 
+                icon: '🏆', 
+                color: '#ffd700', 
+                message: '今日紫气东来，鸿运当头！强化必上+20！',
+                messages: [
+                    '今日紫气东来，鸿运当头！强化必上+20！',
+                    '天纵奇才，运势如虹！今日强化如有神助！',
+                    '吉星高照，百无禁忌！今日操作皆可成！',
+                    '运势极盛，如日中天！附魔勋章必出极品！',
+                    '气运滔天，万法归一！今日是你的幸运日！',
+                    '时来运转，否极泰来！今日必出金闪闪！'
+                ]
+            },
+            { 
+                level: '上吉', 
+                icon: '🌟', 
+                color: '#ff8c00', 
+                message: '今日运势旺盛，附魔勋章大概率出1级！',
+                messages: [
+                    '今日运势旺盛，附魔勋章大概率出1级！',
+                    '福星高照，万事顺遂！强化成功率翻倍！',
+                    '祥云瑞气，好运连连！八星进化大有可为！',
+                    '紫气氤氲，运势上升！今日手气不错！',
+                    '红鸾星动，喜事临门！勋章宝箱有惊喜！',
+                    '贵人相助，吉人天相！刻印成功率大涨！'
+                ]
+            },
+            { 
+                level: '中吉', 
+                icon: '🍀', 
+                color: '#32cd32', 
+                message: '今日运势尚可，刻印成功率有所提升。',
+                messages: [
+                    '今日运势尚可，刻印成功率有所提升。',
+                    '吉光片羽，小有收获！适度强化见好就收。',
+                    '和风细雨，稳中求进！建议循序渐进。',
+                    '春风拂面，心情舒畅！今日适合佛系操作。',
+                    '曙光初现，渐入佳境！耐心等待好运降临。',
+                    '柳暗花明，峰回路转！坚持就是胜利！'
+                ]
+            },
+            { 
+                level: '小吉', 
+                icon: '✨', 
+                color: '#1e90ff', 
+                message: '今日运势平稳，建议先去狗托榜吸吸欧气。',
+                messages: [
+                    '今日运势平稳，建议先去狗托榜吸吸欧气。',
+                    '波澜不惊，稳如泰山！建议观望为主。',
+                    '清风徐来，水波不兴！今日适合攒资源。',
+                    '云淡风轻，心如止水！先观望，再行动。',
+                    '月明星稀，万物静寂！今日宜静不宜动。',
+                    '平淡是真，细水长流！慢慢来，不要急。'
+                ]
+            },
+            { 
+                level: '平', 
+                icon: '⚖️', 
+                color: '#808080', 
+                message: '今日运势平平，建议先攒资源，改日再战。',
+                messages: [
+                    '今日运势平平，建议先攒资源，改日再战。',
+                    '不上不下，不偏不倚！今日宜休养生息。',
+                    '波澜不惊，稳扎稳打！建议积攒实力。',
+                    '运势平稳，中规中矩！今日不宜冒险。',
+                    '不温不火，从容不迫！先攒资源，等待时机。',
+                    '按部就班，循序渐进！今日适合养精蓄锐。'
+                ]
+            },
+            { 
+                level: '小凶', 
+                icon: '🌙', 
+                color: '#9370db', 
+                message: '今日月相不佳，建议多喝热水压压惊。',
+                messages: [
+                    '今日月相不佳，建议多喝热水压压惊。',
+                    '月黑风高，阴气渐盛！建议明日再战。',
+                    '乌云蔽月，运势低迷！今日宜保守行事。',
+                    '月相变化，气场不稳！建议先去狗托榜吸欧气。',
+                    '夜色深沉，月光暗淡！今日运气一般般。',
+                    '星稀月暗，时运不济！建议暂缓操作。'
+                ]
+            },
+            { 
+                level: '中凶', 
+                icon: '☁️', 
+                color: '#696969', 
+                message: '今日云遮月，建议去其他模拟器碰碰运气。',
+                messages: [
+                    '今日云遮月，建议去其他模拟器碰碰运气。',
+                    '乌云密布，大雨将至！建议今日收竿。',
+                    '黑云压城，山雨欲来！今日不宜上头。',
+                    '云遮雾绕，难见天日！建议换个环境。',
+                    '阴雨连绵，心情低落！今日不适宜操作。',
+                    '雾气弥漫，方向难辨！建议明日再来。'
+                ]
+            },
+            { 
+                level: '凶', 
+                icon: '🌊', 
+                color: '#4682b4', 
+                message: '今日浪大水深，建议今日收竿，明日再来。',
+                messages: [
+                    '今日浪大水深，建议今日收竿，明日再来。',
+                    '惊涛骇浪，船翻网破！今日不宜出海！',
+                    '狂风暴雨，雷电交加！建议立刻收手！',
+                    '天昏地暗，日月无光！今日大凶，速速退散！',
+                    '暗流涌动，危机四伏！今日操作十死无生！',
+                    '天翻地覆，诸事不顺！今日绝对不能上头！'
+                ]
             }
-        }, 100);
-    } catch (e) {
-        console.error('runMysticAnalysis 失败:', e);
-        const contentEl = document.getElementById('mystic-analysis-content');
-        if (contentEl) {
-            contentEl.innerHTML = `
-                <div class="text-center py-4">
-                    <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
-                    <p class="text-muted">分析失败: ${e.message}</p>
-                    <button class="btn btn-primary mt-3" onclick="window.runMysticAnalysis()">🔮 重新分析</button>
-                </div>
-            `;
-        }
+        ];
+        
+        this._lastAnalysis = null;
+        this._lastDivination = null;
     }
-};
-
-const mysticAnalysis = {
-    STORAGE_KEY: 'mysticAnalysisData',
-    
-    luckyDirection: {
-        0: '北方',
-        1: '东北',
-        2: '东方',
-        3: '东南',
-        4: '南方',
-        5: '西南',
-        6: '西方',
-        7: '西北'
-    },
-    
-    luckyEmojis: ['🌟', '🎋', '🍀', '🦋', '🌈', '💎', '🎯', '🐟', '✨', '🔥'],
-    
-    jiShen: ['天德', '月德', '天恩', '三合', '时德', '民日', '敬安', '玉堂', '四相', '五富'],
-    
-    xiongShen: ['天罡', '地贼', '五虚', '大耗', '五墓', '九空', '小耗', '天刑'],
-    
-    divinationResults: [
-        { level: '大吉', icon: '🏆', color: '#ffd700', message: '今日紫气东来，鸿运当头！强化必上+20！' },
-        { level: '上吉', icon: '🌟', color: '#ff8c00', message: '今日运势旺盛，附魔勋章大概率出1级！' },
-        { level: '中吉', icon: '🍀', color: '#32cd32', message: '今日运势尚可，刻印成功率有所提升。' },
-        { level: '小吉', icon: '✨', color: '#1e90ff', message: '今日运势平稳，建议先去狗托榜吸吸欧气。' },
-        { level: '平', icon: '⚖️', color: '#808080', message: '今日运势平平，建议先攒资源，改日再战。' },
-        { level: '小凶', icon: '🌙', color: '#9370db', message: '今日月相不佳，建议多喝热水压压惊。' },
-        { level: '中凶', icon: '☁️', color: '#696969', message: '今日云遮月，建议去其他模拟器碰碰运气。' },
-        { level: '凶', icon: '🌊', color: '#4682b4', message: '今日浪大水深，建议今日收竿，明日再来。' }
-    ],
-    
-    luckyActivities: {
-        diamond: ['超越强化', '进化八星'],
-        platinum: ['附魔勋章', '勋章制作'],
-        breakthrough: ['超越强化'],
-        essence: ['进化八星'],
-        coral: ['勋章宝箱', '珍珠组合'],
-        crest: ['刻印模拟']
-    },
     
     init() {
         console.log('玄学分析模块初始化...');
         this.bindEvents();
-        
-        // 延迟更新描述，确保 storageManager 已初始化
-        setTimeout(() => {
-            this.updateDescription();
-        }, 500);
-    },
-    
-    updateDescription() {
-        try {
-            if (typeof storageManager === 'undefined') {
-                console.warn('storageManager 未定义，跳过会员状态更新');
-                return;
-            }
-            const memberStatus = storageManager.checkMemberStatus();
-            const memberDescEl = document.getElementById('mystic-analysis-desc-member');
-            const nonMemberDescEl = document.getElementById('mystic-analysis-desc-non-member');
-            
-            if (memberStatus.activated) {
-                if (memberDescEl) memberDescEl.style.display = 'block';
-                if (nonMemberDescEl) nonMemberDescEl.style.display = 'none';
-            } else {
-                if (memberDescEl) memberDescEl.style.display = 'none';
-                if (nonMemberDescEl) nonMemberDescEl.style.display = 'block';
-            }
-        } catch (e) {
-            console.warn('更新会员描述失败:', e);
-        }
-    },
+    }
     
     bindEvents() {
         const collapseSection = document.getElementById('mystic-analysis-section');
-        console.log('绑定玄学分析事件...');
-        console.log('collapseSection:', collapseSection);
-        
         if (collapseSection) {
             collapseSection.addEventListener('shown.bs.collapse', () => {
-                console.log('玄学分析区域展开，触发分析...');
-                this.analyze();
+                console.log('玄学分析区域展开');
             });
         }
-        
-        // 添加手动触发按钮
-        const manualBtn = document.createElement('button');
-        manualBtn.textContent = '手动分析';
-        manualBtn.style.display = 'none';
-        manualBtn.onclick = () => this.analyze();
-        document.body.appendChild(manualBtn);
-        this._manualBtn = manualBtn;
-    },
+    }
+    
+    checkMemberAccess() {
+        try {
+            if (window.storageManager && typeof window.storageManager.checkMemberStatus === 'function') {
+                const memberStatus = window.storageManager.checkMemberStatus();
+                return memberStatus && memberStatus.activated;
+            }
+            
+            let activationData = localStorage.getItem('activationData');
+            if (!activationData) {
+                activationData = localStorage.getItem('activation_data');
+            }
+            
+            if (!activationData) {
+                return false;
+            }
+            
+            const data = JSON.parse(activationData);
+            return data && data.activated;
+        } catch (e) {
+            console.warn('检查会员状态失败:', e);
+            return false;
+        }
+    }
     
     analyze() {
+        console.log('开始玄学分析...');
+        
         const contentEl = document.getElementById('mystic-analysis-content');
-        const proRequiredEl = document.getElementById('mystic-pro-required');
-        const loadingEl = document.getElementById('mystic-loading');
-        
-        console.log('玄学分析开始...');
-        console.log('storageManager:', typeof storageManager);
-        
-        // 简化检查：如果 storageManager 不存在或没有 checkMemberStatus 方法，则跳过会员验证
-        let isMember = true;
-        if (typeof storageManager !== 'undefined' && typeof storageManager.checkMemberStatus === 'function') {
-            try {
-                const memberStatus = storageManager.checkMemberStatus();
-                console.log('会员状态:', memberStatus);
-                isMember = memberStatus.activated;
-            } catch (e) {
-                console.warn('获取会员状态失败，默认允许访问:', e);
-                isMember = true;
-            }
-        } else {
-            console.warn('storageManager 未定义或没有 checkMemberStatus 方法，默认允许访问');
-            isMember = true;
-        }
-        
-        if (!isMember) {
-            console.log('非会员，显示PRO提示');
-            if (contentEl) contentEl.style.display = 'none';
-            if (proRequiredEl) proRequiredEl.style.display = 'block';
+        if (!contentEl) {
+            console.error('contentEl 不存在');
             return;
         }
         
-        console.log('会员已激活，开始分析');
-        if (contentEl) contentEl.style.display = 'block';
-        if (proRequiredEl) proRequiredEl.style.display = 'none';
-        
-        setTimeout(() => {
-            console.log('进入 setTimeout...');
-            
-            try {
-                console.log('开始玄学分析...');
-                
-                console.log('步骤1: 计算占卜');
-                const divination = this.calculateDivination(new Date());
-                console.log('占卜结果:', divination);
-                
-                console.log('步骤2: 计算运气分数');
-                const luckScore = this.calculateLuckScore();
-                console.log('运气分数:', luckScore);
-                
-                console.log('步骤3: 分析资源');
-                const resourceAnalysis = this.analyzeResources();
-                console.log('资源分析:', resourceAnalysis);
-                
-                console.log('步骤4: 分析模拟器');
-                const simulatorAnalysis = this.analyzeSimulators();
-                console.log('模拟器分析:', simulatorAnalysis);
-                
-                console.log('步骤5: 生成运势预测');
-                const luckyPrediction = this.generateLuckyPrediction(divination, luckScore);
-                console.log('运势预测:', luckyPrediction);
-                
-                console.log('步骤6: 生成分析结果');
-                const analysis = {
-                    date: new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
-                    lunarInfo: this.getLunarInfo(new Date()),
-                    divination,
-                    luckScore,
-                    resourceAnalysis,
-                    simulatorAnalysis,
-                    luckyPrediction,
-                    timestamp: new Date().getTime()
-                };
-                
-                console.log('分析完成:', analysis);
-                this._lastDivination = analysis.divination;
-                this._lastAnalysis = analysis;
-                this.renderAnalysis(analysis);
-            } catch (error) {
-                console.error('玄学分析出错:', error);
-                console.error('错误堆栈:', error.stack);
-                
-                // 直接显示错误信息，替换加载动画
-                if (contentEl) {
-                    contentEl.innerHTML = `
-                        <div class="text-center py-4">
-                            <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
-                            <p class="text-muted">分析过程中遇到问题</p>
-                            <p class="text-muted small">${error.message || '未知错误'}</p>
-                            <button class="btn btn-primary mt-3" onclick="mysticAnalysis.analyze()">重新分析</button>
-                        </div>
-                    `;
-                }
+        try {
+            if (!this.checkMemberAccess()) {
+                contentEl.innerHTML = `
+                    <div class="text-center py-4">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔒</div>
+                        <h6 class="mb-2">解锁玄学分析</h6>
+                        <p class="text-muted small mb-3">PRO会员专属功能</p>
+                        <p class="text-muted small">请先验证卡密成为会员后使用此功能</p>
+                    </div>
+                `;
+                return;
             }
-        }, 800);
-    },
-    
-    generateAnalysis() {
-        const now = new Date();
-        const dayOfWeek = now.getDay();
-        const dayOfMonth = now.getDate();
-        const month = now.getMonth() + 1;
-        const hours = now.getHours();
-        
-        const divination = this.calculateDivination(now);
-        const luckScore = this.calculateLuckScore();
-        const resourceAnalysis = this.analyzeResources();
-        const simulatorAnalysis = this.analyzeSimulators();
-        const luckyPrediction = this.generateLuckyPrediction(divination, luckScore);
-        
-        return {
-            date: now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
-            lunarInfo: this.getLunarInfo(now),
-            divination,
-            luckScore,
-            resourceAnalysis,
-            simulatorAnalysis,
-            luckyPrediction,
-            timestamp: now.getTime()
-        };
-    },
+            
+            const now = new Date();
+            const divination = this.calculateDivination(now);
+            const luckScore = this.calculateLuckScore();
+            const resourceAnalysis = this.analyzeResources();
+            const simulatorAnalysis = this.analyzeSimulators();
+            const luckyPrediction = this.generateLuckyPrediction(divination, luckScore);
+            const lunarInfo = this.getLunarInfo(now);
+            
+            const analysis = {
+                date: now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }),
+                lunarInfo,
+                divination,
+                luckScore,
+                resourceAnalysis,
+                simulatorAnalysis,
+                luckyPrediction,
+                timestamp: now.getTime()
+            };
+            
+            this._lastDivination = divination;
+            this._lastAnalysis = analysis;
+            this.renderAnalysis(analysis);
+            
+        } catch (error) {
+            console.error('玄学分析出错:', error);
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
+                    <p class="text-muted">分析过程中遇到问题</p>
+                    <p class="text-muted small">${error.message || '未知错误'}</p>
+                    <button class="btn btn-primary mt-3" onclick="MysticAnalysis.instance.analyze()">🔮 重新分析</button>
+                </div>
+            `;
+        }
+    }
     
     calculateDivination(date) {
         const dayOfWeek = date.getDay();
@@ -269,31 +231,27 @@ const mysticAnalysis = {
         
         let baseScore = (dayOfMonth + month + hours) % 100;
         
+        // 根据装备数据调整分数
         const equipment = this.getEquipmentData();
         if (equipment.rod.level >= 15) baseScore += 10;
         if (equipment.reel.level >= 15) baseScore += 10;
         if (equipment.rod.starLevel >= 6) baseScore += 15;
         if (equipment.reel.starLevel >= 6) baseScore += 15;
-        if (equipment.rod.badgeLevel > 0 && equipment.rod.badgeLevel <= 3) baseScore += 10;
-        if (equipment.reel.badgeLevel > 0 && equipment.reel.badgeLevel <= 3) baseScore += 10;
         
-        const crestData = this.getCrestData();
-        const crestStages = crestData.crestStages || {};
-        const crestValues = Object.values(crestStages);
-        const maxCrest = crestValues.length > 0 ? Math.max(...crestValues) : 0;
-        if (maxCrest >= 12) baseScore += 15;
-        if (maxCrest >= 15) baseScore += 25;
-        
+        // 时辰加成
         const hourSegment = hours < 6 ? 0 : hours < 12 ? 1 : hours < 18 ? 2 : 3;
         const hourBonus = [3, 8, 12, 5][hourSegment];
         baseScore += hourBonus;
         
+        // 星期加成
         const weekDayBonus = [5, 3, 8, 6, 10, 15, 2][dayOfWeek];
         baseScore += weekDayBonus;
         
+        // 特殊日期加成
         if (dayOfMonth % 7 === 0) baseScore += 10;
         if (dayOfMonth === 1 || dayOfMonth === 15) baseScore += 15;
         
+        // 随机因素
         const seed = dayOfMonth * 100 + month * 10 + hours;
         const randomFactor = ((seed * 9301 + 49297) % 233280) / 233280;
         baseScore += Math.floor(randomFactor * 30) - 15;
@@ -305,66 +263,30 @@ const mysticAnalysis = {
         else if (baseScore >= 75) resultIndex = 1;
         else if (baseScore >= 60) resultIndex = 2;
         else if (baseScore >= 45) resultIndex = 3;
-        else if (baseScore >= 35) resultIndex = 4;
-        else if (baseScore >= 25) resultIndex = 5;
-        else if (baseScore >= 15) resultIndex = 6;
+        else if (baseScore >= 30) resultIndex = 4;
+        else if (baseScore >= 15) resultIndex = 5;
+        else if (baseScore >= 5) resultIndex = 6;
         else resultIndex = 7;
         
         const jiShenStart = (dayOfWeek + dayOfMonth) % 10;
         const xiongShenStart = (dayOfWeek + hours) % 8;
         
+        const result = this.divinationResults[resultIndex];
+        const randomMessageIndex = Math.floor((dayOfMonth * 100 + month * 10 + hours + dayOfWeek) % result.messages.length);
+        const selectedMessage = result.messages[randomMessageIndex];
+        
         return {
-            ...this.divinationResults[resultIndex],
+            level: result.level,
+            icon: result.icon,
+            color: result.color,
+            message: selectedMessage,
             score: baseScore,
             luckyDirection: this.luckyDirection[(dayOfMonth + hours) % 8],
             luckyEmoji: this.luckyEmojis[(dayOfMonth + month) % 10],
-            jiShen: this.jiShen.slice(jiShenStart, jiShenStart + 3),
-            xiongShen: this.xiongShen.slice(xiongShenStart, xiongShenStart + 2),
-            hourSegment,
-            weekDayBonus,
-            hourBonus
+            jiShen: this.jiShen.slice(jiShenStart, Math.min(jiShenStart + 3, this.jiShen.length)),
+            xiongShen: this.xiongShen.slice(xiongShenStart, Math.min(xiongShenStart + 2, this.xiongShen.length))
         };
-    },
-    
-    getLunarInfo(date) {
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const dayOfWeek = date.getDay();
-        const hours = date.getHours();
-        
-        const lunarMonths = ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '冬月', '腊月'];
-        const lunarDays = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
-                           '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
-                           '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
-        
-        const yi = [
-            ['纳财', '交易', '立券'],
-            ['祈福', '祭祀', '许愿'],
-            ['强化', '进化', '附魔'],
-            ['刻印', '制作', '合成'],
-            ['钓鱼', '休闲', '娱乐'],
-            ['开仓', '出货', '交易'],
-            ['祈福', '许愿', '纳财']
-        ];
-        
-        const ji = [
-            ['动土', '远行'],
-            ['争执', '冲动'],
-            ['过度消费', '上头'],
-            ['急躁', '连续失败'],
-            ['熬夜', '伤身'],
-            ['冲动消费', '上头'],
-            ['重大决策', '上头']
-        ];
-        
-        return {
-            lunarDate: `${lunarMonths[(month - 1) % 12]}${lunarDays[(day - 1) % 30]}`,
-            yi: yi[dayOfWeek],
-            ji: ji[dayOfWeek],
-            timeOfDay: hours < 6 ? '子时' : hours < 9 ? '辰时' : hours < 12 ? '午时' : 
-                       hours < 15 ? '未时' : hours < 18 ? '申时' : hours < 21 ? '酉时' : '戌时'
-        };
-    },
+    }
     
     calculateLuckScore() {
         const dogtorScore = this.getDogtorScore();
@@ -405,54 +327,38 @@ const mysticAnalysis = {
             levelColor,
             levelDesc
         };
-    },
+    }
     
     getDogtorScore() {
-        // 直接从localStorage读取模拟器数据计算分数，不依赖dogtorLeaderboard
         try {
-            const beyondData = localStorage.getItem('beyondEnhancementData');
-            const gaiaData = localStorage.getItem('evolveGaiaData');
-            const enchantData = localStorage.getItem('enchantMedalData');
-            const crestData = localStorage.getItem('crestEnhanceData');
-            const badgeBoxData = localStorage.getItem('badgeBoxData');
-            const badgeCraftData = localStorage.getItem('badgeCraftData');
-            
             let totalScore = 0;
             
             // 超越强化得分
+            const beyondData = localStorage.getItem('beyondEnhancementData');
             if (beyondData) {
                 const data = JSON.parse(beyondData);
-                if (data.rodLevel && data.rodLevel > 10) {
-                    totalScore += (data.rodLevel - 10) * 100;
-                }
-                if (data.reelLevel && data.reelLevel > 10) {
-                    totalScore += (data.reelLevel - 10) * 100;
-                }
+                if (data.rodLevel && data.rodLevel > 10) totalScore += (data.rodLevel - 10) * 100;
+                if (data.reelLevel && data.reelLevel > 10) totalScore += (data.reelLevel - 10) * 100;
             }
             
             // 进化八星得分
+            const gaiaData = localStorage.getItem('evolveGaiaData');
             if (gaiaData) {
                 const data = JSON.parse(gaiaData);
-                if (data.rodStarLevel && data.rodStarLevel > 0) {
-                    totalScore += data.rodStarLevel * 500;
-                }
-                if (data.reelStarLevel && data.reelStarLevel > 0) {
-                    totalScore += data.reelStarLevel * 500;
-                }
+                if (data.rodStarLevel) totalScore += data.rodStarLevel * 500;
+                if (data.reelStarLevel) totalScore += data.reelStarLevel * 500;
             }
             
             // 附魔勋章得分
+            const enchantData = localStorage.getItem('enchantMedalData');
             if (enchantData) {
                 const data = JSON.parse(enchantData);
-                if (data.rodBadgeLevel && data.rodBadgeLevel > 0 && data.rodBadgeLevel <= 10) {
-                    totalScore += (11 - data.rodBadgeLevel) * 200;
-                }
-                if (data.reelBadgeLevel && data.reelBadgeLevel > 0 && data.reelBadgeLevel <= 10) {
-                    totalScore += (11 - data.reelBadgeLevel) * 200;
-                }
+                if (data.rodBadgeLevel > 0 && data.rodBadgeLevel <= 10) totalScore += (11 - data.rodBadgeLevel) * 200;
+                if (data.reelBadgeLevel > 0 && data.reelBadgeLevel <= 10) totalScore += (11 - data.reelBadgeLevel) * 200;
             }
             
             // 刻印模拟得分
+            const crestData = localStorage.getItem('crestEnhanceData');
             if (crestData) {
                 const data = JSON.parse(crestData);
                 const crestStages = data.crestStages || {};
@@ -464,14 +370,14 @@ const mysticAnalysis = {
             }
             
             // 勋章系统得分
-            if (badgeCraftData) {
-                const data = JSON.parse(badgeCraftData);
+            const craftData = localStorage.getItem('badgeCraftData');
+            if (craftData) {
+                const data = JSON.parse(craftData);
                 const craftedBadges = data.craftedBadges || [];
                 const fiveStarCount = craftedBadges.filter(b => b && b.stars >= 5).length;
                 totalScore += fiveStarCount * 1000;
             }
             
-            // 根据总分返回评分
             if (totalScore >= 50000) return 100;
             if (totalScore >= 30000) return 85;
             if (totalScore >= 15000) return 70;
@@ -480,7 +386,7 @@ const mysticAnalysis = {
             if (totalScore >= 1000) return 25;
             return totalScore > 0 ? 20 : 30;
         } catch (e) {
-            console.error('计算狗托榜分数失败:', e);
+            console.warn('计算狗托榜分数失败:', e);
             return 30;
         }
     }
@@ -489,23 +395,16 @@ const mysticAnalysis = {
         const equipment = this.getEquipmentData();
         let score = 0;
         
-        const rodLevel = equipment.rod.level;
-        const reelLevel = equipment.reel.level;
-        score += Math.min(rodLevel - 10, 10) * 3;
-        score += Math.min(reelLevel - 10, 10) * 3;
+        score += Math.min(equipment.rod.level - 10, 10) * 3;
+        score += Math.min(equipment.reel.level - 10, 10) * 3;
+        score += equipment.rod.starLevel * 5;
+        score += equipment.reel.starLevel * 5;
         
-        const rodStar = equipment.rod.starLevel;
-        const reelStar = equipment.reel.starLevel;
-        score += rodStar * 5;
-        score += reelStar * 5;
-        
-        const rodBadge = equipment.rod.badgeLevel;
-        const reelBadge = equipment.reel.badgeLevel;
-        if (rodBadge > 0 && rodBadge <= 10) score += (11 - rodBadge) * 2;
-        if (reelBadge > 0 && reelBadge <= 10) score += (11 - reelBadge) * 2;
+        if (equipment.rod.badgeLevel > 0 && equipment.rod.badgeLevel <= 10) score += (11 - equipment.rod.badgeLevel) * 2;
+        if (equipment.reel.badgeLevel > 0 && equipment.reel.badgeLevel <= 10) score += (11 - equipment.reel.badgeLevel) * 2;
         
         return Math.min(100, score);
-    },
+    }
     
     calculateActivityScore() {
         const resources = this.getResources();
@@ -517,65 +416,23 @@ const mysticAnalysis = {
         if (resources.platinum > 10000) score -= 5;
         else if (resources.platinum > 1000) score += 5;
         
-        if (resources.breakthrough > 500) score -= 5;
-        
         const crestData = this.getCrestData();
-        const crestStages = crestData.crestStages || {};
-        const crestValues = Object.values(crestStages);
+        const crestValues = Object.values(crestData.crestStages || {});
         const maxCrest = crestValues.length > 0 ? Math.max(...crestValues) : 0;
         if (maxCrest >= 15) score += 20;
         else if (maxCrest >= 12) score += 10;
         
         return Math.max(0, Math.min(100, score));
-    },
+    }
     
     analyzeResources() {
         const resources = this.getResources();
-        const records = this.getRecords();
         
-        const recentRecords = records.filter(r => {
-            const recordDate = new Date(r.date);
-            const now = new Date();
-            const diffDays = (now - recordDate) / (1000 * 60 * 60 * 24);
-            return diffDays <= 7;
-        });
-        
-        let income = { diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0 };
-        let expense = { diamond: 0, breakthrough: 0, rawstone: 0, platinum: 0 };
-        
-        recentRecords.forEach(r => {
-            if (r.type === '收入') {
-                income.diamond += r.diamond;
-                income.breakthrough += r.breakthrough;
-                income.rawstone += r.rawstone;
-                income.platinum += r.platinum;
-            } else {
-                expense.diamond += r.diamond;
-                expense.breakthrough += r.breakthrough;
-                expense.rawstone += r.rawstone;
-                expense.platinum += r.platinum;
-            }
-        });
-        
-        return {
-            current: resources,
-            recentIncome: income,
-            recentExpense: expense,
-            recordCount: records.length,
-            recentRecordCount: recentRecords.length,
-            efficiency: this.calculateResourceEfficiency(resources)
-        };
-    },
-    
-    calculateResourceEfficiency(resources) {
         const efficiencies = [];
-        
         if (resources.diamonds > 100000) {
-            efficiencies.push({ resource: '钻石', status: '储备充足', suggestion: '建议大胆消费，享受游戏乐趣', emoji: '💎' });
+            efficiencies.push({ resource: '钻石', status: '储备充足', suggestion: '建议大胆消费', emoji: '💎' });
         } else if (resources.diamonds > 50000) {
-            efficiencies.push({ resource: '钻石', status: '储备良好', suggestion: '可适度消费，保持理性', emoji: '💎' });
-        } else if (resources.diamonds > 10000) {
-            efficiencies.push({ resource: '钻石', status: '储备一般', suggestion: '建议适当积累资源', emoji: '💎' });
+            efficiencies.push({ resource: '钻石', status: '储备良好', suggestion: '可适度消费', emoji: '💎' });
         }
         
         if (resources.platinum > 50000) {
@@ -590,172 +447,85 @@ const mysticAnalysis = {
             efficiencies.push({ resource: '原石', status: '储备充足', suggestion: '八星进化可尝试', emoji: '🔮' });
         }
         
-        return efficiencies;
-    },
+        return {
+            resources,
+            recentRecordCount: 0,
+            efficiency: efficiencies
+        };
+    }
     
     analyzeSimulators() {
-        // 直接从localStorage读取数据，不依赖dogtorLeaderboard
-        const equipment = this.getEquipmentData();
         const analysis = [];
         
-        // 超越强化分析
+        // 超越强化
         try {
             const beyondData = localStorage.getItem('beyondEnhancementData');
             if (beyondData) {
                 const data = JSON.parse(beyondData);
-                const totalCost = data.totalDiamondCost || 0;
                 const rodLevel = data.rodLevel || 10;
                 const reelLevel = data.reelLevel || 10;
-                const avgLevel = (rodLevel + reelLevel) / 2;
-                const efficiency = avgLevel > 10 ? (avgLevel - 10) / Math.max(1, totalCost / 100) : 0;
-                
                 analysis.push({
                     name: '超越强化',
                     icon: '🎯',
-                    data: {
-                        rodLevel: rodLevel,
-                        reelLevel: reelLevel,
-                        totalCost: totalCost,
-                        totalMoney: data.totalMoneyCost || 0
-                    },
-                    efficiency: Math.min(100, Math.round(efficiency * 50)),
-                    suggestion: efficiency > 0.5 ? '运气不错，可继续尝试' : '消耗较大，建议择日再战'
+                    data: { rodLevel, reelLevel },
+                    efficiency: rodLevel > 10 || reelLevel > 10 ? 70 : 30,
+                    suggestion: rodLevel > 10 || reelLevel > 10 ? '强化成功，运气不错！' : '尚未突破，继续努力'
                 });
             }
-        } catch (e) {
-            console.warn('超越强化数据分析失败:', e);
-        }
+        } catch (e) { console.warn('超越强化分析失败:', e); }
         
-        // 进化八星分析
+        // 进化八星
         try {
             const gaiaData = localStorage.getItem('evolveGaiaData');
             if (gaiaData) {
                 const data = JSON.parse(gaiaData);
-                const rodAttempts = data.rodEvolveCount || 0;
-                const reelAttempts = data.reelEvolveCount || 0;
-                const rodSuccess = data.rodSuccessCount || 0;
-                const reelSuccess = data.reelSuccessCount || 0;
-                const totalAttempts = rodAttempts + reelAttempts;
-                const totalSuccess = rodSuccess + reelSuccess;
-                
                 analysis.push({
                     name: '进化八星',
                     icon: '⭐',
-                    data: {
-                        rodStar: data.rodStarLevel || 0,
-                        reelStar: data.reelStarLevel || 0,
-                        totalAttempts,
-                        totalSuccess
-                    },
-                    efficiency: totalAttempts > 0 ? Math.round((totalSuccess / Math.max(1, totalAttempts)) * 100) : 0,
-                    suggestion: totalSuccess > 0 ? '进化成功，欧气满满' : '尚未成功，继续努力'
+                    data: { rodStar: data.rodStarLevel || 0, reelStar: data.reelStarLevel || 0 },
+                    efficiency: (data.rodStarLevel || data.reelStarLevel) ? 80 : 30,
+                    suggestion: (data.rodStarLevel || data.reelStarLevel) ? '进化成功，欧气满满！' : '尚未进化，继续努力'
                 });
             }
-        } catch (e) {
-            console.warn('进化八星数据分析失败:', e);
-        }
+        } catch (e) { console.warn('进化八星分析失败:', e); }
         
-        // 附魔勋章分析
+        // 附魔勋章
         try {
             const enchantData = localStorage.getItem('enchantMedalData');
             if (enchantData) {
                 const data = JSON.parse(enchantData);
-                const totalEnchant = (data.rodEnchantCount || 0) + (data.reelEnchantCount || 0);
-                const rodBadge = data.rodBadgeLevel || 0;
-                const reelBadge = data.reelBadgeLevel || 0;
-                
                 analysis.push({
                     name: '附魔勋章',
                     icon: '✨',
-                    data: {
-                        rodBadgeLevel: rodBadge || '无',
-                        reelBadgeLevel: reelBadge || '无',
-                        totalEnchant,
-                        totalPlatinum: data.totalPlatinumCost || 0
-                    },
-                    efficiency: (rodBadge || reelBadge) ? 80 : 30,
-                    suggestion: (rodBadge === 1 || reelBadge === 1) ? '恭喜！勋章等级极佳！' : ((rodBadge || reelBadge) ? '勋章效果一般，可继续尝试' : '建议先去狗托榜吸吸欧气')
+                    data: { rodBadge: data.rodBadgeLevel || '无', reelBadge: data.reelBadgeLevel || '无' },
+                    efficiency: (data.rodBadgeLevel || data.reelBadgeLevel) ? 75 : 30,
+                    suggestion: (data.rodBadgeLevel === 1 || data.reelBadgeLevel === 1) ? '勋章极品！' : '继续附魔'
                 });
             }
-        } catch (e) {
-            console.warn('附魔勋章数据分析失败:', e);
-        }
+        } catch (e) { console.warn('附魔勋章分析失败:', e); }
         
-        // 刻印模拟分析
+        // 刻印模拟
         try {
             const crestData = localStorage.getItem('crestEnhanceData');
             if (crestData) {
                 const data = JSON.parse(crestData);
-                const crestStages = data.crestStages || {};
-                const stages = Object.values(crestStages);
+                const stages = Object.values(data.crestStages || {});
                 const maxStage = stages.length > 0 ? Math.max(...stages) : 0;
-                const avgStage = stages.length > 0 ? stages.reduce((a, b) => a + b, 0) / stages.length : 0;
-                
                 analysis.push({
                     name: '刻印模拟',
                     icon: '🔥',
-                    data: {
-                        maxStage,
-                        avgStage: Math.round(avgStage),
-                        totalAttempts: data.totalAttempts || 0,
-                        resetTickets: data.resetTicketCount || 0
-                    },
-                    efficiency: maxStage >= 15 ? 90 : (maxStage >= 12 ? 70 : (maxStage >= 8 ? 50 : 30)),
-                    suggestion: maxStage >= 15 ? '刻印满级，成就达成！' : '继续努力，XV在向你招手'
+                    data: { maxStage },
+                    efficiency: maxStage >= 15 ? 90 : (maxStage >= 10 ? 60 : 30),
+                    suggestion: maxStage >= 15 ? '刻印大师！' : '继续努力'
                 });
             }
-        } catch (e) {
-            console.warn('刻印模拟数据分析失败:', e);
-        }
-        
-        // 勋章系统分析
-        try {
-            const craftData = localStorage.getItem('badgeCraftData');
-            const boxData = localStorage.getItem('badgeBoxData');
-            
-            let fiveStarCount = 0;
-            let coralCost = 0;
-            let craftedCount = 0;
-            let platinumCost = 0;
-            
-            if (craftData) {
-                const data = JSON.parse(craftData);
-                const craftedBadges = data.craftedBadges || [];
-                fiveStarCount = craftedBadges.filter(b => b && b.stars >= 5).length;
-                craftedCount = craftedBadges.length;
-                platinumCost = data.totalPlatinumCost || 0;
-            }
-            
-            if (boxData) {
-                const data = JSON.parse(boxData);
-                coralCost = data.totalCost || 0;
-            }
-            
-            if (fiveStarCount > 0 || coralCost > 0 || craftedCount > 0) {
-                analysis.push({
-                    name: '勋章系统',
-                    icon: '🎖️',
-                    data: {
-                        coralCost,
-                        craftedCount,
-                        fiveStarCount,
-                        platinumCost
-                    },
-                    efficiency: fiveStarCount > 0 ? 70 : 30,
-                    suggestion: fiveStarCount > 0 ? '5星勋章在手，天下我有' : '继续开宝箱，好运就在前方'
-                });
-            }
-        } catch (e) {
-            console.warn('勋章系统数据分析失败:', e);
-        }
+        } catch (e) { console.warn('刻印模拟分析失败:', e); }
         
         return analysis;
-    },
+    }
     
     generateLuckyPrediction(divination, luckScore) {
-        const now = new Date();
-        const hours = now.getHours();
-        const dayOfWeek = now.getDay();
+        const hours = new Date().getHours();
         
         const bestTimeWindows = [];
         if (hours < 12) {
@@ -784,10 +554,9 @@ const mysticAnalysis = {
         const warnings = [];
         if (divination.score < 40) {
             warnings.push({ type: 'caution', message: '今日运势偏低，建议避免重大操作' });
-            warnings.push({ type: 'tip', message: '建议去狗托榜看看欧皇的表现' });
         }
         if (hours >= 23 || hours < 5) {
-            warnings.push({ type: 'health', message: '夜深了，注意休息，明天再战！' });
+            warnings.push({ type: 'health', message: '夜深了，注意休息！' });
         }
         
         const luckyNumbers = this.generateLuckyNumbers();
@@ -799,20 +568,18 @@ const mysticAnalysis = {
             luckyNumbers,
             mantra: this.getMantra(divination.score)
         };
-    },
+    }
     
     generateLuckyNumbers() {
         const now = new Date();
         const seed = now.getDate() * 10000 + (now.getMonth() + 1) * 100 + now.getHours();
-        
         const numbers = [];
         for (let i = 0; i < 5; i++) {
             const value = ((seed * (i + 1) * 9301 + 49297) % 233280) / 233280;
             numbers.push(Math.floor(value * 100));
         }
-        
         return numbers;
-    },
+    }
     
     getMantra(score) {
         if (score >= 90) return '鸿运当头，挡都挡不住！';
@@ -821,7 +588,47 @@ const mysticAnalysis = {
         if (score >= 45) return '心平气和，静待时机！';
         if (score >= 30) return '守得云开见月明！';
         return '积蓄力量，厚积薄发！';
-    },
+    }
+    
+    getLunarInfo(date) {
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const dayOfWeek = date.getDay();
+        const hours = date.getHours();
+        
+        const lunarMonths = ['正月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '冬月', '腊月'];
+        const lunarDays = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+                           '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+                           '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+        
+        const yi = [
+            ['纳财', '交易', '立券'],
+            ['祈福', '祭祀', '许愿'],
+            ['强化', '进化', '附魔'],
+            ['刻印', '制作', '合成'],
+            ['钓鱼', '休闲', '娱乐'],
+            ['开仓', '出货', '交易'],
+            ['祈福', '许愿', '纳财']
+        ];
+        
+        const ji = [
+            ['动土', '远行'],
+            ['争执', '冲动'],
+            ['过度消费', '上头'],
+            ['急躁', '连续失败'],
+            ['熬夜', '伤身'],
+            ['冲动消费', '上头'],
+            ['重大决策', '上头']
+        ];
+        
+        return {
+            lunarDate: `${lunarMonths[(month - 1) % 12]}${lunarDays[(day - 1) % 30]}`,
+            yi: yi[dayOfWeek],
+            ji: ji[dayOfWeek],
+            timeOfDay: hours < 6 ? '子时' : hours < 9 ? '辰时' : hours < 12 ? '午时' : 
+                       hours < 15 ? '未时' : hours < 18 ? '申时' : hours < 21 ? '酉时' : '戌时'
+        };
+    }
     
     getEquipmentData() {
         try {
@@ -832,86 +639,59 @@ const mysticAnalysis = {
                     rod: {
                         level: data.rod?.level || 10,
                         starLevel: data.rod?.starLevel || 0,
-                        badgeType: data.rod?.badgeType || null,
-                        badgeLevel: data.rod?.badgeLevel || 0,
-                        enchanted: data.rod?.enchanted || false
+                        badgeLevel: data.rod?.badgeLevel || 0
                     },
                     reel: {
                         level: data.reel?.level || 10,
                         starLevel: data.reel?.starLevel || 0,
-                        badgeType: data.reel?.badgeType || null,
-                        badgeLevel: data.reel?.badgeLevel || 0,
-                        enchanted: data.reel?.enchanted || false
+                        badgeLevel: data.reel?.badgeLevel || 0
                     }
                 };
             }
-        } catch (e) {
-            console.error('加载装备数据失败:', e);
-        }
+        } catch (e) { console.error('加载装备数据失败:', e); }
+        
         return {
-            rod: { level: 10, starLevel: 0, badgeType: null, badgeLevel: 0, enchanted: false },
-            reel: { level: 10, starLevel: 0, badgeType: null, badgeLevel: 0, enchanted: false }
+            rod: { level: 10, starLevel: 0, badgeLevel: 0 },
+            reel: { level: 10, starLevel: 0, badgeLevel: 0 }
         };
-    },
+    }
     
     getCrestData() {
         try {
             const saved = localStorage.getItem('crestEnhanceData');
-            if (saved) {
-                return JSON.parse(saved);
-            }
-        } catch (e) {
-            console.error('加载刻印数据失败:', e);
-        }
-        return { crestStages: {}, totalAttempts: 0, resetTicketCount: 0 };
-    },
+            if (saved) return JSON.parse(saved);
+        } catch (e) { console.error('加载刻印数据失败:', e); }
+        return { crestStages: {}, totalAttempts: 0 };
+    }
     
     getResources() {
         if (window.resourceManager) {
             return window.resourceManager.getResources();
         }
         return { diamonds: 0, breakthrough: 0, essence: 0, platinum: 0, greenNotes: 0, coral: 0 };
-    },
-    
-    getRecords() {
-        if (window.app && window.app.records) {
-            return window.app.records;
-        }
-        return [];
-    },
+    }
     
     renderAnalysis(analysis) {
-        console.log('开始渲染分析结果...');
-        
         const contentEl = document.getElementById('mystic-analysis-content');
-        if (!contentEl) {
-            console.error('contentEl 不存在');
-            return;
-        }
+        if (!contentEl) return;
         
-        // 直接替换内容，不需要隐藏父元素
-        contentEl.innerHTML = this.generateHtml(analysis);
-        this.afterRender();
-    },
-    
-    generateHtml(analysis) {
-        const { divination, luckScore, resourceAnalysis, simulatorAnalysis, luckyPrediction } = analysis;
+        const { divination, luckScore, simulatorAnalysis, luckyPrediction } = analysis;
         
-        return `
+        contentEl.innerHTML = `
             <div class="mystic-container">
                 <div class="mystic-header text-center mb-4">
-                    <div class="mystic-date text-muted small mb-2">${analysis.date} · ${analysis.lunarInfo.lunarDate} · ${analysis.lunarInfo.timeOfDay}</div>
+                    <div class="mystic-date text-muted small mb-2">${analysis.date} · ${analysis.lunarInfo.lunarDate}</div>
                     <div class="mystic-divination d-flex align-items-center justify-content-center gap-3">
-                        <span class="divination-icon" style="font-size: 48px;">${divination.icon}</span>
+                        <span style="font-size: 48px;">${divination.icon}</span>
                         <div class="text-start">
-                            <div class="divination-level" style="color: ${divination.color}; font-size: 28px; font-weight: bold;">${divination.level}</div>
-                            <div class="divination-message text-muted mt-1">${divination.message}</div>
+                            <div style="color: ${divination.color}; font-size: 28px; font-weight: bold;">${divination.level}</div>
+                            <div class="text-muted mt-1">${divination.message}</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="mystic-score-bar mb-4">
-                    <div class="score-label d-flex justify-content-between mb-1">
+                    <div class="d-flex justify-content-between mb-1">
                         <span>今日运势指数</span>
                         <span style="color: ${divination.color}; font-weight: bold;">${divination.score}/100</span>
                     </div>
@@ -920,93 +700,85 @@ const mysticAnalysis = {
                     </div>
                 </div>
                 
-                <div class="mystic-quick-info row mb-4 g-2">
+                <div class="row mb-4 g-2">
                     <div class="col-6">
-                        <div class="info-card p-2 bg-light rounded text-center">
+                        <div class="p-2 bg-light rounded text-center">
                             <div class="text-muted small">吉神方位</div>
                             <div class="fw-bold">${divination.luckyDirection} ${divination.luckyEmoji}</div>
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="info-card p-2 bg-light rounded text-center">
+                        <div class="p-2 bg-light rounded text-center">
                             <div class="text-muted small">幸运数字</div>
                             <div class="fw-bold">${luckyPrediction.luckyNumbers.join(' · ')}</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="mystic-yiji mb-4">
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="yi-card p-3 rounded" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <span style="font-size: 20px;">✅</span>
-                                    <span class="fw-bold" style="color: #2e7d32;">宜</span>
-                                </div>
-                                <div class="small">
-                                    ${analysis.lunarInfo.yi.map(y => `<span class="badge bg-success me-1 mb-1">${y}</span>`).join('')}
-                                </div>
+                <div class="row g-2 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>✅</span>
+                                <span class="fw-bold" style="color: #2e7d32;">宜</span>
+                            </div>
+                            <div class="small">
+                                ${analysis.lunarInfo.yi.map(y => `<span class="badge bg-success me-1 mb-1">${y}</span>`).join('')}
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="ji-card p-3 rounded" style="background: linear-gradient(135deg, #ffebee, #ffcdd2);">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <span style="font-size: 20px;">❌</span>
-                                    <span class="fw-bold" style="color: #c62828;">忌</span>
-                                </div>
-                                <div class="small">
-                                    ${analysis.lunarInfo.ji.map(j => `<span class="badge bg-danger me-1 mb-1">${j}</span>`).join('')}
-                                </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 rounded" style="background: linear-gradient(135deg, #ffebee, #ffcdd2);">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span>❌</span>
+                                <span class="fw-bold" style="color: #c62828;">忌</span>
+                            </div>
+                            <div class="small">
+                                ${analysis.lunarInfo.ji.map(j => `<span class="badge bg-danger me-1 mb-1">${j}</span>`).join('')}
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="mystic-luck-score mb-4 p-3 rounded" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7);">
+                <div class="p-3 rounded mb-4" style="background: linear-gradient(135deg, #f3e5f5, #e1bee7);">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <h6 class="mb-0">综合运气指数</h6>
                         <span class="badge rounded-pill" style="background: ${luckScore.levelColor}; color: white;">${luckScore.level}</span>
                     </div>
                     <div class="row g-2 text-center">
                         <div class="col-4">
-                            <div class="luck-subscore">
-                                <div class="score-value text-primary fw-bold">${luckScore.dogtorScore}</div>
-                                <div class="score-label text-muted small">狗托榜</div>
-                            </div>
+                            <div class="score-value text-primary fw-bold">${luckScore.dogtorScore}</div>
+                            <div class="score-label text-muted small">狗托榜</div>
                         </div>
                         <div class="col-4">
-                            <div class="luck-subscore">
-                                <div class="score-value text-success fw-bold">${luckScore.equipmentScore}</div>
-                                <div class="score-label text-muted small">装备评分</div>
-                            </div>
+                            <div class="score-value text-success fw-bold">${luckScore.equipmentScore}</div>
+                            <div class="score-label text-muted small">装备评分</div>
                         </div>
                         <div class="col-4">
-                            <div class="luck-subscore">
-                                <div class="score-value text-warning fw-bold">${luckScore.activityScore}</div>
-                                <div class="score-label text-muted small">活动指数</div>
-                            </div>
+                            <div class="score-value text-warning fw-bold">${luckScore.activityScore}</div>
+                            <div class="score-label text-muted small">活动指数</div>
                         </div>
                     </div>
                     <div class="mt-2 text-center text-muted small">${luckScore.levelDesc}</div>
                 </div>
                 
-                <div class="mystic-prediction mb-4">
+                <div class="mb-4">
                     <h6 class="mb-3">🔮 今日运势建议</h6>
                     
-                    <div class="prediction-section mb-3">
-                        <div class="section-title small text-muted mb-2">⏰ 最佳操作时段</div>
+                    <div class="mb-3">
+                        <div class="small text-muted mb-2">⏰ 最佳操作时段</div>
                         ${luckyPrediction.bestTimeWindows.map(w => `
-                            <div class="time-window d-flex justify-content-between align-items-center p-2 bg-light rounded mb-1">
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded mb-1">
                                 <span class="fw-bold">${w.time}</span>
                                 <span class="text-muted small">${w.reason}</span>
                             </div>
                         `).join('')}
                     </div>
                     
-                    <div class="prediction-section mb-3">
-                        <div class="section-title small text-muted mb-2">🎯 推荐活动</div>
+                    <div class="mb-3">
+                        <div class="small text-muted mb-2">🎯 推荐活动</div>
                         ${luckyPrediction.recommendedActivities.map(a => `
-                            <div class="activity-item d-flex align-items-center gap-2 p-2 bg-light rounded mb-1">
+                            <div class="d-flex align-items-center gap-2 p-2 bg-light rounded mb-1">
                                 <span style="font-size: 18px;">${a.icon}</span>
                                 <span class="fw-bold">${a.activity}</span>
                                 <span class="text-muted small ms-auto">${a.reason}</span>
@@ -1015,10 +787,10 @@ const mysticAnalysis = {
                     </div>
                     
                     ${luckyPrediction.warnings.length > 0 ? `
-                        <div class="prediction-section mb-3">
-                            <div class="section-title small text-muted mb-2">⚠️ 温馨提示</div>
+                        <div class="mb-3">
+                            <div class="small text-muted mb-2">⚠️ 温馨提示</div>
                             ${luckyPrediction.warnings.map(w => `
-                                <div class="warning-item p-2 rounded mb-1 ${w.type === 'health' ? 'bg-info bg-opacity-10' : w.type === 'tip' ? 'bg-warning bg-opacity-10' : 'bg-danger bg-opacity-10'}">
+                                <div class="p-2 rounded mb-1 ${w.type === 'health' ? 'bg-info bg-opacity-10' : 'bg-danger bg-opacity-10'}">
                                     <span class="small">${w.message}</span>
                                 </div>
                             `).join('')}
@@ -1027,12 +799,12 @@ const mysticAnalysis = {
                 </div>
                 
                 ${simulatorAnalysis.length > 0 ? `
-                    <div class="mystic-simulators mb-4">
+                    <div class="mb-4">
                         <h6 class="mb-3">📊 模拟器数据分析</h6>
                         <div class="row g-2">
                             ${simulatorAnalysis.map(s => `
                                 <div class="col-6">
-                                    <div class="simulator-card p-3 bg-light rounded">
+                                    <div class="p-3 bg-light rounded">
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <span style="font-size: 20px;">${s.icon}</span>
                                             <span class="fw-bold">${s.name}</span>
@@ -1046,202 +818,52 @@ const mysticAnalysis = {
                     </div>
                 ` : ''}
                 
-                <div class="mystic-mantra text-center p-4 rounded" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">
-                    <div class="mantra-icon mb-2" style="font-size: 32px;">🧘</div>
-                    <div class="mantra-text fw-bold" style="color: #f57c00; font-size: 18px;">"${luckyPrediction.mantra}"</div>
+                <div class="text-center p-4 rounded" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🧘</div>
+                    <div style="color: #f57c00; font-size: 18px; font-weight: bold;">"${luckyPrediction.mantra}"</div>
                 </div>
                 
-                <div class="mystic-actions mt-4 text-center">
-                    <button class="btn btn-primary me-2" onclick="mysticAnalysis.refresh()">
-                        🔄 重新卜卦
-                    </button>
-                    <button class="btn btn-outline-primary" onclick="mysticAnalysis.share()">
-                        📤 分享运势
-                    </button>
-                </div>
-                
-                <div class="mystic-disclaimer mt-3 text-center text-muted small">
+                <div class="mt-3 text-center text-muted small">
                     <p class="mb-0">本功能仅供娱乐参考，实际游戏概率请以游戏内为准。理性消费，享受游戏！</p>
                 </div>
             </div>
         `;
-    },
-    
-    afterRender() {
-        try {
-            this.saveToHistory();
-        } catch (e) {
-            console.warn('保存历史失败:', e);
-        }
-    },
-    
-    saveToHistory() {
-        try {
-            const historyKey = 'mysticAnalysisHistory';
-            let history = [];
-            const saved = localStorage.getItem(historyKey);
-            if (saved) {
-                history = JSON.parse(saved);
-            }
-            
-            const now = new Date();
-            const todayStr = now.toDateString();
-            
-            const todayIndex = history.findIndex(h => new Date(h.timestamp).toDateString() === todayStr);
-            const analysis = {
-                timestamp: now.getTime(),
-                level: this._lastDivination?.level || '平',
-                score: this._lastDivination?.score || 50
-            };
-            
-            if (todayIndex >= 0) {
-                history[todayIndex] = analysis;
-            } else {
-                history.unshift(analysis);
-                if (history.length > 30) {
-                    history = history.slice(0, 30);
-                }
-            }
-            
-            localStorage.setItem(historyKey, JSON.stringify(history));
-        } catch (e) {
-            console.error('保存卜卦历史失败:', e);
-        }
-    },
-    
-    refresh() {
+    }
+}
+
+// 创建单例实例
+MysticAnalysis.instance = new MysticAnalysis();
+
+// 全局函数供HTML调用
+window.runMysticAnalysis = function() {
+    console.log('手动触发玄学分析...');
+    try {
         const contentEl = document.getElementById('mystic-analysis-content');
         if (!contentEl) return;
+        
+        if (!MysticAnalysis.instance.checkMemberAccess()) {
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔒</div>
+                    <h6 class="mb-2">解锁玄学分析</h6>
+                    <p class="text-muted small mb-3">PRO会员专属功能</p>
+                    <p class="text-muted small">请先验证卡密成为会员后使用此功能</p>
+                </div>
+            `;
+            return;
+        }
         
         contentEl.innerHTML = `
             <div class="text-center py-4">
                 <div class="spinner-border text-primary" role="status">
                     <span class="sr-only">Loading...</span>
                 </div>
-                <p class="mt-2 text-muted">正在重新推演天机...</p>
+                <p class="mt-2 text-muted">正在分析您的运势数据...</p>
             </div>
         `;
         
         setTimeout(() => {
-            this.analyze();
-        }, 1000);
-    },
-    
-    share() {
-        const analysis = this._lastAnalysis;
-        if (!analysis) {
-            alert('请先生成运势分析后再分享');
-            return;
-        }
-        
-        const { divination, luckScore } = analysis;
-        const shareText = `【钓鱼发烧友运势播报】\n` +
-            `📅 ${analysis.date}\n` +
-            `🔮 今日运势：${divination.icon} ${divination.level} (${divination.score}分)\n` +
-            `💬 ${divination.message}\n` +
-            `📊 综合运气：${luckScore.level} (${luckScore.total}分)\n` +
-            `\n——来自「钓鱼发烧友：财富积累日记」玄学分析报表`;
-        
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(shareText).then(() => {
-                alert('运势内容已复制到剪贴板，快去分享给钓友吧！');
-            }).catch(() => {
-                alert(shareText);
-            });
-        } else {
-            alert(shareText);
-        }
-    },
-    
-    set _lastDivination(value) {
-        this.__lastDivination = value;
-    },
-    
-    get _lastDivination() {
-        return this.__lastDivination;
-    },
-    
-    set _lastAnalysis(value) {
-        this.__lastAnalysis = value;
-    },
-    
-    get _lastAnalysis() {
-        return this.__lastAnalysis;
-    }
-};
-
-if (typeof window !== 'undefined') {
-    window.mysticAnalysis = mysticAnalysis;
-}
-
-// 确保玄学分析能够初始化
-function initMysticAnalysis() {
-    console.log('尝试初始化玄学分析...');
-    try {
-        mysticAnalysis.init();
-        console.log('玄学分析初始化成功！');
-    } catch (e) {
-        console.error('玄学分析初始化失败:', e);
-        // 如果初始化失败，延迟重试
-        setTimeout(initMysticAnalysis, 500);
-    }
-}
-
-// 尝试多种方式初始化
-function setupMysticAnalysis() {
-    console.log('=== 玄学分析调试信息 ===');
-    console.log('document.readyState:', document.readyState);
-    console.log('window.mysticAnalysis:', window.mysticAnalysis);
-    console.log('mystic-analysis-section:', document.getElementById('mystic-analysis-section'));
-    console.log('mystic-analysis-content:', document.getElementById('mystic-analysis-content'));
-    
-    // 添加一个简单的测试按钮
-    const testBtn = document.createElement('button');
-    testBtn.textContent = '测试玄学分析';
-    testBtn.style.position = 'fixed';
-    testBtn.style.bottom = '20px';
-    testBtn.style.right = '20px';
-    testBtn.style.zIndex = '9999';
-    testBtn.className = 'btn btn-primary';
-    testBtn.onclick = function() {
-        console.log('手动触发玄学分析...');
-        try {
-            mysticAnalysis.analyze();
-        } catch (e) {
-            console.error('手动触发失败:', e);
-        }
-    };
-    document.body.appendChild(testBtn);
-    
-    // 初始化玄学分析
-    initMysticAnalysis();
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupMysticAnalysis);
-} else {
-    setupMysticAnalysis();
-}
-
-// 全局函数，供HTML按钮调用
-window.runMysticAnalysis = function() {
-    console.log('=== 手动触发玄学分析 ===');
-    try {
-        const contentEl = document.getElementById('mystic-analysis-content');
-        if (contentEl) {
-            contentEl.innerHTML = `
-                <div class="text-center py-4">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">正在分析您的运势数据...</p>
-                </div>
-            `;
-        }
-        
-        setTimeout(() => {
-            console.log('开始执行分析...');
-            mysticAnalysis.analyze();
+            MysticAnalysis.instance.analyze();
         }, 100);
     } catch (e) {
         console.error('runMysticAnalysis 失败:', e);
@@ -1256,4 +878,15 @@ window.runMysticAnalysis = function() {
             `;
         }
     }
-}
+};
+
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('页面加载完成，初始化玄学分析...');
+    MysticAnalysis.instance.init();
+});
+
+// 也在 window.onload 时初始化一次，确保兼容性
+window.addEventListener('load', () => {
+    MysticAnalysis.instance.init();
+});
