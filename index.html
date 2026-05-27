@@ -1388,10 +1388,37 @@
             return;
         }
         
-        freeResetCount++;
-        localStorage.setItem(FREE_RESET_COUNT_KEY, freeResetCount.toString());
-        resetAllSimulators();
-        updateActivationUI();
+        if (confirm('即将为您重置所有模拟器数据，此操作不可撤销，确定继续吗？')) {
+            freeResetCount++;
+            localStorage.setItem(FREE_RESET_COUNT_KEY, freeResetCount.toString());
+            
+            const allKeys = [
+                'enchantMedalData',
+                'badgeCraftData',
+                'beyondEnhancementData',
+                'badgeBoxData',
+                'evolveGaiaData',
+                'evolvePearlData',
+                'crestEnhanceData',
+                'fishingResourceData',
+                'sharedEquipmentData',
+                'sharedFourBeastBadges'
+            ];
+            allKeys.forEach(key => {
+                try {
+                    localStorage.removeItem(key);
+                } catch (e) {
+                    console.error(`Error resetting ${key}:`, e);
+                }
+            });
+
+            alert('已为您重置数据！感谢您的支持~');
+            const iframe = document.getElementById('simulator-iframe');
+            if (iframe && iframe.src) {
+                iframe.contentWindow.location.reload();
+            }
+            location.reload();
+        }
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
