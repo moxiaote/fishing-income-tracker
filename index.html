@@ -1398,22 +1398,22 @@
         'beyondEnhancement': {
             key: 'beyondEnhancementData',
             name: '超越强化',
-            relatedKeys: ['beyondEnhancementData', 'sharedEquipmentData']
+            resetEquipment: ['level']
         },
         'evolveGaia': {
             key: 'evolveGaiaData',
             name: '进化八星',
-            relatedKeys: ['evolveGaiaData', 'sharedEquipmentData']
+            resetEquipment: ['starLevel']
         },
         'enchantMedal': {
             key: 'enchantMedalData',
             name: '附魔勋章',
-            relatedKeys: ['enchantMedalData', 'sharedEquipmentData']
+            resetEquipment: ['badgeType', 'badgeLevel', 'enchanted']
         },
         'crestEnhance': {
             key: 'crestEnhanceData',
             name: '刻印模拟',
-            relatedKeys: ['crestEnhanceData']
+            resetEquipment: []
         }
     };
 
@@ -1513,10 +1513,28 @@
 
         if (confirm(`即将为您重置【${sim.name}】数据（包括等级、消耗记录等），此操作不可撤销，确定继续吗？\n\n💡 提示：其他模拟器数据将被保留，记账更精准！`)) {
             try {
-                sim.relatedKeys.forEach(key => {
-                    localStorage.removeItem(key);
-                });
-                alert(`已为您重置【${sim.name}】数据！\n\n✅ 等级和消耗记录已清除，狗托榜评分更可控~`);
+                // 删除该模拟器的主数据文件
+                localStorage.removeItem(sim.key);
+                
+                // 如果需要重置装备数据，有选择性地清除相关字段
+                if (sim.resetEquipment && sim.resetEquipment.length > 0) {
+                    const saved = localStorage.getItem('sharedEquipmentData');
+                    if (saved) {
+                        const equipmentData = JSON.parse(saved);
+                        // 重置鱼竿和线轮的指定字段
+                        sim.resetEquipment.forEach(field => {
+                            if (equipmentData.rod && equipmentData.rod[field] !== undefined) {
+                                equipmentData.rod[field] = field === 'level' ? 10 : (field === 'starLevel' ? 0 : null);
+                            }
+                            if (equipmentData.reel && equipmentData.reel[field] !== undefined) {
+                                equipmentData.reel[field] = field === 'level' ? 10 : (field === 'starLevel' ? 0 : null);
+                            }
+                        });
+                        localStorage.setItem('sharedEquipmentData', JSON.stringify(equipmentData));
+                    }
+                }
+                
+                alert(`已为您重置【${sim.name}】数据！\n\n✅ 等级和消耗记录已清除，其他模拟器数据不受影响~`);
                 const iframe = document.getElementById('simulator-iframe');
                 if (iframe && iframe.src) {
                     iframe.contentWindow.location.reload();

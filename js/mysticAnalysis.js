@@ -328,19 +328,82 @@ const mysticAnalysis = {
     },
     
     getDogtorScore() {
-        if (typeof dogtorLeaderboard === 'undefined' || typeof dogtorLeaderboard.calculateTotalScore !== 'function') return 30;
-        
-        const { totalScore, breakdown } = dogtorLeaderboard.calculateTotalScore();
-        
-        if (totalScore >= 50000) return 100;
-        if (totalScore >= 30000) return 85;
-        if (totalScore >= 15000) return 70;
-        if (totalScore >= 8000) return 55;
-        if (totalScore >= 4000) return 40;
-        if (totalScore >= 1000) return 25;
-        
-        return 10;
-    },
+        // 直接从localStorage读取模拟器数据计算分数，不依赖dogtorLeaderboard
+        try {
+            const beyondData = localStorage.getItem('beyondEnhancementData');
+            const gaiaData = localStorage.getItem('evolveGaiaData');
+            const enchantData = localStorage.getItem('enchantMedalData');
+            const crestData = localStorage.getItem('crestEnhanceData');
+            const badgeBoxData = localStorage.getItem('badgeBoxData');
+            const badgeCraftData = localStorage.getItem('badgeCraftData');
+            
+            let totalScore = 0;
+            
+            // 超越强化得分
+            if (beyondData) {
+                const data = JSON.parse(beyondData);
+                if (data.rodLevel && data.rodLevel > 10) {
+                    totalScore += (data.rodLevel - 10) * 100;
+                }
+                if (data.reelLevel && data.reelLevel > 10) {
+                    totalScore += (data.reelLevel - 10) * 100;
+                }
+            }
+            
+            // 进化八星得分
+            if (gaiaData) {
+                const data = JSON.parse(gaiaData);
+                if (data.rodStarLevel && data.rodStarLevel > 0) {
+                    totalScore += data.rodStarLevel * 500;
+                }
+                if (data.reelStarLevel && data.reelStarLevel > 0) {
+                    totalScore += data.reelStarLevel * 500;
+                }
+            }
+            
+            // 附魔勋章得分
+            if (enchantData) {
+                const data = JSON.parse(enchantData);
+                if (data.rodBadgeLevel && data.rodBadgeLevel > 0 && data.rodBadgeLevel <= 10) {
+                    totalScore += (11 - data.rodBadgeLevel) * 200;
+                }
+                if (data.reelBadgeLevel && data.reelBadgeLevel > 0 && data.reelBadgeLevel <= 10) {
+                    totalScore += (11 - data.reelBadgeLevel) * 200;
+                }
+            }
+            
+            // 刻印模拟得分
+            if (crestData) {
+                const data = JSON.parse(crestData);
+                const crestStages = data.crestStages || {};
+                const stages = Object.values(crestStages);
+                if (stages.length > 0) {
+                    const maxStage = Math.max(...stages);
+                    totalScore += maxStage * 300;
+                }
+            }
+            
+            // 勋章系统得分
+            if (badgeCraftData) {
+                const data = JSON.parse(badgeCraftData);
+                const craftedBadges = data.craftedBadges || [];
+                const fiveStarCount = craftedBadges.filter(b => b && b.stars >= 5).length;
+                totalScore += fiveStarCount * 1000;
+            }
+            
+            // 根据总分返回评分
+            if (totalScore >= 50000) return 100;
+            if (totalScore >= 30000) return 85;
+            if (totalScore >= 15000) return 70;
+            if (totalScore >= 8000) return 55;
+            if (totalScore >= 4000) return 40;
+            if (totalScore >= 1000) return 25;
+            return totalScore > 0 ? 20 : 30;
+        } catch (e) {
+            console.error('计算狗托榜分数失败:', e);
+            return 30;
+        }
+    }
     
     calculateEquipmentScore() {
         const equipment = this.getEquipmentData();
