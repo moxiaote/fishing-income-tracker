@@ -1,3 +1,52 @@
+// 全局函数，供HTML按钮调用 - 提前定义确保可用
+window.runMysticAnalysis = function() {
+    console.log('=== 手动触发玄学分析 ===');
+    try {
+        const contentEl = document.getElementById('mystic-analysis-content');
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">正在分析您的运势数据...</p>
+                </div>
+            `;
+        }
+        
+        setTimeout(() => {
+            console.log('开始执行分析...');
+            if (window.mysticAnalysis && typeof window.mysticAnalysis.analyze === 'function') {
+                window.mysticAnalysis.analyze();
+            } else {
+                console.error('mysticAnalysis 或 analyze 方法未定义');
+                const contentEl = document.getElementById('mystic-analysis-content');
+                if (contentEl) {
+                    contentEl.innerHTML = `
+                        <div class="text-center py-4">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
+                            <p class="text-muted">玄学分析模块未初始化</p>
+                            <button class="btn btn-primary mt-3" onclick="window.runMysticAnalysis()">🔮 重新分析</button>
+                        </div>
+                    `;
+                }
+            }
+        }, 100);
+    } catch (e) {
+        console.error('runMysticAnalysis 失败:', e);
+        const contentEl = document.getElementById('mystic-analysis-content');
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
+                    <p class="text-muted">分析失败: ${e.message}</p>
+                    <button class="btn btn-primary mt-3" onclick="window.runMysticAnalysis()">🔮 重新分析</button>
+                </div>
+            `;
+        }
+    }
+};
+
 const mysticAnalysis = {
     STORAGE_KEY: 'mysticAnalysisData',
     
@@ -39,31 +88,56 @@ const mysticAnalysis = {
     },
     
     init() {
+        console.log('玄学分析模块初始化...');
         this.bindEvents();
-        this.updateDescription();
+        
+        // 延迟更新描述，确保 storageManager 已初始化
+        setTimeout(() => {
+            this.updateDescription();
+        }, 500);
     },
     
     updateDescription() {
-        const memberStatus = storageManager.checkMemberStatus();
-        const memberDescEl = document.getElementById('mystic-analysis-desc-member');
-        const nonMemberDescEl = document.getElementById('mystic-analysis-desc-non-member');
-        
-        if (memberStatus.activated) {
-            if (memberDescEl) memberDescEl.style.display = 'block';
-            if (nonMemberDescEl) nonMemberDescEl.style.display = 'none';
-        } else {
-            if (memberDescEl) memberDescEl.style.display = 'none';
-            if (nonMemberDescEl) nonMemberDescEl.style.display = 'block';
+        try {
+            if (typeof storageManager === 'undefined') {
+                console.warn('storageManager 未定义，跳过会员状态更新');
+                return;
+            }
+            const memberStatus = storageManager.checkMemberStatus();
+            const memberDescEl = document.getElementById('mystic-analysis-desc-member');
+            const nonMemberDescEl = document.getElementById('mystic-analysis-desc-non-member');
+            
+            if (memberStatus.activated) {
+                if (memberDescEl) memberDescEl.style.display = 'block';
+                if (nonMemberDescEl) nonMemberDescEl.style.display = 'none';
+            } else {
+                if (memberDescEl) memberDescEl.style.display = 'none';
+                if (nonMemberDescEl) nonMemberDescEl.style.display = 'block';
+            }
+        } catch (e) {
+            console.warn('更新会员描述失败:', e);
         }
     },
     
     bindEvents() {
         const collapseSection = document.getElementById('mystic-analysis-section');
+        console.log('绑定玄学分析事件...');
+        console.log('collapseSection:', collapseSection);
+        
         if (collapseSection) {
             collapseSection.addEventListener('shown.bs.collapse', () => {
+                console.log('玄学分析区域展开，触发分析...');
                 this.analyze();
             });
         }
+        
+        // 添加手动触发按钮
+        const manualBtn = document.createElement('button');
+        manualBtn.textContent = '手动分析';
+        manualBtn.style.display = 'none';
+        manualBtn.onclick = () => this.analyze();
+        document.body.appendChild(manualBtn);
+        this._manualBtn = manualBtn;
     },
     
     analyze() {
@@ -71,31 +145,39 @@ const mysticAnalysis = {
         const proRequiredEl = document.getElementById('mystic-pro-required');
         const loadingEl = document.getElementById('mystic-loading');
         
-        // 检查必要的依赖
-        if (typeof storageManager === 'undefined') {
-            console.error('错误: storageManager 未定义');
-            if (contentEl) {
-                contentEl.innerHTML = '<p class="text-center text-muted">系统初始化失败，请刷新页面</p>';
+        console.log('玄学分析开始...');
+        console.log('storageManager:', typeof storageManager);
+        
+        // 简化检查：如果 storageManager 不存在或没有 checkMemberStatus 方法，则跳过会员验证
+        let isMember = true;
+        if (typeof storageManager !== 'undefined' && typeof storageManager.checkMemberStatus === 'function') {
+            try {
+                const memberStatus = storageManager.checkMemberStatus();
+                console.log('会员状态:', memberStatus);
+                isMember = memberStatus.activated;
+            } catch (e) {
+                console.warn('获取会员状态失败，默认允许访问:', e);
+                isMember = true;
             }
-            return;
+        } else {
+            console.warn('storageManager 未定义或没有 checkMemberStatus 方法，默认允许访问');
+            isMember = true;
         }
         
-        const memberStatus = storageManager.checkMemberStatus();
-        
-        if (!memberStatus.activated) {
+        if (!isMember) {
+            console.log('非会员，显示PRO提示');
             if (contentEl) contentEl.style.display = 'none';
             if (proRequiredEl) proRequiredEl.style.display = 'block';
             return;
         }
         
+        console.log('会员已激活，开始分析');
         if (contentEl) contentEl.style.display = 'block';
         if (proRequiredEl) proRequiredEl.style.display = 'none';
         
-        if (loadingEl) {
-            loadingEl.style.display = 'inline-block';
-        }
-        
         setTimeout(() => {
+            console.log('进入 setTimeout...');
+            
             try {
                 console.log('开始玄学分析...');
                 
@@ -132,16 +214,14 @@ const mysticAnalysis = {
                 };
                 
                 console.log('分析完成:', analysis);
+                this._lastDivination = analysis.divination;
+                this._lastAnalysis = analysis;
                 this.renderAnalysis(analysis);
             } catch (error) {
                 console.error('玄学分析出错:', error);
                 console.error('错误堆栈:', error.stack);
                 
-                // 隐藏加载动画
-                if (loadingEl) {
-                    loadingEl.parentElement.style.display = 'none';
-                }
-                // 显示错误信息
+                // 直接显示错误信息，替换加载动画
                 if (contentEl) {
                     contentEl.innerHTML = `
                         <div class="text-center py-4">
@@ -514,109 +594,159 @@ const mysticAnalysis = {
     },
     
     analyzeSimulators() {
-        const data = (dogtorLeaderboard && typeof dogtorLeaderboard.loadSimulatorData === 'function') ? dogtorLeaderboard.loadSimulatorData() : {};
-        const equipment = data.equipment || this.getEquipmentData();
-        
+        // 直接从localStorage读取数据，不依赖dogtorLeaderboard
+        const equipment = this.getEquipmentData();
         const analysis = [];
         
-        if (data.beyondEnhancement) {
-            const totalCost = data.beyondEnhancement.totalCost || 0;
-            const avgLevel = (equipment.rod.level + equipment.reel.level) / 2;
-            const efficiency = avgLevel > 10 ? (avgLevel - 10) / Math.max(1, totalCost / 100) : 0;
-            
-            analysis.push({
-                name: '超越强化',
-                icon: '🎯',
-                data: {
-                    rodLevel: equipment.rod.level,
-                    reelLevel: equipment.reel.level,
-                    totalCost,
-                    totalMoney: data.beyondEnhancement.totalMoney || 0
-                },
-                efficiency: Math.min(100, Math.round(efficiency * 50)),
-                suggestion: efficiency > 0.5 ? '运气不错，可继续尝试' : '消耗较大，建议择日再战'
-            });
+        // 超越强化分析
+        try {
+            const beyondData = localStorage.getItem('beyondEnhancementData');
+            if (beyondData) {
+                const data = JSON.parse(beyondData);
+                const totalCost = data.totalDiamondCost || 0;
+                const rodLevel = data.rodLevel || 10;
+                const reelLevel = data.reelLevel || 10;
+                const avgLevel = (rodLevel + reelLevel) / 2;
+                const efficiency = avgLevel > 10 ? (avgLevel - 10) / Math.max(1, totalCost / 100) : 0;
+                
+                analysis.push({
+                    name: '超越强化',
+                    icon: '🎯',
+                    data: {
+                        rodLevel: rodLevel,
+                        reelLevel: reelLevel,
+                        totalCost: totalCost,
+                        totalMoney: data.totalMoneyCost || 0
+                    },
+                    efficiency: Math.min(100, Math.round(efficiency * 50)),
+                    suggestion: efficiency > 0.5 ? '运气不错，可继续尝试' : '消耗较大，建议择日再战'
+                });
+            }
+        } catch (e) {
+            console.warn('超越强化数据分析失败:', e);
         }
         
-        if (data.evolveGaia) {
-            const rodAttempts = data.evolveGaia.rodEvolveCount || 0;
-            const reelAttempts = data.evolveGaia.reelEvolveCount || 0;
-            const rodSuccess = data.evolveGaia.rodSuccessCount || 0;
-            const reelSuccess = data.evolveGaia.reelSuccessCount || 0;
-            const totalAttempts = rodAttempts + reelAttempts;
-            const totalSuccess = rodSuccess + reelSuccess;
-            
-            analysis.push({
-                name: '进化八星',
-                icon: '⭐',
-                data: {
-                    rodStar: equipment.rod.starLevel || 0,
-                    reelStar: equipment.reel.starLevel || 0,
-                    totalAttempts,
-                    totalSuccess
-                },
-                efficiency: totalAttempts > 0 ? Math.round((totalSuccess / Math.max(1, totalAttempts)) * 100) : 0,
-                suggestion: totalSuccess > 0 ? '进化成功，欧气满满' : '尚未成功，继续努力'
-            });
+        // 进化八星分析
+        try {
+            const gaiaData = localStorage.getItem('evolveGaiaData');
+            if (gaiaData) {
+                const data = JSON.parse(gaiaData);
+                const rodAttempts = data.rodEvolveCount || 0;
+                const reelAttempts = data.reelEvolveCount || 0;
+                const rodSuccess = data.rodSuccessCount || 0;
+                const reelSuccess = data.reelSuccessCount || 0;
+                const totalAttempts = rodAttempts + reelAttempts;
+                const totalSuccess = rodSuccess + reelSuccess;
+                
+                analysis.push({
+                    name: '进化八星',
+                    icon: '⭐',
+                    data: {
+                        rodStar: data.rodStarLevel || 0,
+                        reelStar: data.reelStarLevel || 0,
+                        totalAttempts,
+                        totalSuccess
+                    },
+                    efficiency: totalAttempts > 0 ? Math.round((totalSuccess / Math.max(1, totalAttempts)) * 100) : 0,
+                    suggestion: totalSuccess > 0 ? '进化成功，欧气满满' : '尚未成功，继续努力'
+                });
+            }
+        } catch (e) {
+            console.warn('进化八星数据分析失败:', e);
         }
         
-        if (data.enchantMedal) {
-            const totalEnchant = (data.enchantMedal.rodSuccess || 0) + (data.enchantMedal.reelSuccess || 0) +
-                               (data.enchantMedal.rodFailure || 0) + (data.enchantMedal.reelFailure || 0);
-            const rodBadge = equipment.rod.badgeLevel || 0;
-            const reelBadge = equipment.reel.badgeLevel || 0;
-            
-            analysis.push({
-                name: '附魔勋章',
-                icon: '✨',
-                data: {
-                    rodBadgeLevel: rodBadge || '无',
-                    reelBadgeLevel: reelBadge || '无',
-                    totalEnchant,
-                    totalPlatinum: data.enchantMedal.totalPlatinum || 0,
-                    totalDiamond: data.enchantMedal.totalDiamond || 0
-                },
-                efficiency: rodBadge > 0 && rodBadge <= 5 ? 80 : (rodBadge > 0 ? 50 : 30),
-                suggestion: rodBadge > 0 && rodBadge <= 3 ? '勋章极品，运气爆棚！' : '继续附魔，追求更高品质'
-            });
+        // 附魔勋章分析
+        try {
+            const enchantData = localStorage.getItem('enchantMedalData');
+            if (enchantData) {
+                const data = JSON.parse(enchantData);
+                const totalEnchant = (data.rodEnchantCount || 0) + (data.reelEnchantCount || 0);
+                const rodBadge = data.rodBadgeLevel || 0;
+                const reelBadge = data.reelBadgeLevel || 0;
+                
+                analysis.push({
+                    name: '附魔勋章',
+                    icon: '✨',
+                    data: {
+                        rodBadgeLevel: rodBadge || '无',
+                        reelBadgeLevel: reelBadge || '无',
+                        totalEnchant,
+                        totalPlatinum: data.totalPlatinumCost || 0
+                    },
+                    efficiency: (rodBadge || reelBadge) ? 80 : 30,
+                    suggestion: (rodBadge === 1 || reelBadge === 1) ? '恭喜！勋章等级极佳！' : ((rodBadge || reelBadge) ? '勋章效果一般，可继续尝试' : '建议先去狗托榜吸吸欧气')
+                });
+            }
+        } catch (e) {
+            console.warn('附魔勋章数据分析失败:', e);
         }
         
-        if (data.badgeBox || data.badgeCraft) {
-            const craftedBadges = data.badgeCraft?.craftedBadges || [];
-            const fiveStarCount = craftedBadges.filter(b => b && b.stars >= 5).length;
-            
-            analysis.push({
-                name: '勋章系统',
-                icon: '🎖️',
-                data: {
-                    coralCost: data.badgeBox?.totalCost || 0,
-                    craftedCount: craftedBadges.length,
-                    fiveStarCount,
-                    platinumCost: data.badgeCraft?.totalPlatinumCost || 0
-                },
-                efficiency: fiveStarCount > 0 ? 70 : 30,
-                suggestion: fiveStarCount > 0 ? '5星勋章在手，天下我有' : '继续开宝箱，好运就在前方'
-            });
+        // 刻印模拟分析
+        try {
+            const crestData = localStorage.getItem('crestEnhanceData');
+            if (crestData) {
+                const data = JSON.parse(crestData);
+                const crestStages = data.crestStages || {};
+                const stages = Object.values(crestStages);
+                const maxStage = stages.length > 0 ? Math.max(...stages) : 0;
+                const avgStage = stages.length > 0 ? stages.reduce((a, b) => a + b, 0) / stages.length : 0;
+                
+                analysis.push({
+                    name: '刻印模拟',
+                    icon: '🔥',
+                    data: {
+                        maxStage,
+                        avgStage: Math.round(avgStage),
+                        totalAttempts: data.totalAttempts || 0,
+                        resetTickets: data.resetTicketCount || 0
+                    },
+                    efficiency: maxStage >= 15 ? 90 : (maxStage >= 12 ? 70 : (maxStage >= 8 ? 50 : 30)),
+                    suggestion: maxStage >= 15 ? '刻印满级，成就达成！' : '继续努力，XV在向你招手'
+                });
+            }
+        } catch (e) {
+            console.warn('刻印模拟数据分析失败:', e);
         }
         
-        if (data.crestEnhance) {
-            const crestStages = data.crestEnhance.crestStages || {};
-            const stages = Object.values(crestStages);
-            const maxStage = stages.length > 0 ? Math.max(...stages) : 0;
-            const avgStage = stages.length > 0 ? stages.reduce((a, b) => a + b, 0) / stages.length : 0;
+        // 勋章系统分析
+        try {
+            const craftData = localStorage.getItem('badgeCraftData');
+            const boxData = localStorage.getItem('badgeBoxData');
             
-            analysis.push({
-                name: '刻印模拟',
-                icon: '🔥',
-                data: {
-                    maxStage,
-                    avgStage: Math.round(avgStage),
-                    totalAttempts: data.crestEnhance.totalAttempts || 0,
-                    resetTickets: data.crestEnhance.resetTicketCount || 0
-                },
-                efficiency: maxStage >= 15 ? 90 : (maxStage >= 12 ? 70 : (maxStage >= 8 ? 50 : 30)),
-                suggestion: maxStage >= 15 ? '刻印满级，成就达成！' : '继续努力，XV在向你招手'
-            });
+            let fiveStarCount = 0;
+            let coralCost = 0;
+            let craftedCount = 0;
+            let platinumCost = 0;
+            
+            if (craftData) {
+                const data = JSON.parse(craftData);
+                const craftedBadges = data.craftedBadges || [];
+                fiveStarCount = craftedBadges.filter(b => b && b.stars >= 5).length;
+                craftedCount = craftedBadges.length;
+                platinumCost = data.totalPlatinumCost || 0;
+            }
+            
+            if (boxData) {
+                const data = JSON.parse(boxData);
+                coralCost = data.totalCost || 0;
+            }
+            
+            if (fiveStarCount > 0 || coralCost > 0 || craftedCount > 0) {
+                analysis.push({
+                    name: '勋章系统',
+                    icon: '🎖️',
+                    data: {
+                        coralCost,
+                        craftedCount,
+                        fiveStarCount,
+                        platinumCost
+                    },
+                    efficiency: fiveStarCount > 0 ? 70 : 30,
+                    suggestion: fiveStarCount > 0 ? '5星勋章在手，天下我有' : '继续开宝箱，好运就在前方'
+                });
+            }
+        } catch (e) {
+            console.warn('勋章系统数据分析失败:', e);
         }
         
         return analysis;
@@ -751,14 +881,15 @@ const mysticAnalysis = {
     },
     
     renderAnalysis(analysis) {
-        const contentEl = document.getElementById('mystic-analysis-content');
-        if (!contentEl) return;
+        console.log('开始渲染分析结果...');
         
-        const loadingEl = document.getElementById('mystic-loading');
-        if (loadingEl) {
-            loadingEl.parentElement.style.display = 'none';
+        const contentEl = document.getElementById('mystic-analysis-content');
+        if (!contentEl) {
+            console.error('contentEl 不存在');
+            return;
         }
         
+        // 直接替换内容，不需要隐藏父元素
         contentEl.innerHTML = this.generateHtml(analysis);
         this.afterRender();
     },
@@ -937,7 +1068,11 @@ const mysticAnalysis = {
     },
     
     afterRender() {
-        this.saveToHistory();
+        try {
+            this.saveToHistory();
+        } catch (e) {
+            console.warn('保存历史失败:', e);
+        }
     },
     
     saveToHistory() {
@@ -1035,10 +1170,90 @@ const mysticAnalysis = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    mysticAnalysis.init();
-});
-
 if (typeof window !== 'undefined') {
     window.mysticAnalysis = mysticAnalysis;
+}
+
+// 确保玄学分析能够初始化
+function initMysticAnalysis() {
+    console.log('尝试初始化玄学分析...');
+    try {
+        mysticAnalysis.init();
+        console.log('玄学分析初始化成功！');
+    } catch (e) {
+        console.error('玄学分析初始化失败:', e);
+        // 如果初始化失败，延迟重试
+        setTimeout(initMysticAnalysis, 500);
+    }
+}
+
+// 尝试多种方式初始化
+function setupMysticAnalysis() {
+    console.log('=== 玄学分析调试信息 ===');
+    console.log('document.readyState:', document.readyState);
+    console.log('window.mysticAnalysis:', window.mysticAnalysis);
+    console.log('mystic-analysis-section:', document.getElementById('mystic-analysis-section'));
+    console.log('mystic-analysis-content:', document.getElementById('mystic-analysis-content'));
+    
+    // 添加一个简单的测试按钮
+    const testBtn = document.createElement('button');
+    testBtn.textContent = '测试玄学分析';
+    testBtn.style.position = 'fixed';
+    testBtn.style.bottom = '20px';
+    testBtn.style.right = '20px';
+    testBtn.style.zIndex = '9999';
+    testBtn.className = 'btn btn-primary';
+    testBtn.onclick = function() {
+        console.log('手动触发玄学分析...');
+        try {
+            mysticAnalysis.analyze();
+        } catch (e) {
+            console.error('手动触发失败:', e);
+        }
+    };
+    document.body.appendChild(testBtn);
+    
+    // 初始化玄学分析
+    initMysticAnalysis();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupMysticAnalysis);
+} else {
+    setupMysticAnalysis();
+}
+
+// 全局函数，供HTML按钮调用
+window.runMysticAnalysis = function() {
+    console.log('=== 手动触发玄学分析 ===');
+    try {
+        const contentEl = document.getElementById('mystic-analysis-content');
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">正在分析您的运势数据...</p>
+                </div>
+            `;
+        }
+        
+        setTimeout(() => {
+            console.log('开始执行分析...');
+            mysticAnalysis.analyze();
+        }, 100);
+    } catch (e) {
+        console.error('runMysticAnalysis 失败:', e);
+        const contentEl = document.getElementById('mystic-analysis-content');
+        if (contentEl) {
+            contentEl.innerHTML = `
+                <div class="text-center py-4">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🔮</div>
+                    <p class="text-muted">分析失败: ${e.message}</p>
+                    <button class="btn btn-primary mt-3" onclick="window.runMysticAnalysis()">🔮 重新分析</button>
+                </div>
+            `;
+        }
+    }
 }
